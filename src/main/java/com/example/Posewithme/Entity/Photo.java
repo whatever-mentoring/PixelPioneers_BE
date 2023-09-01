@@ -1,4 +1,4 @@
-package com.example.Posewithme.photo;
+package com.example.Posewithme.Entity;
 
 import lombok.AccessLevel;
 import lombok.Builder;

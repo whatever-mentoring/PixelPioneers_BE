@@ -1,5 +1,7 @@
-package com.example.Posewithme.photo;
+package com.example.Posewithme.Controller;
 
+import com.example.Posewithme.DTO.PhotoResponse;
+import com.example.Posewithme.Service.PhotoService;
 import com.example.Posewithme.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor

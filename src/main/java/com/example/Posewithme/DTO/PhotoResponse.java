@@ -1,5 +1,6 @@
-package com.example.Posewithme.photo;
+package com.example.Posewithme.DTO;
 
+import com.example.Posewithme.Entity.Photo;
 import lombok.Getter;
 import lombok.Setter;
 

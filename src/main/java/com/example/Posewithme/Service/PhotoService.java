@@ -1,5 +1,8 @@
-package com.example.Posewithme.photo;
+package com.example.Posewithme.Service;
 
+import com.example.Posewithme.DTO.PhotoResponse;
+import com.example.Posewithme.Entity.Photo;
+import com.example.Posewithme.Repository.PhotoJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
