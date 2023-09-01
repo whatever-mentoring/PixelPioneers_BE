@@ -1,33 +1,33 @@
 package com.example.PixelPioneers.controller;
 
-import com.example.PixelPioneers.entity.pose;
-import com.example.PixelPioneers.repository.PoseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.PixelPioneers.response.PoseResponse;
+import com.example.PixelPioneers.service.PoseService;
+import com.example.PixelPioneers.utils.ApiUtils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
+@RequiredArgsConstructor
 @RestController
 public class PoseController {
 
-    @Autowired
-    PoseRepository poseRepository;
+    private final PoseService poseService;
 
     @GetMapping("/poses")
-    public List<pose> aa() {
-        List<pose> poses = poseRepository.findAll();
-
-        return poses;
+    public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page) {
+        List<PoseResponse.FindAllDTO> responseDTOs = poseService.findAll(page);
+        return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 
     @GetMapping("/poses/{id}")
-    public Optional<pose> bb(@PathVariable Integer id) {
-        Optional<pose> a = poseRepository.findById(id);
-
-        return a;
+    public ResponseEntity<?> findById(@PathVariable int id) {
+        PoseResponse.FindByIdDTO responseDTO = poseService.findById(id);
+        return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 }
 
