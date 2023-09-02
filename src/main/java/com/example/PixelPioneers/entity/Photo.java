@@ -15,22 +15,27 @@ public class Photo {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private int id;
-
-    @Column(length = 100, nullable = false)
-    private String photoname;
-
-    @Column
-    private String description;
+    private int photo_id;
 
     @Column(length = 500, nullable = false)
-    private String photo;
+    private String photo_name;
+
+    @Column(length = 500, nullable = false)
+    private String photo_image;
+
+    @Column(nullable = false)
+    private int photo_people_count;
+
+    @Column(length = 255, nullable = false)
+    private String photo_created_at;
+
 
     @Builder
-    public Photo(int id, String photoname, String description, String photo) {
-        this.id = id;
-        this.photoname = photoname;
-        this.description = description;
-        this.photo = photo;
+    public Photo(int photo_id, String photo_name, String photo_image, int photo_people_count, String photo_created_at) {
+        this.photo_id = photo_id;
+        this.photo_name = photo_name;
+        this.photo_image = photo_image;
+        this.photo_people_count = photo_people_count;
+        this.photo_created_at = photo_created_at;
     }
 }

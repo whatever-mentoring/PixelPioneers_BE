@@ -10,30 +10,30 @@ public class PhotoResponse {
     @Getter
     @Setter
     public static class FindAllDTO {
-        private int id;
-        private String photoName;
-        private String photo;
+        private int photo_id;
+        private String photo_image;
 
         public FindAllDTO(Photo photo) {
-            this.id = photo.getId();
-            this.photoName = photo.getPhotoname();
-            this.photo = photo.getPhoto();
+            this.photo_id = photo.getPhoto_id();
+            this.photo_image = photo.getPhoto_image();
         }
     }
 
     @Getter
     @Setter
     public static class FindByIdDTO {
-        private int id;
-        private String photoName;
-        private String description;
-        private String photo;
+        private int photo_id;
+        private String photo_name;
+        private String photo_image;
+        private int photo_people_count;
+        private String photo_created_at;
 
         public FindByIdDTO(Optional<Photo> photo) {
-            this.id = photo.get().getId();
-            this.photoName = photo.get().getPhotoname();
-            this.description = photo.get().getDescription();
-            this.photo = photo.get().getPhoto();
+            this.photo_id = photo.get().getPhoto_id();
+            this.photo_name = photo.get().getPhoto_name();
+            this.photo_image = photo.get().getPhoto_image();
+            this.photo_people_count = photo.get().getPhoto_people_count();
+            this.photo_created_at = photo.get().getPhoto_created_at();
         }
     }
 }

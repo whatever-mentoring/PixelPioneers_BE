@@ -31,8 +31,14 @@ public class PhotoService {
         return responseDTOs;
     }
 
-    public PhotoResponse.FindByIdDTO findById(int id) {
-        Optional<Photo> photo = photoRepository.findById(id);
+    public PhotoResponse.FindByIdDTO findById(int photo_id) {
+        Optional<Photo> photo = photoRepository.findById(photo_id);
+        return new PhotoResponse.FindByIdDTO(photo);
+    }
+
+    public PhotoResponse.FindByIdDTO create(Photo new_photo){
+        photoRepository.save(new_photo);
+        Optional<Photo> photo = photoRepository.findById(new_photo.getPhoto_id());
         return new PhotoResponse.FindByIdDTO(photo);
     }
 }

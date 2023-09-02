@@ -1,11 +1,11 @@
 package com.example.PixelPioneers.controller;
 
+import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.PhotoResponse;
-import com.example.PixelPioneers.Service.PhotoService;
+import com.example.PixelPioneers.Service.AlbumService;
+import com.example.PixelPioneers.entity.Album;
 import com.example.PixelPioneers.entity.Photo;
-import com.example.PixelPioneers.repository.PhotoJPARepository;
 import com.example.PixelPioneers.utils.ApiUtils;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,27 +14,25 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-public class PhotoController {
+public class AlbumController {
 
-    private final PhotoService photoService;
-    private final PhotoJPARepository photoJPARepository;
+    private final AlbumService albumService;
 
-
-    @GetMapping("/photos")
+    @GetMapping("/albums")
     public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page) {
-        List<PhotoResponse.FindAllDTO> responseDTOs = photoService.findAll(page);
+        List<AlbumResponse.FindAllDTO> responseDTOs = albumService.findAll(page);
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 
-    @GetMapping("/photos/{photo_id}")
-    public ResponseEntity<?> findById(@PathVariable int photo_id) {
-        PhotoResponse.FindByIdDTO responseDTO = photoService.findById(photo_id);
+    @GetMapping("/albums/{album_id}")
+    public ResponseEntity<?> findById(@PathVariable int album_id) {
+        AlbumResponse.FindByIdDTO responseDTO = albumService.findById(album_id);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 
-    @PostMapping("/photo")
-    public ResponseEntity<?> add(@RequestBody Photo photo){
-        PhotoResponse.FindByIdDTO responseDTO = photoService.create(photo);
+    @PostMapping("/album")
+    public ResponseEntity<?> add(@RequestBody Album album){
+        AlbumResponse.FindByIdDTO responseDTO = albumService.create(album);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 }
