@@ -1,8 +1,9 @@
 package com.example.PixelPioneers.controller;
 
-import com.example.PixelPioneers.response.PoseResponse;
-import com.example.PixelPioneers.service.PoseService;
+import com.example.PixelPioneers.DTO.PhotoResponse;
+import com.example.PixelPioneers.Service.PhotoService;
 import com.example.PixelPioneers.utils.ApiUtils;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,20 +15,19 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-public class PoseController {
+public class PhotoController {
 
-    private final PoseService poseService;
+    private final PhotoService photoService;
 
-    @GetMapping("/poses")
+    @GetMapping("/photos")
     public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page) {
-        List<PoseResponse.FindAllDTO> responseDTOs = poseService.findAll(page);
+        List<PhotoResponse.FindAllDTO> responseDTOs = photoService.findAll(page);
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 
-    @GetMapping("/poses/{id}")
+    @GetMapping("/photos/{id}")
     public ResponseEntity<?> findById(@PathVariable int id) {
-        PoseResponse.FindByIdDTO responseDTO = poseService.findById(id);
+        PhotoResponse.FindByIdDTO responseDTO = photoService.findById(id);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 }
-
