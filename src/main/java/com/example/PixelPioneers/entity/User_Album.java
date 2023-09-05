@@ -18,15 +18,17 @@ public class User_Album {
     private int user_album_id;
 
     @ManyToOne
-    @JoinColumn(name ="fk_user_id")
+    @JoinColumn(name ="user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name ="fk_album_id")
+    @JoinColumn(name ="album_id")
     private Album album;
 
     @Builder
-    public User_Album(int user_album_id) {
+    public User_Album(int user_album_id, User user, Album album) {
         this.user_album_id = user_album_id;
+        this.user = user;
+        this.album = album;
     }
 }

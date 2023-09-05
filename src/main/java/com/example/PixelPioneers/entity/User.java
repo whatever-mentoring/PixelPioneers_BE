@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -27,15 +28,14 @@ public class User {
     @Column(length = 255, nullable = false)
     private String user_nickname;
 
-    @Column
-    private int album_id;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<User_Album> user_albums = new ArrayList<>();
 
     @Builder
-    public User(int user_id, String user_email, String user_password, String user_nickname, int album_id){
+    public User(int user_id, String user_email, String user_password, String user_nickname){
         this.user_id = user_id;
         this.user_email = user_email;
         this.user_password = user_password;
         this.user_nickname = user_nickname;
-        this.album_id = album_id;
     }
 }

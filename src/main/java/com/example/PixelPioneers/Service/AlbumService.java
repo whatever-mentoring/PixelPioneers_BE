@@ -2,18 +2,15 @@ package com.example.PixelPioneers.Service;
 
 import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.Album_PhotoResponse;
-import com.example.PixelPioneers.DTO.PhotoResponse;
+
 import com.example.PixelPioneers.entity.Album;
 import com.example.PixelPioneers.entity.Photo;
 import com.example.PixelPioneers.repository.AlbumJPARepository;
-import com.example.PixelPioneers.repository.PhotoJPARepository;
-import com.example.PixelPioneers.utils.ApiUtils;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +24,6 @@ import java.util.stream.Collectors;
 @Service
 public class AlbumService {
     private final AlbumJPARepository albumRepository;
-    private final PhotoJPARepository photoJPARepository;
 
     public List<AlbumResponse.FindAllDTO> findAll(int page) {
         Pageable pageable = PageRequest.of(page, 10);
@@ -61,4 +57,5 @@ public class AlbumService {
 
         return responseDTOs;
     }
+
 }

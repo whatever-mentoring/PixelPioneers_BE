@@ -4,9 +4,6 @@ import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.Album_PhotoResponse;
 import com.example.PixelPioneers.Service.AlbumService;
 import com.example.PixelPioneers.entity.Album;
-import com.example.PixelPioneers.entity.Photo;
-import com.example.PixelPioneers.repository.AlbumJPARepository;
-import com.example.PixelPioneers.repository.PhotoJPARepository;
 import com.example.PixelPioneers.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,10 +37,12 @@ public class AlbumController {
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
+    // 해당 album에 들어있는 사진 전체 조회
     @GetMapping("/albums/{album_id}/photos")
     public ResponseEntity<?> Photo_FK_find(@PathVariable int album_id){
         List<Album_PhotoResponse.FindAllDTO> responseDTOs = albumService.Photo_FindBy_Fk(album_id);
         HashMap<Integer, List<Album_PhotoResponse.FindAllDTO>> map = new HashMap<Integer, List<Album_PhotoResponse.FindAllDTO>>();
+        // 해당 앨범에 들어있는 사진 개수도 함께 전송
         map.put(responseDTOs.size(), responseDTOs);
         return ResponseEntity.ok(ApiUtils.success(map));
     }

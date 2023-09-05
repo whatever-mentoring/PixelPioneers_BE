@@ -28,6 +28,9 @@ public class Album {
     @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
     private List<Photo> photos = new ArrayList<>();
 
+    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
+    private List<User_Album> user_albums = new ArrayList<>();
+
     @Builder
     public Album(int album_id, String album_name, String album_created_at){
         this.album_id = album_id;

@@ -37,7 +37,7 @@ public class PhotoController {
     //    return ResponseEntity.ok().body(ApiUtils.success(null));
     //}
 
-    @PostMapping("/photo/{album_id}")
+    @PostMapping("/albums/{album_id}/photo")
     public ResponseEntity<?> album_photo_insert(@RequestBody Photo photo, @PathVariable int album_id) {
         PhotoResponse.FindByIdDTO responseDTO = photoService.create_new(photo, album_id);
         //return ResponseEntity.ok(ApiUtils.success(responseDTO));  -->  등록한 값 확인용
