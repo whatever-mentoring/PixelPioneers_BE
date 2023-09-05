@@ -13,9 +13,15 @@ public class PhotoResponse {
         private int photo_id;
         private String photo_image;
 
+        private int album_id;
+        private String album_name;
+
         public FindAllDTO(Photo photo) {
             this.photo_id = photo.getPhoto_id();
             this.photo_image = photo.getPhoto_image();
+
+            this.album_id = photo.getAlbum().getAlbum_id();
+            this.album_name = photo.getAlbum().getAlbum_name();
         }
     }
 
@@ -27,6 +33,8 @@ public class PhotoResponse {
         private String photo_image;
         private int photo_people_count;
         private String photo_created_at;
+        private int album_id;
+        private String album_name;
 
         public FindByIdDTO(Optional<Photo> photo) {
             this.photo_id = photo.get().getPhoto_id();
@@ -34,6 +42,8 @@ public class PhotoResponse {
             this.photo_image = photo.get().getPhoto_image();
             this.photo_people_count = photo.get().getPhoto_people_count();
             this.photo_created_at = photo.get().getPhoto_created_at();
+            this.album_id = photo.get().getAlbum().getAlbum_id();
+            this.album_name = photo.get().getAlbum().getAlbum_name();
         }
     }
 }

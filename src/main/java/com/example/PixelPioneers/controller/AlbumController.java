@@ -1,15 +1,18 @@
 package com.example.PixelPioneers.controller;
 
 import com.example.PixelPioneers.DTO.AlbumResponse;
-import com.example.PixelPioneers.DTO.PhotoResponse;
+import com.example.PixelPioneers.DTO.Album_PhotoResponse;
 import com.example.PixelPioneers.Service.AlbumService;
 import com.example.PixelPioneers.entity.Album;
 import com.example.PixelPioneers.entity.Photo;
+import com.example.PixelPioneers.repository.AlbumJPARepository;
+import com.example.PixelPioneers.repository.PhotoJPARepository;
 import com.example.PixelPioneers.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -33,6 +36,15 @@ public class AlbumController {
     @PostMapping("/album")
     public ResponseEntity<?> add(@RequestBody Album album){
         AlbumResponse.FindByIdDTO responseDTO = albumService.create(album);
-        return ResponseEntity.ok(ApiUtils.success(responseDTO));
+        // return ResponseEntity.ok(ApiUtils.success(responseDTO));  --> 등록한 값 확인용
+        return ResponseEntity.ok().body(ApiUtils.success(null));
+    }
+
+    @GetMapping("/albums/{album_id}/photos")
+    public ResponseEntity<?> Photo_FK_find(@PathVariable int album_id){
+        List<Album_PhotoResponse.FindAllDTO> responseDTOs = albumService.Photo_FindBy_Fk(album_id);
+        HashMap<Integer, List<Album_PhotoResponse.FindAllDTO>> map = new HashMap<Integer, List<Album_PhotoResponse.FindAllDTO>>();
+        map.put(responseDTOs.size(), responseDTOs);
+        return ResponseEntity.ok(ApiUtils.success(map));
     }
 }

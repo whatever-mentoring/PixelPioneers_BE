@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,6 +24,9 @@ public class Album {
 
     @Column(length = 255, nullable = false)
     private String album_created_at;
+
+    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
+    private List<Photo> photos = new ArrayList<>();
 
     @Builder
     public Album(int album_id, String album_name, String album_created_at){

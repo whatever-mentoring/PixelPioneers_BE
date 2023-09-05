@@ -1,13 +1,11 @@
 package com.example.PixelPioneers.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
+//@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "photo")
@@ -29,13 +27,17 @@ public class Photo {
     @Column(length = 255, nullable = false)
     private String photo_created_at;
 
+    @ManyToOne
+    @JoinColumn(name ="album_id")
+    private Album album;
 
-    @Builder
-    public Photo(int photo_id, String photo_name, String photo_image, int photo_people_count, String photo_created_at) {
+    @Builder(toBuilder = true)
+    public Photo(int photo_id, String photo_name, String photo_image, int photo_people_count, String photo_created_at, Album album) {
         this.photo_id = photo_id;
         this.photo_name = photo_name;
         this.photo_image = photo_image;
         this.photo_people_count = photo_people_count;
         this.photo_created_at = photo_created_at;
+        this.album = album;
     }
 }

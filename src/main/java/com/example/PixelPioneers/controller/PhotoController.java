@@ -3,7 +3,6 @@ package com.example.PixelPioneers.controller;
 import com.example.PixelPioneers.DTO.PhotoResponse;
 import com.example.PixelPioneers.Service.PhotoService;
 import com.example.PixelPioneers.entity.Photo;
-import com.example.PixelPioneers.repository.PhotoJPARepository;
 import com.example.PixelPioneers.utils.ApiUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import java.util.List;
 public class PhotoController {
 
     private final PhotoService photoService;
-    private final PhotoJPARepository photoJPARepository;
 
 
     @GetMapping("/photos")
@@ -32,9 +30,17 @@ public class PhotoController {
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 
-    @PostMapping("/photo")
-    public ResponseEntity<?> add(@RequestBody Photo photo){
-        PhotoResponse.FindByIdDTO responseDTO = photoService.create(photo);
-        return ResponseEntity.ok(ApiUtils.success(responseDTO));
+    // 사진 그냥 등록. 사진첩 x
+    //@PostMapping("/photo")
+    //public ResponseEntity<?> add(@RequestBody Photo photo){
+    //    PhotoResponse.FindByIdDTO responseDTO = photoService.create(photo);
+    //    return ResponseEntity.ok().body(ApiUtils.success(null));
+    //}
+
+    @PostMapping("/photo/{album_id}")
+    public ResponseEntity<?> album_photo_insert(@RequestBody Photo photo, @PathVariable int album_id) {
+        PhotoResponse.FindByIdDTO responseDTO = photoService.create_new(photo, album_id);
+        //return ResponseEntity.ok(ApiUtils.success(responseDTO));  -->  등록한 값 확인용
+        return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }

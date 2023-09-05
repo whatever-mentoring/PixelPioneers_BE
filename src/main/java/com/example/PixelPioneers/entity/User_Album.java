@@ -1,0 +1,32 @@
+package com.example.PixelPioneers.entity;
+
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@Table(name = "user_album")
+public class User_Album {
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private int user_album_id;
+
+    @ManyToOne
+    @JoinColumn(name ="fk_user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name ="fk_album_id")
+    private Album album;
+
+    @Builder
+    public User_Album(int user_album_id) {
+        this.user_album_id = user_album_id;
+    }
+}
