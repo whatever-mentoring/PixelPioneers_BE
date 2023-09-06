@@ -1,7 +1,7 @@
 package com.example.PixelPioneers.Service;
 
 import com.example.PixelPioneers.DTO.AlbumResponse;
-import com.example.PixelPioneers.DTO.Album_PhotoResponse;
+import com.example.PixelPioneers.DTO.Photo_AlbumResponse;
 
 import com.example.PixelPioneers.entity.Album;
 import com.example.PixelPioneers.entity.Photo;
@@ -47,12 +47,12 @@ public class AlbumService {
         return new AlbumResponse.FindByIdDTO(album);
     }
 
-    public List<Album_PhotoResponse.FindAllDTO> Photo_FindBy_Fk(int album_id){
+    public List<Photo_AlbumResponse.FindAllDTO> Photo_FindBy_Fk(int album_id){
         List<Photo> photoList = albumRepository.findById(album_id).get().getPhotos();
-        List<Album_PhotoResponse.FindAllDTO> responseDTOs = new ArrayList<>();
+        List<Photo_AlbumResponse.FindAllDTO> responseDTOs = new ArrayList<>();
 
         for(Photo item : photoList){
-            responseDTOs.add(new Album_PhotoResponse.FindAllDTO(item));
+            responseDTOs.add(new Photo_AlbumResponse.FindAllDTO(item));
         }
 
         return responseDTOs;

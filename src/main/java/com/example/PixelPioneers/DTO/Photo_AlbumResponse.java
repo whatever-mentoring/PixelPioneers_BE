@@ -4,7 +4,7 @@ import com.example.PixelPioneers.entity.Photo;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Album_PhotoResponse {
+public class Photo_AlbumResponse {
     @Getter
     @Setter
     public static class FindAllDTO {
