@@ -27,7 +27,7 @@ public class User_AlbumController {
     }
 
     // 사진첩에 유저 초대. List로 유저의 id 값을 전달받아 수행한다.
-    @PostMapping("/albums/{album_id}/user")
+    @PostMapping("/albums/{album_id}/users")
     public ResponseEntity<?> album_user_insert(@RequestBody List<Integer> user_id_list, @PathVariable int album_id) {
         List<User_AlbumResponse.FindAllDTO> responseDTOs = userAlbumService.create_new(user_id_list, album_id);
         //return ResponseEntity.ok(ApiUtils.success(responseDTOs)); -->  등록한 값 확인용
