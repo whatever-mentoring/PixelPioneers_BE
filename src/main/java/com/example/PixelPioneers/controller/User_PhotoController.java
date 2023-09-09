@@ -1,8 +1,8 @@
 package com.example.PixelPioneers.controller;
 
-import com.example.PixelPioneers.DTO.PhotoResponse;
-import com.example.PixelPioneers.Service.PhotoService;
-import com.example.PixelPioneers.entity.Photo;
+import com.example.PixelPioneers.DTO.User_PhotoResponse;
+import com.example.PixelPioneers.Service.User_PhotoService;
+import com.example.PixelPioneers.entity.User_Photo;
 import com.example.PixelPioneers.utils.ApiUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -13,20 +13,20 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-public class PhotoController {
+public class User_PhotoController {
 
-    private final PhotoService photoService;
+    private final User_PhotoService userPhotoService;
 
 
     @GetMapping("/photos")
     public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page) {
-        List<PhotoResponse.FindAllDTO> responseDTOs = photoService.findAll(page);
+        List<User_PhotoResponse.FindAllDTO> responseDTOs = userPhotoService.findAll(page);
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 
     @GetMapping("/photos/{photo_id}")
     public ResponseEntity<?> findById(@PathVariable int photo_id) {
-        PhotoResponse.FindByIdDTO responseDTO = photoService.findById(photo_id);
+        User_PhotoResponse.FindByIdDTO responseDTO = userPhotoService.findById(photo_id);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 
@@ -38,8 +38,8 @@ public class PhotoController {
     //}
 
     @PostMapping("/albums/{album_id}/photo")
-    public ResponseEntity<?> album_photo_insert(@RequestBody Photo photo, @PathVariable int album_id) {
-        PhotoResponse.FindByIdDTO responseDTO = photoService.create_new(photo, album_id);
+    public ResponseEntity<?> album_photo_insert(@RequestBody User_Photo userPhoto, @PathVariable int album_id) {
+        User_PhotoResponse.FindByIdDTO responseDTO = userPhotoService.create_new(userPhoto, album_id);
         //return ResponseEntity.ok(ApiUtils.success(responseDTO));  -->  등록한 값 확인용
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }

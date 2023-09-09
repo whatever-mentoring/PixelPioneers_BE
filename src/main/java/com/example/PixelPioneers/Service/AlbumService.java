@@ -4,7 +4,7 @@ import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.Photo_AlbumResponse;
 
 import com.example.PixelPioneers.entity.Album;
-import com.example.PixelPioneers.entity.Photo;
+import com.example.PixelPioneers.entity.User_Photo;
 import com.example.PixelPioneers.repository.AlbumJPARepository;
 
 import lombok.RequiredArgsConstructor;
@@ -48,10 +48,10 @@ public class AlbumService {
     }
 
     public List<Photo_AlbumResponse.FindAllDTO> Photo_FindBy_Fk(int album_id){
-        List<Photo> photoList = albumRepository.findById(album_id).get().getPhotos();
+        List<User_Photo> userPhotoList = albumRepository.findById(album_id).get().getUserPhotos();
         List<Photo_AlbumResponse.FindAllDTO> responseDTOs = new ArrayList<>();
 
-        for(Photo item : photoList){
+        for(User_Photo item : userPhotoList){
             responseDTOs.add(new Photo_AlbumResponse.FindAllDTO(item));
         }
 

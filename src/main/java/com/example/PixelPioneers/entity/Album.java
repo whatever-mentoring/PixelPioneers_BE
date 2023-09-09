@@ -26,7 +26,7 @@ public class Album {
     private String album_created_at;
 
     @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
-    private List<Photo> photos = new ArrayList<>();
+    private List<User_Photo> userPhotos = new ArrayList<>();
 
     @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
     private List<User_Album> user_albums = new ArrayList<>();
