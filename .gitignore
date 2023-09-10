@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### Database 정보 ##
-src/main/resources/application.properties
+application.properties
