@@ -23,7 +23,9 @@ public class ApiUtils {
         private final ApiError error;
     }
 
-    @Getter @Setter @AllArgsConstructor
+    @Getter
+    @Setter
+    @AllArgsConstructor
     public static class ApiError {
         private final String message;
         private final int status;
