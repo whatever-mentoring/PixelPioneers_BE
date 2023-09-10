@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "Album")
+@Table(name = "album")
 public class Album {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

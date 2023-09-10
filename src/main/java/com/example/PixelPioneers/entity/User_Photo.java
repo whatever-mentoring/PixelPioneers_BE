@@ -8,7 +8,7 @@ import javax.persistence.*;
 //@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "User_Photo")
+@Table(name = "photo")
 public class User_Photo {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
