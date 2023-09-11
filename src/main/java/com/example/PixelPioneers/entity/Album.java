@@ -1,5 +1,6 @@
 package com.example.PixelPioneers.entity;
 
+import io.swagger.annotations.ApiParam;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "Album")
+@Table(name = "album")
 public class Album {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +27,7 @@ public class Album {
     private String album_created_at;
 
     @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
-    private List<User_Photo> userPhotos = new ArrayList<>();
+    private List<User_Photo> user_photos = new ArrayList<>();
 
     @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
     private List<User_Album> user_albums = new ArrayList<>();

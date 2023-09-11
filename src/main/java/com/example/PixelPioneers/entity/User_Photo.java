@@ -8,7 +8,7 @@ import javax.persistence.*;
 //@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "Photo")
+@Table(name = "user_photo")
 public class User_Photo {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,7 @@ public class User_Photo {
     @Column(length = 500, nullable = false)
     private String photo_name;
 
-    @Column(length = 500, nullable = false)
+    @Column(length = 500)
     private String photo_image;
 
     @Column(nullable = false)
