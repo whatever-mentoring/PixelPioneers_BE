@@ -1,6 +1,7 @@
 package com.example.PixelPioneers.DTO;
 
 import com.example.PixelPioneers.entity.Album;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
