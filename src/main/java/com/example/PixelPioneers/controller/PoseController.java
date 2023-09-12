@@ -19,21 +19,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class PoseController {
     private final PoseService poseService;
 
+    //@GetMapping("/poses")
+    //@ApiImplicitParam(name = "peopleCount",value = "인원수")
+    //@ApiOperation(value="특정 인원수 포즈 조회", notes = "peopleCount명에 해당하는 포즈 목록 전체를 반환합니다.")
+    //public ResponseEntity<?> poseListByPeopleCount(@RequestParam(value = "peopleCount", defaultValue = "0") int peopleCount) {
+    //    PoseResponse.PoseListDTO responseDTOs = poseService.poseList();
+    //    return ResponseEntity.ok(ApiUtils.success(responseDTOs));
+    //}
+
     @GetMapping("/poses")
-    @ApiImplicitParam(name = "peopleCount",value = "인원수")
-    @ApiOperation(value="특정 인원수 포즈 조회", notes = "peopleCount명에 해당하는 포즈 목록 전체를 반환합니다.")
-    public ResponseEntity<?> poseListByPeopleCount(@RequestParam(value = "peopleCount", defaultValue = "0") int peopleCount) {
-        PoseResponse.PoseListDTO responseDTOs = poseService.poseListByPeopleCount(peopleCount);
+    @ApiOperation(value="포즈 전체 목록 조회", notes = "포즈 전체 목록을 반환합니다.")
+    public ResponseEntity<?> poseListByPeopleCount() {
+        PoseResponse.PoseListDTO responseDTOs = poseService.poseList();
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 
-    @GetMapping("/poses/random")
-    @ApiImplicitParam(name = "peopleCount",value = "인원수")
-    @ApiOperation(value="특정 인원수 포즈 랜덤 조회", notes = "peopleCount명에 해당하는 포즈 목록 중 랜덤한 하나의 포즈를 반환합니다.")
-    public ResponseEntity<?> randomPoseDetailByPeopleCount(@RequestParam(value = "peopleCount") int peopleCount) {
-        PoseResponse.PoseDetailDTO responseDTO = poseService.randomPoseDetailByPeopleCount(peopleCount);
-        return ResponseEntity.ok(ApiUtils.success(responseDTO));
-    }
+    //@GetMapping("/poses/random")
+    //@ApiImplicitParam(name = "peopleCount",value = "인원수")
+    //@ApiOperation(value="특정 인원수 포즈 랜덤 조회", notes = "peopleCount명에 해당하는 포즈 목록 중 랜덤한 하나의 포즈를 반환합니다.")
+    //public ResponseEntity<?> randomPoseDetailByPeopleCount(@RequestParam(value = "peopleCount") int peopleCount) {
+    //    PoseResponse.PoseDetailDTO responseDTO = poseService.randomPoseDetailByPeopleCount(peopleCount);
+    //    return ResponseEntity.ok(ApiUtils.success(responseDTO));
+    //}
 
     @GetMapping("/poses/{id}")
     @ApiImplicitParam(name = "id",value = "포즈 아이디")
