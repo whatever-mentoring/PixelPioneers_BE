@@ -48,7 +48,7 @@ public class User_PhotoController {
     public ResponseEntity<?> album_photo_insert(@ModelAttribute User_PhotoVO userPhotoVO, @PathVariable int album_id) throws Exception {
 
         User_Photo new_user_photo = User_Photo.builder().photo_name(userPhotoVO.getPhoto_name())
-                .photo_people_count(userPhotoVO.getPhoto_people_count())
+                .peopleCount(userPhotoVO.getPhoto_people_count())
                 .photo_created_at(userPhotoVO.getPhoto_created_at())
                 .photo_public(userPhotoVO.getPhoto_public())
                 .album(albumJPARepository.findById(album_id).get())
