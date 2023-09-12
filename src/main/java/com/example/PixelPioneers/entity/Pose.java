@@ -14,19 +14,17 @@ import javax.persistence.*;
 public class Pose {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(name = "image", nullable = false)
-    private String image;
-    @Column(name = "hashtag")
-    private String hashtag;
-    @Column(name = "people_count", nullable = false)
-    private int peopleCount;
+    private int pose_id;
 
-    @Builder
-    public Pose(int id, String image, String hashtag, int peopleCount) {
-        this.id = id;
-        this.image = image;
-        this.hashtag = hashtag;
-        this.peopleCount = peopleCount;
+    //user_photo와 1대 1 연결.
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "photo_id")
+    private User_Photo userPhoto;
+
+
+    @Builder(toBuilder = true)
+    public Pose(int pose_id, User_Photo userPhoto) {
+        this.pose_id = pose_id;
+        this.userPhoto = userPhoto;
     }
 }
