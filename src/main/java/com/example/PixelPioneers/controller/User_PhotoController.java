@@ -9,7 +9,6 @@ import com.example.PixelPioneers.utils.ApiUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -43,13 +42,6 @@ public class User_PhotoController {
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 
-    // 사진 그냥 등록. 사진첩 x
-    //@PostMapping("/photo")
-    //public ResponseEntity<?> add(@RequestBody Photo photo){
-    //    PhotoResponse.FindByIdDTO responseDTO = photoService.create(photo);
-    //    return ResponseEntity.ok().body(ApiUtils.success(null));
-    //}
-
     @PostMapping(value = "/albums/{album_id}/photo",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value="사진첩 사진 등록", notes = "{album_id}에 해당하는 사진첩에 사진을 등록합니다.")
     @ApiImplicitParam(name = "album_id",value = "사진첩 아이디")
@@ -63,7 +55,17 @@ public class User_PhotoController {
                 .build();
 
         User_PhotoResponse.FindByIdDTO responseDTO = userPhotoService.create_new(new_user_photo, userPhotoVO.getFile());
+
         //return ResponseEntity.ok(ApiUtils.success(responseDTO)); -->  등록한 값 확인용
+
+        return ResponseEntity.ok().body(ApiUtils.success(null));
+    }
+
+    @DeleteMapping("/photos/{photo_id}")
+    @ApiOperation(value="사진 삭제", notes = "{photo_id}에 해당하는 사진을 삭제합니다.")
+    @ApiImplicitParam(name = "photo_id",value = "사진 아이디")
+    public ResponseEntity<?> deleteById(@PathVariable int photo_id){
+        userPhotoService.deleteById(photo_id);
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
