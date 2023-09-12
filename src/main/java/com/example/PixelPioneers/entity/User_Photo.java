@@ -23,8 +23,8 @@ public class User_Photo {
     @Column(length = 500)
     private String photo_image;
 
-    @Column(nullable = false)
-    private int photo_people_count;
+    @Column(name = "photo_people_count", nullable = false)
+    private int peopleCount;
 
     @Column(length = 255, nullable = false)
     private String photo_created_at;
@@ -36,14 +36,20 @@ public class User_Photo {
     @JoinColumn(name ="album_id")
     private Album album;
 
+    //포즈와 1대 1 연결.
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pose_id")
+    private Pose pose;
+
     @Builder(toBuilder = true)
-    public User_Photo(int photo_id, String photo_name, String photo_image, int photo_people_count, String photo_created_at, int photo_public, Album album) {
+    public User_Photo(int photo_id, String photo_name, String photo_image, int peopleCount, String photo_created_at, int photo_public, Album album, Pose pose) {
         this.photo_id = photo_id;
         this.photo_name = photo_name;
         this.photo_image = photo_image;
-        this.photo_people_count = photo_people_count;
+        this.peopleCount = peopleCount;
         this.photo_created_at = photo_created_at;
         this.photo_public = photo_public;
         this.album = album;
+        this.pose = pose;
     }
 }

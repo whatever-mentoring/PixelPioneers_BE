@@ -36,16 +36,18 @@ public class User_PhotoResponse {
         private int photo_public;
         private int album_id;
         private String album_name;
+        private int pose_id;
 
         public FindByIdDTO(Optional<User_Photo> photo) {
             this.photo_id = photo.get().getPhoto_id();
             this.photo_name = photo.get().getPhoto_name();
             this.photo_image = photo.get().getPhoto_image();
-            this.photo_people_count = photo.get().getPhoto_people_count();
+            this.photo_people_count = photo.get().getPeopleCount();
             this.photo_created_at = photo.get().getPhoto_created_at();
             this.photo_public = photo.get().getPhoto_public();
             this.album_id = photo.get().getAlbum().getAlbum_id();
             this.album_name = photo.get().getAlbum().getAlbum_name();
+            this.pose_id = photo.get().getPose().getPose_id();
         }
     }
 }

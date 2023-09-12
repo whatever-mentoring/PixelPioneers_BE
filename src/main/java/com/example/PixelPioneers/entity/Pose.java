@@ -16,15 +16,16 @@ public class Pose {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int pose_id;
 
-    //user_photo와 1대 1 연결.
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "photo_id")
+    @Column(nullable = false)
+    private int pose_category;
+
+    @OneToOne(mappedBy = "pose")
     private User_Photo userPhoto;
 
-
     @Builder(toBuilder = true)
-    public Pose(int pose_id, User_Photo userPhoto) {
+    public Pose(int pose_id, int pose_category, User_Photo userPhoto) {
         this.pose_id = pose_id;
+        this.pose_category = pose_category;
         this.userPhoto = userPhoto;
     }
 }
