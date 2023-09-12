@@ -1,11 +1,10 @@
 package com.example.PixelPioneers.repository;
 
 import com.example.PixelPioneers.entity.Pose;
+import com.example.PixelPioneers.entity.User_Photo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface PoseJPARepository extends JpaRepository<Pose, Integer> {
-    List<Pose> findAllByPeopleCount(int peopleCount);
+    Pose findByUserPhoto(User_Photo userPhoto);
 }
 
