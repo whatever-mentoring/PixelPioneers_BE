@@ -2,7 +2,7 @@ package com.example.PixelPioneers.controller;
 
 import com.example.PixelPioneers.DTO.User_AlbumResponse;
 import com.example.PixelPioneers.Service.User_AlbumService;
-import com.example.PixelPioneers.utils.ApiUtils;
+import com.example.PixelPioneers.config.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-public class User_AlbumController {
+public class User_AlbumRestController {
 
     private final User_AlbumService userAlbumService;
 

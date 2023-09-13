@@ -3,7 +3,7 @@ package com.example.PixelPioneers.controller;
 import com.example.PixelPioneers.DTO.PhotoResponse;
 import com.example.PixelPioneers.Service.PhotoService;
 import com.example.PixelPioneers.entity.Photo;
-import com.example.PixelPioneers.utils.ApiUtils;
+import com.example.PixelPioneers.config.utils.ApiUtils;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-public class PhotoController {
+public class PhotoRestController {
 
     private final PhotoService photoService;
 

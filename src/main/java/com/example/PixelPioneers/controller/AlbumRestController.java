@@ -4,7 +4,7 @@ import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.Photo_AlbumResponse;
 import com.example.PixelPioneers.Service.AlbumService;
 import com.example.PixelPioneers.entity.Album;
-import com.example.PixelPioneers.utils.ApiUtils;
+import com.example.PixelPioneers.config.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +14,12 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-public class AlbumController {
+public class AlbumRestController {
 
     private final AlbumService albumService;
 
     @GetMapping("/albums")
-    public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page) {
+    public ResponseEntity<?> albumsList(@RequestParam(value = "page", defaultValue = "0") Integer page) {
         List<AlbumResponse.FindAllDTO> responseDTOs = albumService.findAll(page);
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
@@ -30,7 +30,7 @@ public class AlbumController {
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 
-    @PostMapping("/album")
+    @PostMapping("/albums")
     public ResponseEntity<?> add(@RequestBody Album album){
         AlbumResponse.FindByIdDTO responseDTO = albumService.create(album);
         // return ResponseEntity.ok(ApiUtils.success(responseDTO));  --> 등록한 값 확인용

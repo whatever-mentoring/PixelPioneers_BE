@@ -2,7 +2,7 @@ package com.example.PixelPioneers.controller;
 
 import com.example.PixelPioneers.DTO.PoseResponse;
 import com.example.PixelPioneers.Service.PoseService;
-import com.example.PixelPioneers.utils.ApiUtils;
+import com.example.PixelPioneers.config.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class PoseController {
+public class PoseRestController {
     private final PoseService poseService;
 
     @GetMapping("/poses")
