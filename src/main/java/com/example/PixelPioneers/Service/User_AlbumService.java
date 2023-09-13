@@ -20,6 +20,10 @@ public class User_AlbumService {
     private final UserJPARepository userJPARepository;
     private final User_AlbumJPARepository userAlbumJPARepository;
 
+    /**
+     * 아카이브
+     * 앨범에 초대된 유저 전체 조회
+     */
     @Transactional(readOnly = true)
     public List<User_AlbumResponse.FindAllDTO> User_Album_FindBy_Fk(int album_id){
         List<User_Album> User_AlbumList = albumJPARepository.findById(album_id).get().getUser_albums();
@@ -32,6 +36,10 @@ public class User_AlbumService {
         return responseDTOs;
     }
 
+    /**
+     * 아카이브
+     * 앨범에 유저 초대
+     */
     @Transactional(readOnly = false)
     public void create_new(List<Integer> user_id_list, int album_id){
         List<User_Album> userAlbumList = new ArrayList<>();

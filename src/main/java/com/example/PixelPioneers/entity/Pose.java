@@ -14,18 +14,27 @@ import javax.persistence.*;
 public class Pose {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int pose_id;
+    private int id;
 
-    @Column(nullable = false)
-    private int pose_category;
+    @Column(name = "people_count")
+    private int peopleCount;
+
+    @Column(length = 500)
+    private String imgURL;
 
     @OneToOne(mappedBy = "pose")
-    private User_Photo userPhoto;
+    private Photo photo;
 
     @Builder(toBuilder = true)
-    public Pose(int pose_id, int pose_category, User_Photo userPhoto) {
-        this.pose_id = pose_id;
-        this.pose_category = pose_category;
-        this.userPhoto = userPhoto;
+    public Pose(int id, int peopleCount, String imgURL, Photo photo) {
+        this.id = id;
+        this.peopleCount = peopleCount;
+        this.imgURL = imgURL;
+        this.photo = photo;
+    }
+
+    public void update(int peopleCount, String imgURL){
+        this.peopleCount = peopleCount;
+        this.imgURL = imgURL;
     }
 }

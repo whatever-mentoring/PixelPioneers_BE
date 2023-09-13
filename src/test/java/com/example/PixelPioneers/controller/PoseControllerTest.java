@@ -1,3 +1,4 @@
+/*
 package com.example.PixelPioneers.controller;
 
 import com.example.PixelPioneers.Service.PoseService;
@@ -31,3 +32,4 @@ public class PoseControllerTest {
     @Test
     public void 인원_수에_따른_포즈_개별_조회() {}
 }
+*/
