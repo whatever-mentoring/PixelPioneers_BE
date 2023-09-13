@@ -1,6 +1,6 @@
 package com.example.PixelPioneers.DTO;
 
-import com.example.PixelPioneers.entity.Photo;
+import com.example.PixelPioneers.entity.User_Photo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,11 +13,11 @@ public class Photo_AlbumResponse {
         private int album_id;
         private String album_name;
 
-        public FindAllDTO(Photo photo) {
-            this.photo_id = photo.getPhoto_id();
-            this.photo_name = photo.getPhoto_name();
-            this.album_id = photo.getAlbum().getAlbum_id();
-            this.album_name = photo.getAlbum().getAlbum_name();
+        public FindAllDTO(User_Photo userPhoto) {
+            this.photo_id = userPhoto.getPhoto_id();
+            this.photo_name = userPhoto.getPhoto_name();
+            this.album_id = userPhoto.getAlbum().getAlbum_id();
+            this.album_name = userPhoto.getAlbum().getAlbum_name();
         }
     }
 }

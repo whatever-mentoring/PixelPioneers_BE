@@ -1,5 +1,6 @@
 package com.example.PixelPioneers.entity;
 
+import io.swagger.annotations.ApiParam;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +34,7 @@ public class Album {
 
 //    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
 //    private List<Photo> photos = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
     private List<User_Album> user_albums = new ArrayList<>();

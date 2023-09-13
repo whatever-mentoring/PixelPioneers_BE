@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-@Transactional(readOnly = true)
+
 @RequiredArgsConstructor
 @Service
 public class User_AlbumService {
@@ -20,6 +20,7 @@ public class User_AlbumService {
     private final UserJPARepository userJPARepository;
     private final User_AlbumJPARepository userAlbumJPARepository;
 
+    @Transactional(readOnly = true)
     public List<User_AlbumResponse.FindAllDTO> User_Album_FindBy_Fk(int album_id){
         List<User_Album> User_AlbumList = albumJPARepository.findById(album_id).get().getUser_albums();
         List<User_AlbumResponse.FindAllDTO> responseDTOs = new ArrayList<>();
@@ -31,8 +32,9 @@ public class User_AlbumService {
         return responseDTOs;
     }
 
-    public List<User_AlbumResponse.FindAllDTO> create_new(List<Integer> user_id_list, int album_id){
-        List<User_AlbumResponse.FindAllDTO> User_Album_list = new ArrayList<>();
+    @Transactional(readOnly = false)
+    public void create_new(List<Integer> user_id_list, int album_id){
+        List<User_Album> userAlbumList = new ArrayList<>();
 
         for(int i=0; i<user_id_list.size(); i++){
             User_Album userAlbum = User_Album.builder()
@@ -40,12 +42,9 @@ public class User_AlbumService {
                     .album(albumJPARepository.findById(album_id).get())
                     .build();
 
-            userAlbumJPARepository.save(userAlbum);
-
-            User_Album_list.add(new User_AlbumResponse.FindAllDTO(userAlbumJPARepository.findById(userAlbum.getUser_album_id()).get()));
+            userAlbumList.add(userAlbum);
         }
-
-        return User_Album_list;
+        userAlbumJPARepository.saveAll(userAlbumList);
     }
 
 }
