@@ -15,10 +15,13 @@ public class Pose {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(name = "image", nullable = false)
     private String image;
+
     @Column(name = "hashtag")
     private String hashtag;
+
     @Column(name = "people_count", nullable = false)
     private int peopleCount;
 
