@@ -29,7 +29,7 @@ public class AlbumResponse {
         public FindByIdDTO(Optional<Album> album) {
             this.album_id = album.get().getAlbum_id();
             this.album_name = album.get().getAlbum_name();
-            this.album_created_at = album.get().getAlbum_created_at();
+//            this.album_created_at = album.get().getAlbum_created_at();
         }
     }
 }
