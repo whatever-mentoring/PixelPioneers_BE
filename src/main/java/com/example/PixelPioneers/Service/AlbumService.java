@@ -4,13 +4,9 @@ import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.Photo_AlbumResponse;
 
 import com.example.PixelPioneers.entity.Album;
-import com.example.PixelPioneers.entity.User_Photo;
 import com.example.PixelPioneers.repository.AlbumJPARepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

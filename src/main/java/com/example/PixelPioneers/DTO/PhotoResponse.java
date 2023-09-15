@@ -1,12 +1,12 @@
 package com.example.PixelPioneers.DTO;
 
-import com.example.PixelPioneers.entity.User_Photo;
+import com.example.PixelPioneers.entity.Photo;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Optional;
 
-public class User_PhotoResponse {
+public class PhotoResponse {
     @Getter
     @Setter
     public static class FindAllDTO {
@@ -16,7 +16,7 @@ public class User_PhotoResponse {
         private int album_id;
         private String album_name;
 
-        public FindAllDTO(User_Photo userPhoto) {
+        public FindAllDTO(Photo userPhoto) {
             this.photo_id = userPhoto.getPhoto_id();
             this.photo_image = userPhoto.getPhoto_image();
 
@@ -37,7 +37,7 @@ public class User_PhotoResponse {
         private int album_id;
         private String album_name;
 
-        public FindByIdDTO(Optional<User_Photo> photo) {
+        public FindByIdDTO(Optional<Photo> photo) {
             this.photo_id = photo.get().getPhoto_id();
             this.photo_name = photo.get().getPhoto_name();
             this.photo_image = photo.get().getPhoto_image();

@@ -9,7 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "user_photo")
-public class User_Photo {
+public class Photo {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -35,7 +35,7 @@ public class User_Photo {
     private Album album;
 
     @Builder(toBuilder = true)
-    public User_Photo(int photo_id, String photo_name, String photo_image, int photo_people_count, String photo_created_at, int photo_public, Album album) {
+    public Photo(int photo_id, String photo_name, String photo_image, int photo_people_count, String photo_created_at, int photo_public, Album album) {
         this.photo_id = photo_id;
         this.photo_name = photo_name;
         this.photo_image = photo_image;
