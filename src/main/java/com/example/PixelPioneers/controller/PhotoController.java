@@ -1,7 +1,7 @@
 package com.example.PixelPioneers.controller;
 
 import com.example.PixelPioneers.DTO.PhotoResponse;
-import com.example.PixelPioneers.VO.PhotoVO;
+import com.example.PixelPioneers.DTO.PhotoRequest;
 import com.example.PixelPioneers.Service.PhotoService;
 import com.example.PixelPioneers.entity.Photo;
 import com.example.PixelPioneers.repository.AlbumJPARepository;
@@ -45,16 +45,16 @@ public class PhotoController {
     @PostMapping(value = "/albums/{album_id}/photo",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value="사진첩에 사진 등록", notes = "{album_id}에 해당하는 사진첩에 사진을 등록합니다.")
     @ApiImplicitParam(name = "album_id",value = "사진첩 아이디")
-    public ResponseEntity<?> album_insert_photo(@ModelAttribute PhotoVO photoVO, @PathVariable int album_id) throws Exception {
+    public ResponseEntity<?> album_insert_photo(@ModelAttribute PhotoRequest photoRequest, @PathVariable int album_id) throws Exception {
 
-        Photo new_photo = Photo.builder().name(photoVO.getName())
-                .peopleCount(photoVO.getPeople_count())
-                .created_at(photoVO.getCreated_at())
-                .is_public(photoVO.getIs_public())
+        Photo new_photo = Photo.builder().name(photoRequest.getName())
+                .peopleCount(photoRequest.getPeople_count())
+                .created_at(photoRequest.getCreated_at())
+                .is_public(photoRequest.getIs_public())
                 .album(albumJPARepository.findById(album_id).get())
                 .build();
 
-        PhotoResponse.FindByIdDTO responseDTO = photoService.create_new(new_photo, photoVO.getFile());
+        PhotoResponse.FindByIdDTO responseDTO = photoService.create_new(new_photo, photoRequest.getFile());
 
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
 

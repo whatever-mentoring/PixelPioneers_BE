@@ -24,18 +24,25 @@ public class PoseService {
      */
     public PoseResponse.PoseListDTO userPoseListByPeopleCount(int peopleCount) {
         List<Pose> responseDTOs = new ArrayList<>();
+        List<Pose> userPoses = new ArrayList<>();
 
-        List<Pose> poses = poseJPARepository.findAll(); // List<Pose> poses = {유저가 올린 사진을 가져오는 코드} 로 수정하기
+        List<Pose> poses = poseJPARepository.findAll();
+
+        for(Pose pose : poses){
+            if(pose.getPhoto().getAlbum().getCreated_by == 1){ // 1이면 유저
+                userPoses.add(pose);
+            }
+        }
 
         if(peopleCount == 0){
-            for(Pose pose : poses){
+            for(Pose pose : userPoses){
                 if(pose.getPhoto().getIs_public() == 1){
                     responseDTOs.add(pose);
                 }
             }
         }
         else{
-            for(Pose pose : poses){
+            for(Pose pose : userPoses){
                 if(pose.getPhoto().getIs_public() == 1 && pose.getPeopleCount() == peopleCount) {
                     responseDTOs.add(pose);
                 }
@@ -52,16 +59,22 @@ public class PoseService {
      */
     public PoseResponse.PoseListDTO adminPoseListByPeopleCount(int peopleCount) {
         List<Pose> responseDTOs = new ArrayList<>();
+        List<Pose> adminPoses = new ArrayList<>();
 
-        List<Pose> poses = poseJPARepository.findAll(); // List<Pose> poses = {관리자가 올린 사진을 가져오는 코드} 로 수정하기
+        List<Pose> poses = poseJPARepository.findAll();
+        for(Pose pose : poses){
+            if(pose.getPhoto().getAlbum().getCreated_by() == 0) { // 0이면 관리자
+                adminPoses.add(pose);
+            }
+        }
 
         if(peopleCount == 0){
-            for(Pose pose : poses){
+            for(Pose pose : adminPoses){
                     responseDTOs.add(pose);
             }
         }
         else{
-            for(Pose pose : poses){
+            for(Pose pose : adminPoses){
                 if(pose.getPeopleCount() == peopleCount){
                     responseDTOs.add(pose);
                 }

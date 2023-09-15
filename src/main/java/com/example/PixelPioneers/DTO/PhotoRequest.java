@@ -1,10 +1,10 @@
-package com.example.PixelPioneers.VO;
+package com.example.PixelPioneers.DTO;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
-public class PhotoVO {
+public class PhotoRequest {
 
     private String name;
 
