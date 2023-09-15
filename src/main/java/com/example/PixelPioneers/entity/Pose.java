@@ -17,6 +17,7 @@ public class Pose {
     private int id;
 
     @Column(name = "people_count")
+
     private int peopleCount;
 
     @Column(length = 500)

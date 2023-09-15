@@ -2,7 +2,7 @@ package com.example.PixelPioneers.controller;
 
 import com.example.PixelPioneers.DTO.PoseResponse;
 import com.example.PixelPioneers.Service.PoseService;
-import com.example.PixelPioneers.utils.ApiUtils;
+import com.example.PixelPioneers.config.utils.ApiUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = {"포즈 API"})
 @RequiredArgsConstructor
 @RestController
-public class PoseController {
+public class PoseRestController {
     private final PoseService poseService;
 
     // 사용자가 전체공개로 등록한 사진 중, 입력한 인원수에 해당하는 사진 조회

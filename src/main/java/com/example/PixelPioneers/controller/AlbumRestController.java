@@ -4,7 +4,7 @@ import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.Photo_AlbumResponse;
 import com.example.PixelPioneers.Service.AlbumService;
 import com.example.PixelPioneers.entity.Album;
-import com.example.PixelPioneers.utils.ApiUtils;
+import com.example.PixelPioneers.config.utils.ApiUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -18,14 +18,13 @@ import java.util.List;
 @Api(tags = {"사진첩 API"})
 @RequiredArgsConstructor
 @RestController
-public class AlbumController {
+public class AlbumRestController {
 
     private final AlbumService albumService;
 
     @GetMapping("/albums")
-    @ApiOperation(value="사진첩 목록 전체 조회", notes = "사진첩 목록 전체를 반환합니다.")
-    public ResponseEntity<?> findAll() {
-        List<AlbumResponse.FindAllDTO> responseDTOs = albumService.findAll();
+    public ResponseEntity<?> albumsList(@RequestParam(value = "page", defaultValue = "0") Integer page) {
+        List<AlbumResponse.FindAllDTO> responseDTOs = albumService.findAll(page);
 
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
@@ -39,8 +38,7 @@ public class AlbumController {
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 
-    @PostMapping("/album")
-    @ApiOperation(value="사진첩 등록", notes = "사진첩을 등록합니다.")
+    @PostMapping("/albums")
     public ResponseEntity<?> add(@RequestBody Album album){
         AlbumResponse.FindByIdDTO responseDTO = albumService.create(album);
         //return ResponseEntity.ok(ApiUtils.success(responseDTO));  --> 등록한 값 확인용

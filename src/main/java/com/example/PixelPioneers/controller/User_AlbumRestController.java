@@ -2,7 +2,7 @@ package com.example.PixelPioneers.controller;
 
 import com.example.PixelPioneers.DTO.User_AlbumResponse;
 import com.example.PixelPioneers.Service.User_AlbumService;
-import com.example.PixelPioneers.utils.ApiUtils;
+import com.example.PixelPioneers.config.utils.ApiUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +16,7 @@ import java.util.List;
 @Api(tags = {"사진첩 사용자 API"})
 @RequiredArgsConstructor
 @RestController
-public class User_AlbumController {
+public class User_AlbumRestController {
 
     private final User_AlbumService userAlbumService;
 

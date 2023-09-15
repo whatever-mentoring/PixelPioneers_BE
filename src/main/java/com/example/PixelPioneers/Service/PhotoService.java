@@ -2,6 +2,7 @@ package com.example.PixelPioneers.Service;
 
 import com.example.PixelPioneers.DTO.PhotoResponse;
 import com.example.PixelPioneers.entity.Pose;
+
 import com.example.PixelPioneers.entity.Photo;
 import com.example.PixelPioneers.repository.PhotoJPARepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 import java.util.stream.Collectors;
-
 
 
 @RequiredArgsConstructor
