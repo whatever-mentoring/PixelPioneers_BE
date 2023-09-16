@@ -10,7 +10,7 @@ import java.time.LocalDate;
 //@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "photo")
+@Table(name = "user_photo")
 public class Photo {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +32,9 @@ public class Photo {
 
     @Column(nullable = false)
     private boolean open;
+
+    @Column(nullable = false)
+    private int photo_public;
 
     @ManyToOne
     @JoinColumn(name ="album_id")

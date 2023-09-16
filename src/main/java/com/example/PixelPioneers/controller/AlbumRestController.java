@@ -9,6 +9,9 @@ import com.example.PixelPioneers.config.auth.CustomUserDetails;
 import com.example.PixelPioneers.entity.Album;
 import com.example.PixelPioneers.config.utils.ApiUtils;
 import com.example.PixelPioneers.entity.Photo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +22,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 
+@Api(tags = {"사진첩 API"})
 @RequiredArgsConstructor
 @RestController
 public class AlbumRestController {

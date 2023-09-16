@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Transactional(readOnly = true)
+
 @RequiredArgsConstructor
 @Service
 public class AlbumService {
@@ -65,6 +65,7 @@ public class AlbumService {
         List<AlbumResponse.AlbumListDTO> responseDTOs = pageContent.getContent().stream()
                 .map(album -> new AlbumResponse.AlbumListDTO(album))
                 .collect(Collectors.toList());
+
         return responseDTOs;
     }
 

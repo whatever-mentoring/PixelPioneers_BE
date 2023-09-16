@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-@Transactional(readOnly = true)
+
 @RequiredArgsConstructor
 @Service
 public class User_AlbumService {
