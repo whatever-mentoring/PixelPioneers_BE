@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ public class Album {
     @Id
     private int id;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 50, nullable = false)
     private String name;
 
     @Column
@@ -29,7 +31,7 @@ public class Album {
 
     @CreationTimestamp
     @Column
-    private LocalDateTime created_at;
+    private LocalDate created_at;
 
 //    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
 //    private List<User_Album> user_albumList = new ArrayList<>();
@@ -43,4 +45,10 @@ public class Album {
         this.name = name;
         this.image = image;
     }
+
+    public void update(String name, String image) {
+        this.name = name;
+        this.image = image;
+    }
+
 }
