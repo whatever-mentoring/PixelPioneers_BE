@@ -2,14 +2,10 @@ package com.example.PixelPioneers.controller;
 
 import com.example.PixelPioneers.DTO.PoseResponse;
 import com.example.PixelPioneers.Service.PoseService;
-<<<<<<< HEAD:src/main/java/com/example/PixelPioneers/controller/PoseRestController.java
 import com.example.PixelPioneers.config.utils.ApiUtils;
-=======
-import com.example.PixelPioneers.utils.ApiUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
->>>>>>> develop:src/main/java/com/example/PixelPioneers/controller/PoseController.java
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
