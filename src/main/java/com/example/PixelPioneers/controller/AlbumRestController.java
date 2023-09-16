@@ -1,14 +1,21 @@
 package com.example.PixelPioneers.controller;
 
+import com.example.PixelPioneers.DTO.AlbumRequest;
 import com.example.PixelPioneers.DTO.AlbumResponse;
+import com.example.PixelPioneers.DTO.PhotoResponse;
 import com.example.PixelPioneers.DTO.Photo_AlbumResponse;
 import com.example.PixelPioneers.Service.AlbumService;
+import com.example.PixelPioneers.config.auth.CustomUserDetails;
 import com.example.PixelPioneers.entity.Album;
 import com.example.PixelPioneers.config.utils.ApiUtils;
+import com.example.PixelPioneers.entity.Photo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,32 +25,33 @@ public class AlbumRestController {
 
     private final AlbumService albumService;
 
-    @GetMapping("/albums")
-    public ResponseEntity<?> albumsList(@RequestParam(value = "page", defaultValue = "0") Integer page) {
-        List<AlbumResponse.FindAllDTO> responseDTOs = albumService.findAll(page);
-        return ResponseEntity.ok(ApiUtils.success(responseDTOs));
-    }
-
-    @GetMapping("/albums/{album_id}")
-    public ResponseEntity<?> findById(@PathVariable int album_id) {
-        AlbumResponse.FindByIdDTO responseDTO = albumService.findById(album_id);
-        return ResponseEntity.ok(ApiUtils.success(responseDTO));
-    }
-
+    /**
+     * 사진첩 생성
+     */
     @PostMapping("/albums")
-    public ResponseEntity<?> add(@RequestBody Album album){
-        AlbumResponse.FindByIdDTO responseDTO = albumService.create(album);
-        // return ResponseEntity.ok(ApiUtils.success(responseDTO));  --> 등록한 값 확인용
+    public ResponseEntity<?> albumAdd(@RequestBody @Valid AlbumRequest.AlbumAddDTO requestDTO, Errors errors, @AuthenticationPrincipal CustomUserDetails userDetails){
+        albumService.addAlbum(requestDTO, userDetails.getUser());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-    // 해당 album에 들어있는 사진 전체 조회
-    @GetMapping("/albums/{album_id}/photos")
-    public ResponseEntity<?> Photo_FK_find(@PathVariable int album_id){
-        List<Photo_AlbumResponse.FindAllDTO> responseDTOs = albumService.Photo_FindBy_Fk(album_id);
-        HashMap<Integer, List<Photo_AlbumResponse.FindAllDTO>> map = new HashMap<Integer, List<Photo_AlbumResponse.FindAllDTO>>();
-        // 해당 앨범에 들어있는 사진 개수도 함께 전송
-        map.put(responseDTOs.size(), responseDTOs);
-        return ResponseEntity.ok(ApiUtils.success(map));
+    /**
+     * 로그인 한 사용자의 사진첩 전체 조회
+     */
+    @GetMapping("/albums")
+    public ResponseEntity<?> albumsListByUser(@RequestParam(value = "page", defaultValue = "0") Integer page, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<AlbumResponse.AlbumListDTO> responseDTOs = albumService.findAlbumListByUser(userDetails.getUser(), page);
+        return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
+
+    /**
+     * 로그인 한 사용자의 사진첩 1개의 사진 전체 조회
+     */
+    @GetMapping("/albums/{id}")
+    public ResponseEntity<?> photoList(@PathVariable int id, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+        List<PhotoResponse.PhotoListDTO> responseDTOs = albumService.findPhotoList(id, page);
+        return ResponseEntity.ok(ApiUtils.success(responseDTOs));
+    }
+
+//    @GetMapping("/albums/{id}/members")
+//    public ResponseEntity<?> memberListByAlbum (@)
 }
