@@ -1,9 +1,6 @@
 package com.example.PixelPioneers.Service;
 
-import com.example.PixelPioneers.DTO.AlbumRequest;
-import com.example.PixelPioneers.DTO.AlbumResponse;
-import com.example.PixelPioneers.DTO.PhotoResponse;
-import com.example.PixelPioneers.DTO.Photo_AlbumResponse;
+import com.example.PixelPioneers.DTO.*;
 
 import com.example.PixelPioneers.config.errors.exception.Exception400;
 import com.example.PixelPioneers.config.errors.exception.Exception404;
@@ -56,13 +53,13 @@ public class AlbumService {
         }
     }
 
-    public List<AlbumResponse.AlbumListDTO> findAlbumListByUser(User user, int page) {
+    public List<AlbumResponse.AlbumDTO> findAlbumListByUser(User user, int page) {
         Pageable pageable = PageRequest.of(page, 10);
 
-        Page<Album> pageContent = user_albumJPARepository.findByUserId(user.getId(), pageable);
+        Page<Album> pageContent = user_albumJPARepository.findAlbumByUserId(user.getId(), pageable);
 
-        List<AlbumResponse.AlbumListDTO> responseDTOs = pageContent.getContent().stream()
-                .map(album -> new AlbumResponse.AlbumListDTO(album))
+        List<AlbumResponse.AlbumDTO> responseDTOs = pageContent.getContent().stream()
+                .map(album -> new AlbumResponse.AlbumDTO(album))
                 .collect(Collectors.toList());
 
         return responseDTOs;
@@ -77,6 +74,43 @@ public class AlbumService {
                 .map(photo -> new PhotoResponse.PhotoListDTO(photo))
                 .collect(Collectors.toList());
         return responseDTOs;
+    }
+
+    @Transactional
+    public AlbumResponse.AlbumDTO updateAlbum(int id, AlbumRequest.AlbumUpdateDTO updateDTO) {
+        Album album = albumJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("사진첩이 존재하지 않습니다."));
+
+        album.update(updateDTO.getName(), updateDTO.getImage());
+        return new AlbumResponse.AlbumDTO(album);
+    }
+
+    public List<UserResponse.UserListDTO> findAlbumMemberByAlbum(int id) {
+        List<User> albumMemberList = user_albumJPARepository.findUserByAlbum(id);
+
+        List<UserResponse.UserListDTO> responseDTOs = albumMemberList.stream()
+                .map(user -> new UserResponse.UserListDTO(user))
+                .collect(Collectors.toList());
+        return responseDTOs;
+    }
+
+    public void addAlbumMember(int id, AlbumRequest.AlbumMemberUpdateDTO updateDTO) {
+        Album album = albumJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("사진첩이 존재하지 않습니다."));
+
+        List<User_Album> user_albumList = new ArrayList<>();
+        for (int userId: updateDTO.getUserIdList()) {
+            User user = userJPARepository.findById(userId)
+                    .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
+            User_Album newUser_Album = User_Album.builder().user(user).album(album).build();
+            user_albumList.add(newUser_Album);
+        }
+
+        user_albumJPARepository.saveAll(user_albumList);
+    }
+
+    public void deleteAlbumMember(int id, User sessionUser) {
+        user_albumJPARepository.deleteByUserIdAndAlbumId(id, sessionUser.getId());
     }
 
 

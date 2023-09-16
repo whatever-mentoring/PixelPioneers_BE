@@ -25,7 +25,7 @@ public class User {
     @Column(length = 256, nullable = false)
     private String password;
 
-    @Column(length = 16, nullable = false, unique = true)
+    @Column(length = 50, nullable = false, unique = true)
     private String nickname;
 
     @Column
@@ -34,8 +34,8 @@ public class User {
     @Column
     private String role;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<User_Album> user_albumList = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+//    private List<User_Album> user_albumList = new ArrayList<>();
 
     @Builder
     public User(int id, String email, String password, String nickname, String image, String role){

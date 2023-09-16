@@ -17,10 +17,10 @@ public class Photo {
     @Id
     private int id;
 
-    @Column(length = 500, nullable = false)
+    @Column(length = 50, nullable = false)
     private String name;
 
-    @Column(length = 500, nullable = false)
+    @Column(nullable = false)
     private String image;
 
     @Column(name = "people_count", nullable = false)

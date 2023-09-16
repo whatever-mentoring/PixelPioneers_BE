@@ -1,10 +1,8 @@
 package com.example.PixelPioneers.controller;
 
-import com.example.PixelPioneers.DTO.AlbumRequest;
-import com.example.PixelPioneers.DTO.AlbumResponse;
-import com.example.PixelPioneers.DTO.PhotoResponse;
-import com.example.PixelPioneers.DTO.Photo_AlbumResponse;
+import com.example.PixelPioneers.DTO.*;
 import com.example.PixelPioneers.Service.AlbumService;
+import com.example.PixelPioneers.Service.UserService;
 import com.example.PixelPioneers.config.auth.CustomUserDetails;
 import com.example.PixelPioneers.entity.Album;
 import com.example.PixelPioneers.config.utils.ApiUtils;
@@ -42,8 +40,8 @@ public class AlbumRestController {
      * 로그인 한 사용자의 사진첩 전체 조회
      */
     @GetMapping("/albums")
-    public ResponseEntity<?> albumsListByUser(@RequestParam(value = "page", defaultValue = "0") Integer page, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<AlbumResponse.AlbumListDTO> responseDTOs = albumService.findAlbumListByUser(userDetails.getUser(), page);
+    public ResponseEntity<?> albumListByUser(@RequestParam(value = "page", defaultValue = "0") Integer page, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<AlbumResponse.AlbumDTO> responseDTOs = albumService.findAlbumListByUser(userDetails.getUser(), page);
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 
@@ -56,6 +54,39 @@ public class AlbumRestController {
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 
-//    @GetMapping("/albums/{id}/members")
-//    public ResponseEntity<?> memberListByAlbum (@)
+    /**
+     * 1개의 사진첩 수정
+     */
+    @PutMapping("/albums/{id}")
+    public ResponseEntity<?> albumUpdate(@PathVariable int id, @RequestBody @Valid AlbumRequest.AlbumUpdateDTO updateDTO, Errors errors) {
+        AlbumResponse.AlbumDTO responseDTO = albumService.updateAlbum(id, updateDTO);
+        return ResponseEntity.ok(ApiUtils.success(responseDTO));
+    }
+
+    /**
+     * 1개의 사진첩을 공유하는 사용자 전체 조회
+     */
+    @GetMapping("/albums/{id}/members")
+    public ResponseEntity<?> albumMemberList(@PathVariable int id) {
+        List<UserResponse.UserListDTO> responseDTOs = albumService.findAlbumMemberByAlbum(id);
+        return ResponseEntity.ok(ApiUtils.success(responseDTOs));
+    }
+
+    /**
+     * 1개의 사진첩을 공유하는 사용자 추가
+     */
+    @PostMapping("/albums/{id}/members")
+    public ResponseEntity<?> albumMemberAdd(@PathVariable int id, @RequestBody @Valid AlbumRequest.AlbumMemberUpdateDTO updateDTO, Errors errors) {
+        albumService.addAlbumMember(id, updateDTO);
+        return ResponseEntity.ok((ApiUtils.success(null)));
+    }
+
+    /**
+     * 사용자가 사진첩에서 나가기
+     */
+    @DeleteMapping("/albums/{id}/members")
+    public ResponseEntity<?> albumMemberDelete(@PathVariable int id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        albumService.deleteAlbumMember(id, userDetails.getUser());
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
 }

@@ -20,4 +20,21 @@ public class AlbumRequest {
         @NotNull
         private List<Integer> userIdList;
     }
+
+    @Getter
+    @Setter
+    public static class AlbumUpdateDTO {
+        @NotNull
+        private String name;
+
+        @NotNull
+        private String image;
+    }
+
+    @Getter
+    @Setter
+    public static class AlbumMemberUpdateDTO {
+        @NotNull
+        private List<Integer> userIdList;
+    }
 }
