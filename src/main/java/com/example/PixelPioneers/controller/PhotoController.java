@@ -48,9 +48,9 @@ public class PhotoController {
     public ResponseEntity<?> album_insert_photo(@ModelAttribute PhotoRequest photoRequest, @PathVariable int album_id) throws Exception {
 
         Photo new_photo = Photo.builder().name(photoRequest.getName())
-                .peopleCount(photoRequest.getPeople_count())
-                .created_at(photoRequest.getCreated_at()) // LocalDate 받는법??
-                .is_public(photoRequest.getIs_public())
+                .peopleCount(photoRequest.getPeopleCount())
+                //.created_at(photoRequest.getCreated_at())  --> LocalDate 받는법??
+                .open(photoRequest.isOpen())
                 .album(albumJPARepository.findById(album_id).get())
                 .build();
 
