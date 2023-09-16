@@ -9,14 +9,15 @@ import java.util.Optional;
 public class AlbumResponse {
     @Getter
     @Setter
-    public static class AlbumListDTO {
+    public static class AlbumDTO {
         private int id;
         private String name;
         private String image;
 
-        public AlbumListDTO(Album album) {
+        public AlbumDTO(Album album) {
             this.id = album.getId();
             this.name = album.getName();
+            this.image = album.getImage();
         }
     }
 
