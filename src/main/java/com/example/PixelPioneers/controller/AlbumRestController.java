@@ -22,13 +22,13 @@ public class AlbumRestController {
 
     private final AlbumService albumService;
 
-    @GetMapping("/albums")
+    /*@GetMapping("/albums")
     public ResponseEntity<?> albumsList(@RequestParam(value = "page", defaultValue = "0") Integer page) {
         List<AlbumResponse.FindAllDTO> responseDTOs = albumService.findAll(page);
 
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
-
+*/
     @GetMapping("/albums/{album_id}")
     @ApiOperation(value="사진첩 조회", notes = "album_id에 해당하는 사진첩 정보를 반환합니다.")
     @ApiImplicitParam(name = "album_id",value = "사진첩 아이디")

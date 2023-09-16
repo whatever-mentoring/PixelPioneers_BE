@@ -28,21 +28,21 @@ public class PoseService {
 
         List<Pose> poses = poseJPARepository.findAll();
 
-        for(Pose pose : poses){
+        /*for(Pose pose : poses){
             if(pose.getPhoto().getAlbum().getCreated_by == 1){ // 1이면 유저
                 userPoses.add(pose);
             }
-        }
+        }*/
 
         if(peopleCount == 0){
-            for(Pose pose : userPoses){
+            for(Pose pose : poses){
                 if(pose.getPhoto().getIs_public() == 1){
                     responseDTOs.add(pose);
                 }
             }
         }
         else{
-            for(Pose pose : userPoses){
+            for(Pose pose : poses){
                 if(pose.getPhoto().getIs_public() == 1 && pose.getPeopleCount() == peopleCount) {
                     responseDTOs.add(pose);
                 }
@@ -62,19 +62,19 @@ public class PoseService {
         List<Pose> adminPoses = new ArrayList<>();
 
         List<Pose> poses = poseJPARepository.findAll();
-        for(Pose pose : poses){
+        /*for(Pose pose : poses){
             if(pose.getPhoto().getAlbum().getCreated_by() == 0) { // 0이면 관리자
                 adminPoses.add(pose);
             }
-        }
+        }*/
 
         if(peopleCount == 0){
-            for(Pose pose : adminPoses){
+            for(Pose pose : poses){
                     responseDTOs.add(pose);
             }
         }
         else{
-            for(Pose pose : adminPoses){
+            for(Pose pose : poses){
                 if(pose.getPeopleCount() == peopleCount){
                     responseDTOs.add(pose);
                 }
