@@ -15,7 +15,7 @@ public class User_Album {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private int user_album_id;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name ="user_id")
@@ -26,8 +26,8 @@ public class User_Album {
     private Album album;
 
     @Builder
-    public User_Album(int user_album_id, User user, Album album) {
-        this.user_album_id = user_album_id;
+    public User_Album(int id, User user, Album album) {
+        this.id = id;
         this.user = user;
         this.album = album;
     }

@@ -19,7 +19,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int user_id;
+    private int id;
 
     @Column(length = 50, nullable = false, unique = true)
     private String email;
@@ -28,24 +28,24 @@ public class User {
     private String password;
 
     @Column(length = 16, nullable = false, unique = true)
-    private String user_nickname;
+    private String nickname;
 
     @Column
-    private String user_image;
+    private String image;
 
     @Column
-    private String user_role;
+    private String role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<User_Album> user_albums = new ArrayList<>();
+    private List<User_Album> user_albumList = new ArrayList<>();
 
     @Builder
-    public User(int user_id, String email, String password, String user_nickname, String user_image, String user_role){
-        this.user_id = user_id;
+    public User(int id, String email, String password, String nickname, String image, String role){
+        this.id = id;
         this.email = email;
         this.password = password;
-        this.user_nickname = user_nickname;
-        this.user_image = user_image;
-        this.user_role = user_role;
+        this.nickname = nickname;
+        this.image = image;
+        this.role = role;
     }
 }

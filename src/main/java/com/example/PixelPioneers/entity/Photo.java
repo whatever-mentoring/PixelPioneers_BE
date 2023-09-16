@@ -1,8 +1,10 @@
 package com.example.PixelPioneers.entity;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Getter
 //@Setter
@@ -13,31 +15,36 @@ public class Photo {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private int photo_id;
+    private int id;
 
     @Column(length = 500, nullable = false)
-    private String photo_name;
+    private String name;
 
     @Column(length = 500, nullable = false)
-    private String photo_image;
+    private String image;
 
     @Column(nullable = false)
-    private int photo_people_count;
+    private int peopleCount;
 
     @Column(length = 255, nullable = false)
-    private String photo_created_at;
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    private LocalDate created_at;
+
+    @Column(nullable = false)
+    private boolean open;
 
     @ManyToOne
     @JoinColumn(name ="album_id")
     private Album album;
 
-    @Builder(toBuilder = true)
-    public Photo(int photo_id, String photo_name, String photo_image, int photo_people_count, String photo_created_at, Album album) {
-        this.photo_id = photo_id;
-        this.photo_name = photo_name;
-        this.photo_image = photo_image;
-        this.photo_people_count = photo_people_count;
-        this.photo_created_at = photo_created_at;
+    @Builder
+    public Photo(int id, String name, String image, int peopleCount, LocalDate created_at, boolean open, Album album) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+        this.peopleCount = peopleCount;
+        this.created_at = created_at;
+        this.open = open;
         this.album = album;
     }
 }

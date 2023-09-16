@@ -19,28 +19,28 @@ public class Album {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private int album_id;
+    private int id;
 
     @Column(length = 10, nullable = false)
-    private String album_name;
+    private String name;
 
     @Column
-    private String album_image;
+    private String image;
 
     @CreationTimestamp
     @Column
-    private LocalDateTime album_created_at;
+    private LocalDateTime created_at;
+
+//    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
+//    private List<User_Album> user_albumList = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
 //    private List<Photo> photos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
-    private List<User_Album> user_albums = new ArrayList<>();
-
     @Builder
-    public Album(int album_id, String album_name, String album_image){
-        this.album_id = album_id;
-        this.album_name = album_name;
-        this.album_image = album_image;
+    public Album(int id, String name, String image){
+        this.id = id;
+        this.name = name;
+        this.image = image;
     }
 }
