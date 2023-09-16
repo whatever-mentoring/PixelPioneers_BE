@@ -31,17 +31,17 @@ public class UserRequest {
 
         @NotEmpty
         @Size(min = 1, max = 8, message = "8자 이내로 입력해주세요.")
-        private String user_nickname;
+        private String nickname;
 
-        private String user_image;
+        private String image;
 
         public User toEntity() {
             return User.builder()
                     .email(email)
                     .password(password)
-                    .user_nickname(user_nickname)
-                    .user_image(user_image)
-                    .user_role("ROLE_USER")
+                    .nickname(nickname)
+                    .image(image)
+                    .role("ROLE_USER")
                     .build();
         }
     }

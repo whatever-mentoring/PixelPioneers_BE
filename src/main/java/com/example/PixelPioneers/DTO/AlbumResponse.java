@@ -9,27 +9,28 @@ import java.util.Optional;
 public class AlbumResponse {
     @Getter
     @Setter
-    public static class FindAllDTO {
-        private int album_id;
-        private String album_name;
+    public static class AlbumListDTO {
+        private int id;
+        private String name;
+        private String image;
 
-        public FindAllDTO(Album album) {
-            this.album_id = album.getAlbum_id();
-            this.album_name = album.getAlbum_name();
+        public AlbumListDTO(Album album) {
+            this.id = album.getId();
+            this.name = album.getName();
         }
     }
 
-    @Getter
-    @Setter
-    public static class FindByIdDTO {
-        private int album_id;
-        private String album_name;
-        private String album_created_at;
-
-        public FindByIdDTO(Optional<Album> album) {
-            this.album_id = album.get().getAlbum_id();
-            this.album_name = album.get().getAlbum_name();
-//            this.album_created_at = album.get().getAlbum_created_at();
-        }
-    }
+//    @Getter
+//    @Setter
+//    public static class AlbumDetailDTO {
+//        private int id;
+//        private String name;
+//        private String image;
+//
+//        public AlbumDetailDTO(Optional<Album> album) {
+//            this.id = album.get().getId();
+//            this.name = album.get().name();
+////            this.album_created_at = album.get().getAlbum_created_at();
+//        }
+//    }
 }

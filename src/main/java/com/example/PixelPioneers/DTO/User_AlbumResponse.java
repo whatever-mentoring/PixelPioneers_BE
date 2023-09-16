@@ -13,9 +13,9 @@ public class User_AlbumResponse {
         private int user_id;
 
         public FindAllDTO(User_Album userAlbum) {
-            this.user_album_id = userAlbum.getUser_album_id();
-            this.album_id = userAlbum.getAlbum().getAlbum_id();
-            this.user_id = userAlbum.getUser().getUser_id();
+            this.user_album_id = userAlbum.getId();
+            this.album_id = userAlbum.getAlbum().getId();
+            this.user_id = userAlbum.getUser().getId();
         }
     }
 }
