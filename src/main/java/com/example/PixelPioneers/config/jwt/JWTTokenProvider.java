@@ -21,8 +21,8 @@ public class JWTTokenProvider {
         String jwt = JWT.create()
                 .withSubject(user.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXP))
-                .withClaim("user_id", user.getUser_id())
-                .withClaim("user_role", user.getUser_role())
+                .withClaim("user_id", user.getId())
+                .withClaim("user_role", user.getRole())
                 .sign(Algorithm.HMAC512(SECRET));
         return TOKEN_PREFIX + jwt;
     }
