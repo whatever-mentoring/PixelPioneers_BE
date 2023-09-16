@@ -3,6 +3,8 @@ package com.example.PixelPioneers.DTO;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+
 @Data
 public class PhotoRequest {
 
@@ -10,7 +12,7 @@ public class PhotoRequest {
 
     private int peopleCount;
 
-    private String created_at;
+    private LocalDate created_at;
 
     private boolean open;
 

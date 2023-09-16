@@ -49,7 +49,7 @@ public class PhotoController {
 
         Photo new_photo = Photo.builder().name(photoRequest.getName())
                 .peopleCount(photoRequest.getPeopleCount())
-                //.created_at(photoRequest.getCreated_at())  --> LocalDate 받는법??
+                .created_at(photoRequest.getCreated_at())
                 .open(photoRequest.isOpen())
                 .album(albumJPARepository.findById(album_id).get())
                 .build();
