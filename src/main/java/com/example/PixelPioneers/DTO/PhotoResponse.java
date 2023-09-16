@@ -10,6 +10,22 @@ import java.util.Optional;
 public class PhotoResponse {
     @Getter
     @Setter
+    public static class FindAllDTO {
+        private int id;
+        private String image;
+        private int album_id;
+        private String album_name;
+
+        public FindAllDTO(Photo photo) {
+            this.id = photo.getId();
+            this.image = photo.getImage();
+            this.album_id = photo.getAlbum().getId();
+            this.album_name = photo.getAlbum().getName();
+        }
+    }
+
+    @Getter
+    @Setter
     public static class PhotoListDTO {
         private int id;
         private String name;
@@ -24,25 +40,28 @@ public class PhotoResponse {
         }
     }
 
-//    @Getter
-//    @Setter
-//    public static class FindByIdDTO {
-//        private int photo_id;
-//        private String photo_name;
-//        private String photo_image;
-//        private int photo_people_count;
-//        private String photo_created_at;
-//        private int album_id;
-//        private String album_name;
-//
-//        public FindByIdDTO(Optional<Photo> photo) {
-//            this.photo_id = photo.get().getPhoto_id();
-//            this.photo_name = photo.get().getPhoto_name();
-//            this.photo_image = photo.get().getPhoto_image();
-//            this.photo_people_count = photo.get().getPhoto_people_count();
-//            this.photo_created_at = photo.get().getPhoto_created_at();
-//            this.album_id = photo.get().getAlbum().getId();
-//            this.album_name = photo.get().getAlbum().getName();
-//        }
-//    }
+    @Getter
+    @Setter
+    public static class FindByIdDTO {
+        private int id;
+        private String name;
+        private String image;
+        private int peopleCount;
+        private String created_at;
+        private boolean open;
+        private int album_id;
+        private String album_name;
+        private int pose_id;
+
+        public FindByIdDTO(Optional<Photo> photo) {
+            this.id = photo.get().getId();
+            this.name = photo.get().getName();
+            this.image = photo.get().getImage();
+            this.peopleCount = photo.get().getPeopleCount();
+            this.open = photo.get().isOpen();
+            this.album_id = photo.get().getAlbum().getId();
+            this.album_name = photo.get().getAlbum().getName();
+            this.pose_id = photo.get().getPose().getId();
+        }
+    }
 }

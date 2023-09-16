@@ -12,7 +12,6 @@ import com.example.PixelPioneers.entity.Photo;
 import com.example.PixelPioneers.entity.User;
 import com.example.PixelPioneers.entity.User_Album;
 import com.example.PixelPioneers.repository.AlbumJPARepository;
-
 import com.example.PixelPioneers.repository.PhotoJPARepository;
 import com.example.PixelPioneers.repository.UserJPARepository;
 import com.example.PixelPioneers.repository.User_AlbumJPARepository;
@@ -68,11 +67,11 @@ public class AlbumService {
 
         return responseDTOs;
     }
-
     public List<PhotoResponse.PhotoListDTO> findPhotoList(int id, int page) {
         Pageable pageable = PageRequest.of(page, 10);
 
         Page<Photo> pageContent = photoJPARepository.findByAlbumId(id, pageable);
+
 
         List<PhotoResponse.PhotoListDTO> responseDTOs = pageContent.getContent().stream()
                 .map(photo -> new PhotoResponse.PhotoListDTO(photo))

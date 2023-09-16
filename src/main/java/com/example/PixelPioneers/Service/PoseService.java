@@ -7,36 +7,80 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Transactional
+
 @RequiredArgsConstructor
 @Service
 public class PoseService {
     private final PoseJPARepository poseJPARepository;
 
-//    /**
-//     * 포즈 모아보기
-//     * 인원 수를 선택하지 않았을 경우, 포즈 전체 조회
-//     */
-//    public PoseResponse.PoseListDTO poseList() {
-//        List<Pose> responseDTOs = poseJPARepository.findAll();
-//        return new PoseResponse.PoseListDTO(responseDTOs);
-//    }
+    /**
+     * 포즈 모아보기
+     * 특정 인원수 유저 포즈 조회
+     * 반환값: Pose 리스트
+     */
+    public PoseResponse.PoseListDTO userPoseListByPeopleCount(int peopleCount) {
+        List<Pose> responseDTOs = new ArrayList<>();
+        List<Pose> userPoses = new ArrayList<>();
+
+        List<Pose> poses = poseJPARepository.findAll();
+
+        /*for(Pose pose : poses){
+            if(pose.getPhoto().getAlbum().getCreated_by == 1){ // 1이면 유저
+                userPoses.add(pose);
+            }
+        }*/
+
+        if(peopleCount == 0){
+            for(Pose pose : poses){
+                if(pose.getPhoto().isOpen() == true){
+                    responseDTOs.add(pose);
+                }
+            }
+        }
+        else{
+            for(Pose pose : poses){
+                if(pose.getPhoto().isOpen() == true && pose.getPeopleCount() == peopleCount) {
+                    responseDTOs.add(pose);
+                }
+            }
+        }
+
+        return new PoseResponse.PoseListDTO(responseDTOs);
+    }
 
     /**
      * 포즈 모아보기
-     * 인원 수를 선택했을 경우, 인원 수에 따른 포즈 전체 조회
+     * 특정 인원수 관리자 포즈 조회
+     * 반환값: Pose 리스트
      */
-    public PoseResponse.PoseListDTO poseListByPeopleCount(int peopleCount) {
-        List<Pose> responseDTOs;
-        if (peopleCount == 0) {
-            responseDTOs = poseJPARepository.findAll();
+    public PoseResponse.PoseListDTO adminPoseListByPeopleCount(int peopleCount) {
+        List<Pose> responseDTOs = new ArrayList<>();
+        List<Pose> adminPoses = new ArrayList<>();
+
+        List<Pose> poses = poseJPARepository.findAll();
+        /*for(Pose pose : poses){
+            if(pose.getPhoto().getAlbum().getCreated_by() == 0) { // 0이면 관리자
+                adminPoses.add(pose);
+            }
+        }*/
+
+        if(peopleCount == 0){
+            for(Pose pose : poses){
+                    responseDTOs.add(pose);
+            }
         }
-        else {
-            responseDTOs = poseJPARepository.findAllByPeopleCount(peopleCount);
+        else{
+            for(Pose pose : poses){
+                if(pose.getPeopleCount() == peopleCount){
+                    responseDTOs.add(pose);
+                }
+            }
         }
+
         return new PoseResponse.PoseListDTO(responseDTOs);
     }
 
@@ -44,24 +88,46 @@ public class PoseService {
      * 랜덤 포즈 조회
      * 인원 수에 따른 랜덤 포즈 개별 조회
      */
-    public PoseResponse.PoseDetailDTO randomPoseDetailByPeopleCount(int peopleCount) {
-        List<Pose> responseDTOs = poseJPARepository.findAllByPeopleCount(peopleCount);
+    public PoseResponse.PoseDTO randomPoseByPeopleCount(int peopleCount) {
+        List<Pose> responseDTOs = new ArrayList<>();
+
+        List<Pose> poses = poseJPARepository.findAll(); // List<Pose> poses = {관리자가 올린 사진을 가져오는 코드} 로 수정하기
+
+        for(Pose pose : poses){
+            if(pose.getPeopleCount() == peopleCount){
+                responseDTOs.add(pose);
+            }
+        }
 
         Random random = new Random();
         random.setSeed(System.currentTimeMillis());
-
-        int randomIndex = random.nextInt(responseDTOs.size());
+        int randomIndex = random.nextInt(poses.size());
         Pose randomPose = responseDTOs.get(randomIndex);
 
-        return new PoseResponse.PoseDetailDTO(randomPose);
+        return new PoseResponse.PoseDTO(randomPose);
     }
 
     /**
      * 포즈 모아보기
-     * 포즈 개별 조회
+     * 포즈 등록
+     * - 사진이 최초 등록된 경우 동시에 수행
      */
-    public PoseResponse.PoseDetailDTO poseDetail(int id) {
-        Pose responseDTO = poseJPARepository.findById(id).get();
-        return new PoseResponse.PoseDetailDTO(responseDTO);
+    @Transactional(readOnly = false)
+    public Pose create_new() {
+        Pose pose = Pose.builder()
+                .build();
+
+        poseJPARepository.save(pose);
+
+        return pose;
+    }
+
+    /**
+     * 포즈 모아보기
+     * 포즈 삭제
+     * - 연결된 사진이 삭제된 경우 동시에 수행
+     */
+    public void delete(int id){
+        poseJPARepository.deleteById(id);
     }
 }

@@ -16,20 +16,26 @@ public class Pose {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "image", nullable = false)
-    private String image;
+    @Column(name = "people_count")
 
-    @Column(name = "hashtag")
-    private String hashtag;
-
-    @Column(name = "people_count", nullable = false)
     private int peopleCount;
 
-    @Builder
-    public Pose(int id, String image, String hashtag, int peopleCount) {
+    @Column(length = 500)
+    private String imgURL;
+
+    @OneToOne(mappedBy = "pose")
+    private Photo photo;
+
+    @Builder(toBuilder = true)
+    public Pose(int id, int peopleCount, String imgURL, Photo photo) {
         this.id = id;
-        this.image = image;
-        this.hashtag = hashtag;
         this.peopleCount = peopleCount;
+        this.imgURL = imgURL;
+        this.photo = photo;
+    }
+
+    public void update(int peopleCount, String imgURL){
+        this.peopleCount = peopleCount;
+        this.imgURL = imgURL;
     }
 }

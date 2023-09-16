@@ -1,31 +1,18 @@
 package com.example.PixelPioneers.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.List;
-
+@Data
 public class PhotoRequest {
-    @Getter
-    @Setter
-    public static class PhotoAddDTO {
-        @NotNull
-        private String name;
 
-        @NotNull
-        private String image;
+    private String name;
 
-        @NotNull
-        private int peopleCount;
+    private int peopleCount;
 
-        @NotNull
-        @DateTimeFormat(pattern = "yyyy/MM/dd")
-        private LocalDate created_at;
+    private String created_at;
 
-        @NotNull
-        private boolean open;
-    }
+    private boolean open;
+
+    private MultipartFile file;
 }

@@ -22,30 +22,34 @@ public class PoseResponse {
         @Setter
         public class PoseDTO {
             private int id;
-            private String image;
             private int peopleCount;
+            private String imgURL;
+            private int photo_id;
+            private boolean open;
 
             public PoseDTO(Pose pose) {
                 this.id = pose.getId();
-                this.image = pose.getImage();
-                this.peopleCount = pose.getPeopleCount();
+                this.peopleCount = pose.getPhoto().getPeopleCount();
+                this.imgURL = pose.getPhoto().getImage();
+                this.photo_id = pose.getPhoto().getId();
+                this.open = pose.getPhoto().isOpen();
             }
         }
     }
 
     @Getter
     @Setter
-    public static class PoseDetailDTO {
+    public static class PoseDTO {
         private int id;
-        private String image;
-        private String hashtag;
         private int peopleCount;
+        private String imgURL;
+        private int photo_id;
 
-        public PoseDetailDTO(Pose pose) {
+        public PoseDTO(Pose pose) {
             this.id = pose.getId();
-            this.image = pose.getImage();
-            this.hashtag = pose.getHashtag();
-            this.peopleCount = pose.getPeopleCount();
+            this.peopleCount = pose.getPhoto().getPeopleCount();
+            this.imgURL = pose.getPhoto().getImage();
+            this.photo_id = pose.getPhoto().getId();
         }
     }
 }

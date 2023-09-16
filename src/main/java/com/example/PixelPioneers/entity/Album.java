@@ -1,6 +1,5 @@
 package com.example.PixelPioneers.entity;
 
-import io.swagger.annotations.ApiParam;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
