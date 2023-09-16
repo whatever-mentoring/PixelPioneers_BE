@@ -31,9 +31,9 @@ public class PhotoService {
 
     public void addPhoto(int id, PhotoRequest.PhotoAddDTO requestDTO) {
         Album album = albumJPARepository.findById(id)
-                .orElseThrow(() -> new Exception404("사진첩을 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception404("사진첩이 존재하지 않습니다."));
 
-        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(requestDTO.getImage()).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).build();
+        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(requestDTO.getImage()).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).album(album).build();
         photoJPARepository.save(newPhoto);
     }
 
