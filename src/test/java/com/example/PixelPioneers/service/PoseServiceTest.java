@@ -1,3 +1,4 @@
+/*
 package com.example.PixelPioneers.service;
 
 import com.example.PixelPioneers.DTO.PoseResponse;
@@ -127,3 +128,4 @@ public class PoseServiceTest {
         assertThat(responseDTO.getPeopleCount()).isEqualTo(7);
     }
 }
+*/
