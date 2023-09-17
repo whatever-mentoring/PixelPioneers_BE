@@ -20,18 +20,4 @@ public class AlbumResponse {
             this.image = album.getImage();
         }
     }
-
-//    @Getter
-//    @Setter
-//    public static class AlbumDetailDTO {
-//        private int id;
-//        private String name;
-//        private String image;
-//
-//        public AlbumDetailDTO(Optional<Album> album) {
-//            this.id = album.get().getId();
-//            this.name = album.get().name();
-////            this.album_created_at = album.get().getAlbum_created_at();
-//        }
-//    }
 }
