@@ -16,20 +16,13 @@ public class Pose {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "image", nullable = false)
-    private String image;
-
-    @Column(name = "hashtag")
-    private String hashtag;
-
-    @Column(name = "people_count", nullable = false)
-    private int peopleCount;
+    @OneToOne
+    @JoinColumn(name = "photo_id")
+    private Photo photo;
 
     @Builder
-    public Pose(int id, String image, String hashtag, int peopleCount) {
+    public Pose(int id, Photo photo) {
         this.id = id;
-        this.image = image;
-        this.hashtag = hashtag;
-        this.peopleCount = peopleCount;
+        this.photo = photo;
     }
 }
