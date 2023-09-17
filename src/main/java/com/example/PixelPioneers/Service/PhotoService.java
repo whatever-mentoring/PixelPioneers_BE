@@ -5,12 +5,10 @@ import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.PhotoRequest;
 import com.example.PixelPioneers.DTO.PhotoResponse;
 import com.example.PixelPioneers.config.errors.exception.Exception404;
-import com.example.PixelPioneers.entity.Album;
-import com.example.PixelPioneers.entity.Photo;
-import com.example.PixelPioneers.entity.User;
-import com.example.PixelPioneers.entity.User_Album;
+import com.example.PixelPioneers.entity.*;
 import com.example.PixelPioneers.repository.AlbumJPARepository;
 import com.example.PixelPioneers.repository.PhotoJPARepository;
+import com.example.PixelPioneers.repository.PoseJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,63 +26,16 @@ import java.util.stream.Collectors;
 public class PhotoService {
     private final PhotoJPARepository photoJPARepository;
     private final AlbumJPARepository albumJPARepository;
+    private final PoseJPARepository poseJPARepository;
 
     public void addPhoto(int id, PhotoRequest.PhotoAddDTO requestDTO) {
         Album album = albumJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("사진첩이 존재하지 않습니다."));
 
         Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(requestDTO.getImage()).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).album(album).build();
-        photoJPARepository.save(newPhoto);
+        Photo photo = photoJPARepository.save(newPhoto);
+
+        Pose newPose = Pose.builder().photo(photo).build();
+        poseJPARepository.save(newPose);
     }
-
-//    public void addPhoto(AlbumRequest.AlbumAddDTO requestDTO, User sessionUser) {
-//        String name = requestDTO.getName();
-//        String image = requestDTO.getImage();
-//        Album newAlbum = Album.builder().name(name).image(image).build();
-//        Album album = albumJPARepository.save(newAlbum);
-//
-//        List<Integer> userIdList = requestDTO.getUserIdList();
-//        for (Integer userId: userIdList) {
-//            User user = userJPARepository.findById(userId)
-//                    .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
-//            User_Album newUser_Album = User_Album.builder().user(user).album(album).build();
-//            user_albumJPARepository.save(newUser_Album);
-//        }
-//    }
-
-
-//    public List<PhotoResponse.FindAllDTO> findAll(int page) {
-//        Pageable pageable = PageRequest.of(page, 15);
-//
-//        Page<Photo> pageContent = photoRepository.findAll(pageable);
-//
-//        List<PhotoResponse.FindAllDTO> responseDTOs = pageContent.getContent().stream()
-//                .map(photo -> new PhotoResponse.FindAllDTO(photo))
-//                .collect(Collectors.toList());
-//        return responseDTOs;
-//    }
-//
-//    public PhotoResponse.FindByIdDTO findById(int photo_id) {
-//        Optional<Photo> photo = photoRepository.findById(photo_id);
-//        return new PhotoResponse.FindByIdDTO(photo);
-//    }
-
-    //public PhotoResponse.FindByIdDTO create(Photo new_photo){
-    //    photoRepository.save(new_photo);
-    //    Optional<Photo> photo = photoRepository.findById(new_photo.getPhoto_id());
-    //    return new PhotoResponse.FindByIdDTO(photo);
-    //}
-
-//    public PhotoResponse.FindByIdDTO create_new(Photo new_photo, int album_id){
-//        new_photo = new_photo.toBuilder()
-//                .album(albumJPARepository.findById(album_id).get())
-//                .build();
-//
-//        photoRepository.save(new_photo);
-//
-//        Optional<Photo> photo = photoRepository.findById(new_photo.getPhoto_id());
-//        return new PhotoResponse.FindByIdDTO(photo);
-//    }
-
-
 }
