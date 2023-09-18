@@ -14,9 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Api(tags = {"사진 API"})
 @RequiredArgsConstructor
@@ -29,9 +29,9 @@ public class PhotoRestController {
     /**
      * 사진 생성
      */
-    @PostMapping("/albums/{id}/photos")
-    public ResponseEntity<?> addPhoto(@PathVariable int id, @RequestBody @Valid PhotoRequest.PhotoAddDTO requestDTO, Errors erros) {
-        photoService.addPhoto(id, requestDTO);
+    @PostMapping(value = "/albums/{id}/photos", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> addPhoto(@PathVariable int id, @RequestPart @Valid PhotoRequest.PhotoAddDTO requestDTO, @RequestPart MultipartFile file, Errors erros) throws Exception {
+        photoService.addPhoto(id, requestDTO, file);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 

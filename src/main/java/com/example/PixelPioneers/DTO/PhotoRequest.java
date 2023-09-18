@@ -16,9 +16,6 @@ public class PhotoRequest {
         private String name;
 
         @NotNull
-        private String image;
-
-        @NotNull
         private int peopleCount;
 
         @NotNull

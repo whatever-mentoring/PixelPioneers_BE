@@ -36,17 +36,23 @@ public class PhotoService {
      * 사진 생성
      * 포즈 함께 생성 후 연결
      */
-    public void addPhoto(int id, PhotoRequest.PhotoAddDTO requestDTO) {
+    public void addPhoto(int id, PhotoRequest.PhotoAddDTO requestDTO, MultipartFile file) throws Exception {
         Album album = albumJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("사진첩이 존재하지 않습니다."));
 
-        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(requestDTO.getImage()).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).album(album).build();
+        String imgurl = s3Uploader.upload(file, "photo_images");
+
+        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(imgurl).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).album(album).build();
         Photo photo = photoJPARepository.save(newPhoto);
 
         Pose newPose = Pose.builder().photo(photo).build();
         poseJPARepository.save(newPose);
     }
 
+    /**
+     * 아카이브
+     * 사진 공개범위 변경
+     */
     @Transactional(readOnly = false)
     public PhotoResponse.FindByIdDTO updateById(int id){
         Photo photo = photoJPARepository.findById(id).get();
