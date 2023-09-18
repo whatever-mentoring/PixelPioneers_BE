@@ -17,17 +17,16 @@ public class Photo {
     @Id
     private int id;
 
-    @Column(length = 500, nullable = false)
+    @Column(length = 50, nullable = false)
     private String name;
 
-    @Column(length = 500, nullable = false)
+    @Column(nullable = false)
     private String image;
 
     @Column(nullable = false)
     private int peopleCount;
 
     @Column(length = 255, nullable = false)
-    @DateTimeFormat(pattern = "yyyy/MM/dd")
     private LocalDate created_at;
 
     @Column(nullable = false)

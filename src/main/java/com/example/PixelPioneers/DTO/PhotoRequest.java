@@ -22,7 +22,6 @@ public class PhotoRequest {
         private int peopleCount;
 
         @NotNull
-        @DateTimeFormat(pattern = "yyyy/MM/dd")
         private LocalDate created_at;
 
         @NotNull
