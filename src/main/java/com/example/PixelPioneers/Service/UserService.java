@@ -1,6 +1,8 @@
 package com.example.PixelPioneers.Service;
 
+import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.UserRequest;
+import com.example.PixelPioneers.DTO.UserResponse;
 import com.example.PixelPioneers.config.errors.exception.Exception400;
 import com.example.PixelPioneers.config.jwt.JWTTokenProvider;
 import com.example.PixelPioneers.entity.User;
@@ -15,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
@@ -134,5 +138,14 @@ public class UserService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<UserResponse.UserListDTO> findUserList(UserRequest.UserListDTO requestDTO) {
+        List<User> userList = userJPARepository.findByNicknameStartingWith(requestDTO.getNickname());
+
+        List<UserResponse.UserListDTO> responseDTOs = userList.stream()
+                .map(user -> new UserResponse.UserListDTO(user))
+                .collect(Collectors.toList());
+        return responseDTOs;
     }
 }
