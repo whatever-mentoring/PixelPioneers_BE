@@ -41,7 +41,7 @@ public class UserRestController {
     /**
      * 회원가입
      */
-    @ApiOperation(value="회원가입", notes = "입력 해야하는 값: email, password, nickname, file")
+    @ApiOperation(value="회원가입", notes = "swagger에서 테스트 불가")
     @PostMapping(value = "/join", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> join(@RequestPart @Valid UserRequest.JoinDTO requestDTO, @RequestPart MultipartFile file, Errors errors) throws Exception { //S3 업로드 위한 Exception
         userService.join(requestDTO, file);
@@ -77,6 +77,7 @@ public class UserRestController {
     public void kakaoLogin(@RequestParam String code) {
         String access_token = userService.getKakaoAccessToken(code);
     }
+
 
     @PostMapping("/users")
     public ResponseEntity<?> userList(@RequestBody @Valid UserRequest.UserListDTO requestDTO, Errors errors) {

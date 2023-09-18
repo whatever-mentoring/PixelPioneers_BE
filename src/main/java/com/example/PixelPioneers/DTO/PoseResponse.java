@@ -18,6 +18,7 @@ public class PoseResponse {
             this.id = pose.getId();
             this.image = pose.getPhoto().getImage();
             this.peopleCount = pose.getPhoto().getPeopleCount();
+            this.photo_id = pose.getPhoto().getId();
         }
     }
 }

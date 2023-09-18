@@ -34,13 +34,13 @@ public class PhotoService {
      * 사진 생성
      * 포즈 함께 생성 후 연결
      */
-    public void addPhoto(int id, PhotoRequest.PhotoAddDTO requestDTO, MultipartFile file) throws Exception {
+    public void addPhoto(int id, PhotoRequest.PhotoAddDTO requestDTO, MultipartFile file, User user) throws Exception {
         Album album = albumJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("사진첩이 존재하지 않습니다."));
 
         String imgurl = s3Uploader.upload(file, "photo_images");
 
-        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(imgurl).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).album(album).build();
+        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(imgurl).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).album(album).user(user).build();
 
         Photo photo = photoJPARepository.save(newPhoto);
 

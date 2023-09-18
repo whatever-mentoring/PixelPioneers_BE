@@ -27,7 +27,7 @@ public class UserRequest {
         private String email;
 
         @NotEmpty
-        @Size(min = 8, max = 16 , message = "8~16자 이내로 입력해주세요.")
+        @Size(min = 8, max = 16, message = "8~16자 이내로 입력해주세요.")
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!~`<>,./?;:'\"\\[\\]{}\\\\()|_-])\\S*$", message = "영문 대/소문자, 숫자, 특수문자를 포함해주세요.")
         private String password;
 
@@ -41,7 +41,7 @@ public class UserRequest {
                     .password(password)
                     .nickname(nickname)
                     .image(imgURL)
-                    .role("ROLE_USER")
+                    .role(nickname.equals("ADMIN") ? "ROLE_ADMIN" : "ROLE_USER")
                     .build();
         }
     }

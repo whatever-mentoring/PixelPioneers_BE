@@ -1,12 +1,7 @@
 package com.example.PixelPioneers.Service;
 
 import com.example.PixelPioneers.DTO.PoseResponse;
-import com.example.PixelPioneers.DTO.UserResponse;
-import com.example.PixelPioneers.config.errors.exception.Exception404;
-import com.example.PixelPioneers.entity.Album;
-import com.example.PixelPioneers.entity.Photo;
 import com.example.PixelPioneers.entity.Pose;
-import com.example.PixelPioneers.repository.PhotoJPARepository;
 import com.example.PixelPioneers.repository.PoseJPARepository;
 import com.example.PixelPioneers.repository.User_AlbumJPARepository;
 import lombok.RequiredArgsConstructor;
