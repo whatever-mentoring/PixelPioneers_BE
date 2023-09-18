@@ -4,6 +4,7 @@ import com.example.PixelPioneers.entity.Album;
 import com.example.PixelPioneers.entity.User;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -15,8 +16,6 @@ public class AlbumRequest {
         @NotNull
         private String name;
 
-        private String image;
-
         @NotNull
         private List<Integer> userIdList;
     }
@@ -26,9 +25,6 @@ public class AlbumRequest {
     public static class AlbumUpdateDTO {
         @NotNull
         private String name;
-
-        @NotNull
-        private String image;
     }
 
     @Getter

@@ -18,80 +18,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class PoseService {
 
     private final User_AlbumJPARepository user_albumJPARepository;
     private final PoseJPARepository poseJPARepository;
-
-    /**
-     * 포즈 모아보기
-     * 특정 인원수 유저 포즈 조회
-     * 반환값: Pose 리스트
-     */
-    public PoseResponse.PoseListDTO userPoseListByPeopleCount(int peopleCount) {
-        List<Pose> responseDTOs = new ArrayList<>();
-        List<Pose> userPoses = new ArrayList<>();
-
-        List<Pose> poses = poseJPARepository.findAll();
-
-        /*for(Pose pose : poses){
-            if(pose.getPhoto().getAlbum().getCreated_by == 1){ // 1이면 유저
-                userPoses.add(pose);
-            }
-        }*/
-
-        if(peopleCount == 0){
-            for(Pose pose : poses){
-                if(pose.getPhoto().isOpen() == true){
-                    responseDTOs.add(pose);
-                }
-            }
-        }
-        else{
-            for(Pose pose : poses){
-                if(pose.getPhoto().isOpen() == true && pose.getPeopleCount() == peopleCount) {
-                    responseDTOs.add(pose);
-                }
-            }
-        }
-
-        return new PoseResponse.PoseListDTO(responseDTOs);
-    }
-
-    /**
-     * 포즈 모아보기
-     * 특정 인원수 관리자 포즈 조회
-     * 반환값: Pose 리스트
-     */
-    public PoseResponse.PoseListDTO adminPoseListByPeopleCount(int peopleCount) {
-        List<Pose> responseDTOs = new ArrayList<>();
-        List<Pose> adminPoses = new ArrayList<>();
-
-        List<Pose> poses = poseJPARepository.findAll();
-        /*for(Pose pose : poses){
-            if(pose.getPhoto().getAlbum().getCreated_by() == 0) { // 0이면 관리자
-                adminPoses.add(pose);
-            }
-        }*/
-
-        if(peopleCount == 0){
-            for(Pose pose : poses){
-                    responseDTOs.add(pose);
-            }
-        }
-        else{
-            for(Pose pose : poses){
-                if(pose.getPeopleCount() == peopleCount){
-                    responseDTOs.add(pose);
-                }
-            }
-        }
-
-        return new PoseResponse.PoseListDTO(responseDTOs);
-    }
 
     /**
      * 랜덤 포즈 조회

@@ -23,7 +23,7 @@ public class Photo {
     @Column(nullable = false)
     private String image;
 
-    @Column(name = "people_count", nullable = false)
+    @Column(nullable = false)
     private int peopleCount;
 
     @Column(length = 255, nullable = false)
@@ -41,9 +41,7 @@ public class Photo {
     @JoinColumn(name = "album_id")
     private Album album;
 
-    //포즈와 1대 1 연결.
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pose_id")
+    @OneToOne(mappedBy = "photo")
     private Pose pose;
 
     @Builder
@@ -59,7 +57,18 @@ public class Photo {
         this.pose = pose;
     }
 
-    public void update(boolean open){
+    public Photo(Photo photo){
+        this.id = photo.getId();
+        this.name = photo.getName();
+        this.image = photo.getImage();
+        this.peopleCount = photo.getPeopleCount();
+        this.created_at = photo.getCreated_at();
+        this.open = photo.isOpen();
+        this.album = photo.getAlbum();
+        this.pose = photo.getPose();
+    }
+
+    public void updateopen(boolean open){
         this.open = open;
     }
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -16,6 +17,7 @@ public class UserRequest {
         @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일을 올바르게 입력해주세요.")
         private String email;
     }
+
 
     @Getter
     @Setter
@@ -33,14 +35,12 @@ public class UserRequest {
         @Size(min = 1, max = 8, message = "8자 이내로 입력해주세요.")
         private String nickname;
 
-        private String image;
-
-        public User toEntity() {
+        public User toEntity(String imgURL) {
             return User.builder()
                     .email(email)
                     .password(password)
                     .nickname(nickname)
-                    .image(image)
+                    .image(imgURL)
                     .role("ROLE_USER")
                     .build();
         }
@@ -62,6 +62,13 @@ public class UserRequest {
     @Getter
     @Setter
     public static class UserListDTO {
+        private String nickname;
+    }
+
+    @Getter
+    @Setter
+    public static class UserUpdateDTO {
+        @NotNull
         private String nickname;
     }
 }

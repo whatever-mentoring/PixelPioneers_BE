@@ -1,18 +1,20 @@
 package com.example.PixelPioneers.Service;
 
-import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.UserRequest;
 import com.example.PixelPioneers.DTO.UserResponse;
 import com.example.PixelPioneers.config.errors.exception.Exception400;
+import com.example.PixelPioneers.config.errors.exception.Exception404;
 import com.example.PixelPioneers.config.jwt.JWTTokenProvider;
 import com.example.PixelPioneers.entity.User;
 import com.example.PixelPioneers.repository.UserJPARepository;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -28,6 +30,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserJPARepository userJPARepository;
 
+    // S3 이미지 업로드 부분
+    @Autowired
+    private S3Uploader s3Uploader;
+
     public void emailCheck(String email) {
         Optional<User> optionalUser = userJPARepository.findByEmail(email);
         if (optionalUser.isPresent()) {
@@ -36,11 +42,13 @@ public class UserService {
     }
 
     @Transactional
-    public void join(UserRequest.JoinDTO requestDTO) {
+    public void join(UserRequest.JoinDTO requestDTO, MultipartFile file) throws Exception {
         emailCheck(requestDTO.getEmail());
 
+        String imgurl = s3Uploader.upload(file, "user_profile");
+
         requestDTO.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
-        User user = userJPARepository.save(requestDTO.toEntity());
+        User user = userJPARepository.save(requestDTO.toEntity(imgurl));
     }
 
     public String login(UserRequest.LoginDTO requestDTO) {
@@ -100,6 +108,22 @@ public class UserService {
             e.printStackTrace();
         }
         return access_token;
+    }
+
+    @Transactional
+    public UserResponse.UserListDTO updateUser(int id, UserRequest.UserUpdateDTO updateDTO, MultipartFile file) throws Exception {
+        User user = userJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
+
+        // 기존 사용자 프로필사진 S3에서 삭제
+        String imgURL = userJPARepository.findById(id).get().getImage();
+        String key = imgURL.substring(61);
+        s3Uploader.deleteFile(key);
+        // 사용자 프로필사진 변경
+        String new_imgurl = s3Uploader.upload(file, "user_profile");
+
+        user.update(updateDTO.getNickname(), new_imgurl);
+        return new UserResponse.UserListDTO(user);
     }
 
     public void kakaoLogin(String access_token) throws Exception {
