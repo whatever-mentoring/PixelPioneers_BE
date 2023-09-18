@@ -23,7 +23,7 @@ public class Photo {
     @Column(nullable = false)
     private String image;
 
-    @Column(name = "people_count", nullable = false)
+    @Column(nullable = false)
     private int peopleCount;
 
     @Column(length = 255, nullable = false)
