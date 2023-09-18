@@ -5,7 +5,11 @@ import com.example.PixelPioneers.DTO.PhotoResponse;
 import com.example.PixelPioneers.entity.Pose;
 import com.example.PixelPioneers.entity.Photo;
 import com.example.PixelPioneers.repository.AlbumJPARepository;
+import com.example.PixelPioneers.config.errors.exception.Exception404;
+import com.example.PixelPioneers.entity.*;
+import com.example.PixelPioneers.repository.AlbumJPARepository;
 import com.example.PixelPioneers.repository.PhotoJPARepository;
+import com.example.PixelPioneers.repository.PoseJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,65 +24,32 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class PhotoService {
-    private final PhotoJPARepository photoRepository;
     @Autowired
     private S3Uploader s3Uploader;
     private final PoseService poseService;
     private final AlbumJPARepository albumJPARepository;
-
-    /**
-     * 아카이브
-     * 사진 전체 조회
-     */
-    @Transactional(readOnly = true)
-    public List<PhotoResponse.FindAllDTO> findAll() {
-        List<PhotoResponse.FindAllDTO> responseDTOs = photoRepository.findAll().stream()
-                .map(photo -> new PhotoResponse.FindAllDTO(photo))
-                .collect(Collectors.toList());
-
-        return responseDTOs;
-    }
-
-    /**
-     * 아카이브
-     * 사진 개별 조회
-     */
-    @Transactional(readOnly = true)
-    public PhotoResponse.FindByIdDTO findById(int photo_id) {
-        Optional<Photo> photo = photoRepository.findById(photo_id);
-
-        return new PhotoResponse.FindByIdDTO(photo);
-    }
+    private final PhotoJPARepository photoJPARepository;
+    private final PoseJPARepository poseJPARepository;
 
     /**
      * 아카이브
      * 사진 생성
      * 포즈 함께 생성 후 연결
      */
-    @Transactional(readOnly = false)
-    public PhotoResponse.FindByIdDTO create_new(PhotoRequest photoRequest, int album_id) throws Exception {
-        String imgurl = s3Uploader.upload(photoRequest.getFile(), "photo_images");
+    public void addPhoto(int id, PhotoRequest.PhotoAddDTO requestDTO) {
+        Album album = albumJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("사진첩이 존재하지 않습니다."));
 
-        Photo new_photo = Photo.builder().name(photoRequest.getName())
-                .peopleCount(photoRequest.getPeopleCount())
-                .created_at(photoRequest.getCreated_at())
-                .open(photoRequest.isOpen())
-                .image(imgurl)
-                .album(albumJPARepository.findById(album_id).get())
-                .build();
+        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(requestDTO.getImage()).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).album(album).build();
+        Photo photo = photoJPARepository.save(newPhoto);
 
-        photoRepository.save(new_photo);
-
-        Pose pose = poseService.create_new(new_photo);
-
-        Optional<Photo> photo = photoRepository.findById(new_photo.getId());
-
-        return new PhotoResponse.FindByIdDTO(photo);
+        Pose newPose = Pose.builder().photo(photo).build();
+        poseJPARepository.save(newPose);
     }
 
     @Transactional(readOnly = false)
     public PhotoResponse.FindByIdDTO updateById(int id){
-        Photo photo = photoRepository.findById(id).get();
+        Photo photo = photoJPARepository.findById(id).get();
 
         photo.updateopen((photo.isOpen() == true) ? false : true);
 
@@ -92,12 +63,10 @@ public class PhotoService {
      */
     @Transactional(readOnly = false)
     public void deleteById(int id){
-        int delete_pose_id = photoRepository.findById(id).get().getPose().getId();
+        int delete_pose_id = photoJPARepository.findById(id).get().getPose().getId();
         // 해당 사진과 연결된 포즈 삭제
-        poseService.delete(delete_pose_id);
+        poseJPARepository.deleteById(delete_pose_id);
         // 사진 삭제
-        photoRepository.deleteById(id);
-
+        photoJPARepository.deleteById(id);
     }
-
 }

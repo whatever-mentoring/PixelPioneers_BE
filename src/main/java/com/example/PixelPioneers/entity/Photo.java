@@ -66,8 +66,4 @@ public class Photo {
     public void updateopen(boolean open){
         this.open = open;
     }
-
-    public void updatepose(Pose pose){
-        this.pose = pose;
-    }
 }

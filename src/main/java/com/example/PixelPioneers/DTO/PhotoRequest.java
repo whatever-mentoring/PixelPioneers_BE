@@ -1,17 +1,30 @@
 package com.example.PixelPioneers.DTO;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 
-@Data
 public class PhotoRequest {
+    @Getter
+    @Setter
+    public static class PhotoAddDTO {
+        @NotNull
+        private String name;
 
-    private String name;
+        @NotNull
+        private String image;
 
-    private int peopleCount;
+        @NotNull
+        private int peopleCount;
 
-    private LocalDate created_at;
+        @NotNull
+        private LocalDate created_at;
 
-    private boolean open;
+        @NotNull
+        private boolean open;
+    }
 }

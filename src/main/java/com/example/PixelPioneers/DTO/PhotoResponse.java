@@ -9,21 +9,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PhotoResponse {
-    @Getter
-    @Setter
-    public static class FindAllDTO {
-        private int id;
-        private String image;
-        private int album_id;
-        private String album_name;
-
-        public FindAllDTO(Photo photo) {
-            this.id = photo.getId();
-            this.image = photo.getImage();
-            this.album_id = photo.getAlbum().getId();
-            this.album_name = photo.getAlbum().getName();
-        }
-    }
 
     @Getter
     @Setter
@@ -76,24 +61,6 @@ public class PhotoResponse {
             this.album_id = photo.get().getAlbum().getId();
             this.album_name = photo.get().getAlbum().getName();
             this.pose_id = photo.get().getPose().getId();
-        }
-    }
-
-    @Getter
-    @Setter
-    public static class PhotoDTO {
-        private int id;
-        private String name;
-        private String image;
-        private int peopleCount;
-        private int pose_id;
-
-        public PhotoDTO(Photo photo) {
-            this.id = photo.getId();
-            this.name = photo.getName();
-            this.peopleCount = photo.getPeopleCount();
-            this.image = photo.getImage();
-            this.pose_id = photo.getPose().getId();
         }
     }
 }
