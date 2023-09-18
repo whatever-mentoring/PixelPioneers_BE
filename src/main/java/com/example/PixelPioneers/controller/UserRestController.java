@@ -8,6 +8,7 @@ import com.example.PixelPioneers.Service.UserService;
 import com.example.PixelPioneers.config.jwt.JWTTokenProvider;
 import com.example.PixelPioneers.config.utils.ApiUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -26,7 +27,7 @@ public class UserRestController {
     /**
      * 이메일 중복 확인
      */
-    @ApiOperation(value="이메일 중복 확인", notes = "중복된 이메일이 있는지 확인합니다.")
+    @ApiOperation(value="이메일 중복 확인", notes = "중복된 이메일이 있는지 확인합니다. 입력 해야하는 값: emailCheckDTO")
     @PostMapping("/email/check")
     public ResponseEntity<?> emailCheck(@RequestBody @Valid UserRequest.EmailCheckDTO emailCheckDTO, Errors errors) {
         userService.emailCheck(emailCheckDTO.getEmail());
@@ -36,7 +37,7 @@ public class UserRestController {
     /**
      * 회원가입
      */
-    @ApiOperation(value="회원가입", notes = "맨 아래 requestDTO만 입력하면 됩니당.")
+    @ApiOperation(value="회원가입", notes = "입력 해야하는 값: email, password, nickname, file")
     @PostMapping(value = "/join", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> join(@RequestPart @Valid UserRequest.JoinDTO requestDTO, @RequestPart MultipartFile file, Errors errors) throws Exception { //S3 업로드 위한 Exception
         userService.join(requestDTO, file);
@@ -46,7 +47,7 @@ public class UserRestController {
     /**
      * 로그인
      */
-    @ApiOperation(value="로그인", notes = "맨 아래 requestDTO만 입력하면 됩니당.")
+    @ApiOperation(value="로그인", notes = "입력 해야하는 값: email, password")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO requestDTO, Errors errors) {
         String jwt = userService.login(requestDTO);
@@ -56,6 +57,8 @@ public class UserRestController {
     /**
      * 1명의 유저 수정
      */
+    @ApiOperation(value="1명의 유저 수정", notes = "입력 해야하는 값: id, nickname, file")
+    @ApiImplicitParam(name = "id",value = "사용자 아이디")
     @PutMapping(value = "/user/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> userUpdate(@PathVariable int id, @RequestPart @Valid UserRequest.UserUpdateDTO updateDTO, @RequestPart MultipartFile file, Errors errors) throws Exception {
         UserResponse.UserListDTO responseDTO = userService.updateUser(id, updateDTO, file);

@@ -30,6 +30,8 @@ public class PhotoRestController {
      * 사진 생성
      */
     @PostMapping(value = "/albums/{id}/photos", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ApiOperation(value="사진 생성", notes = "{id}에 해당하는 사진첩에 사진을 생성합니다. 입력 해야하는 값: id, name, peopleCount, created_at, open")
+    @ApiImplicitParam(name = "id",value = "사진 아이디")
     public ResponseEntity<?> addPhoto(@PathVariable int id, @RequestPart @Valid PhotoRequest.PhotoAddDTO requestDTO, @RequestPart MultipartFile file, Errors erros) throws Exception {
         photoService.addPhoto(id, requestDTO, file);
         return ResponseEntity.ok().body(ApiUtils.success(null));
