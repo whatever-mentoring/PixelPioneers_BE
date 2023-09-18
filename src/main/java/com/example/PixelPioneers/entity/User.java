@@ -46,4 +46,9 @@ public class User {
         this.image = image;
         this.role = role;
     }
+
+    public void update(String nickname, String image) {
+        this.nickname = nickname;
+        this.image = image;
+    }
 }
