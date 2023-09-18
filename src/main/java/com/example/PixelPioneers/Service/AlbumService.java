@@ -13,11 +13,13 @@ import com.example.PixelPioneers.repository.PhotoJPARepository;
 import com.example.PixelPioneers.repository.UserJPARepository;
 import com.example.PixelPioneers.repository.User_AlbumJPARepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +35,20 @@ public class AlbumService {
     private final AlbumJPARepository albumJPARepository;
     private final PhotoJPARepository photoJPARepository;
 
+    // S3 이미지 업로드 부분
+    @Autowired
+    private S3Uploader s3Uploader;
+
 //    public AlbumResponse.FindByIdDTO findById(int album_id) {
 //        Optional<Album> album = albumRepository.findById(album_id);
 //        return new AlbumResponse.FindByIdDTO(album);
 //    }
 
-    public void addAlbum(AlbumRequest.AlbumAddDTO requestDTO, User sessionUser) {
+    public void addAlbum(AlbumRequest.AlbumAddDTO requestDTO, MultipartFile file, User sessionUser) throws Exception {
+        String imgurl = s3Uploader.upload(file, "album_cover");
+
         String name = requestDTO.getName();
-        String image = requestDTO.getImage();
+        String image = imgurl;
         Album newAlbum = Album.builder().name(name).image(image).build();
         Album album = albumJPARepository.save(newAlbum);
 
@@ -64,24 +72,32 @@ public class AlbumService {
 
         return responseDTOs;
     }
-    public List<PhotoResponse.PhotoListDTO> findPhotoList(int id, int page) {
+    public PhotoResponse.PhotoListDTO findPhotoList(int id, int page) {
         Pageable pageable = PageRequest.of(page, 10);
-
         Page<Photo> pageContent = photoJPARepository.findByAlbumId(id, pageable);
 
+        List<Photo> photos = new ArrayList<>();
 
-        List<PhotoResponse.PhotoListDTO> responseDTOs = pageContent.getContent().stream()
-                .map(photo -> new PhotoResponse.PhotoListDTO(photo))
+        photos = pageContent.getContent().stream()
+                .map(photo -> new Photo(photo))
                 .collect(Collectors.toList());
-        return responseDTOs;
+
+        return new PhotoResponse.PhotoListDTO(photos);
     }
 
     @Transactional
-    public AlbumResponse.AlbumDTO updateAlbum(int id, AlbumRequest.AlbumUpdateDTO updateDTO) {
+    public AlbumResponse.AlbumDTO updateAlbum(int id, AlbumRequest.AlbumUpdateDTO updateDTO, MultipartFile file) throws Exception {
         Album album = albumJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("사진첩이 존재하지 않습니다."));
 
-        album.update(updateDTO.getName(), updateDTO.getImage());
+        // 기존 사진첩 대표사진 S3에서 삭제
+        String imgURL = albumJPARepository.findById(id).get().getImage();
+        String key = imgURL.substring(61);
+        s3Uploader.deleteFile(key);
+        // 사진첩 대표사진 변경
+        String new_imgurl = s3Uploader.upload(file, "album_cover");
+
+        album.update(updateDTO.getName(), new_imgurl);
         return new AlbumResponse.AlbumDTO(album);
     }
 

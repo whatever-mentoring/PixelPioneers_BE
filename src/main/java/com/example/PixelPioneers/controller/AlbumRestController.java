@@ -11,10 +11,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -30,9 +32,9 @@ public class AlbumRestController {
     /**
      * 사진첩 생성
      */
-    @PostMapping("/albums")
-    public ResponseEntity<?> albumAdd(@RequestBody @Valid AlbumRequest.AlbumAddDTO requestDTO, Errors errors, @AuthenticationPrincipal CustomUserDetails userDetails){
-        albumService.addAlbum(requestDTO, userDetails.getUser());
+    @PostMapping(value = "/albums", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> albumAdd(@RequestPart @Valid AlbumRequest.AlbumAddDTO requestDTO, @RequestPart MultipartFile file, Errors errors, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        albumService.addAlbum(requestDTO, file, userDetails.getUser());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
@@ -50,16 +52,16 @@ public class AlbumRestController {
      */
     @GetMapping("/albums/{id}")
     public ResponseEntity<?> photoList(@PathVariable int id, @RequestParam(value = "page", defaultValue = "0") Integer page) {
-        List<PhotoResponse.PhotoListDTO> responseDTOs = albumService.findPhotoList(id, page);
+        PhotoResponse.PhotoListDTO responseDTOs = albumService.findPhotoList(id, page);
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 
     /**
      * 1개의 사진첩 수정
      */
-    @PutMapping("/albums/{id}")
-    public ResponseEntity<?> albumUpdate(@PathVariable int id, @RequestBody @Valid AlbumRequest.AlbumUpdateDTO updateDTO, Errors errors) {
-        AlbumResponse.AlbumDTO responseDTO = albumService.updateAlbum(id, updateDTO);
+    @PutMapping(value = "/albums/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> albumUpdate(@PathVariable int id, @RequestPart @Valid AlbumRequest.AlbumUpdateDTO updateDTO, @RequestPart MultipartFile file, Errors errors) throws Exception {
+        AlbumResponse.AlbumDTO responseDTO = albumService.updateAlbum(id, updateDTO, file);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 
