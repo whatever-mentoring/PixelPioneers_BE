@@ -12,9 +12,6 @@ import java.util.Collection;
 import java.util.List;
 
 public interface PoseJPARepository extends JpaRepository<Pose, Integer> {
-//    @Query("select p from Pose p where p.photo.album.id in :albumIdList")
-//    List<Pose> findByAlbumId(Iterable<Integer> albumIdList);
-
     @Query("select p from Pose p where p.photo.album.id in :albumIdList and p.photo.peopleCount = :peopleCount")
     List<Pose> findByAlbumIdAndPeopleCount(@Param("albumIdList") List<Integer> albumIdList, @Param("peopleCount") int peopleCount);
 }
