@@ -1,6 +1,7 @@
 package com.example.PixelPioneers.controller;
 
 import com.example.PixelPioneers.DTO.UserRequest;
+import com.example.PixelPioneers.DTO.UserResponse;
 import com.example.PixelPioneers.Service.UserService;
 import com.example.PixelPioneers.config.jwt.JWTTokenProvider;
 import com.example.PixelPioneers.config.utils.ApiUtils;
@@ -12,6 +13,10 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+
+import java.util.List;
+
 @Api(tags = {"유저 API"})
 @RequiredArgsConstructor
 @RestController
@@ -48,9 +53,17 @@ public class UserRestController {
         return ResponseEntity.ok().header(JWTTokenProvider.HEADER, jwt).body(ApiUtils.success(true));
     }
 
-    @ApiOperation(value="카카오 로그인", notes = "카카오로 로그인합니다.")
+    /**
+     * 카카오 로그인
+     */
     @GetMapping("/login/kakao")
     public void kakaoLogin(@RequestParam String code) {
         String access_token = userService.getKakaoAccessToken(code);
+    }
+
+    @PostMapping("/users")
+    public ResponseEntity<?> userList(@RequestBody @Valid UserRequest.UserListDTO requestDTO, Errors errors) {
+        List<UserResponse.UserListDTO> responseDTOs = userService.findUserList(requestDTO);
+        return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 }

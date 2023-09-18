@@ -58,4 +58,10 @@ public class UserRequest {
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!~`<>,./?;:'\"\\[\\]{}\\\\()|_-])\\S*$", message = "영문 대/소문자, 숫자, 특수문자를 포함해주세요.")
         private String password;
     }
+
+    @Getter
+    @Setter
+    public static class UserListDTO {
+        private String nickname;
+    }
 }

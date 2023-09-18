@@ -1,14 +1,9 @@
 package com.example.PixelPioneers.Service;
 
 import com.example.PixelPioneers.DTO.PhotoResponse;
-<<<<<<< HEAD
-import com.example.PixelPioneers.entity.Pose;
-import com.example.PixelPioneers.entity.Photo;
-=======
 import com.example.PixelPioneers.config.errors.exception.Exception404;
 import com.example.PixelPioneers.entity.*;
 import com.example.PixelPioneers.repository.AlbumJPARepository;
->>>>>>> cosmos-1885
 import com.example.PixelPioneers.repository.PhotoJPARepository;
 import com.example.PixelPioneers.repository.PoseJPARepository;
 import lombok.RequiredArgsConstructor;
@@ -29,42 +24,11 @@ public class PhotoService {
     private final AlbumJPARepository albumJPARepository;
     private final PoseJPARepository poseJPARepository;
 
-    /**
-     * 아카이브
-     * 사진 전체 조회
-     */
-    @Transactional(readOnly = true)
-    public List<PhotoResponse.FindAllDTO> findAll() {
-        List<PhotoResponse.FindAllDTO> responseDTOs = photoRepository.findAll().stream()
-                .map(photo -> new PhotoResponse.FindAllDTO(photo))
-                .collect(Collectors.toList());
+    public void addPhoto(int id, PhotoRequest.PhotoAddDTO requestDTO, User user) {
+        Album album = albumJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("사진첩이 존재하지 않습니다."));
 
-        return responseDTOs;
-    }
-
-    /**
-     * 아카이브
-     * 사진 개별 조회
-     */
-    @Transactional(readOnly = true)
-    public PhotoResponse.FindByIdDTO findById(int photo_id) {
-        Optional<Photo> photo = photoRepository.findById(photo_id);
-
-        return new PhotoResponse.FindByIdDTO(photo);
-    }
-
-    /**
-     * 아카이브
-     * 사진 생성
-     * 포즈 함께 생성 후 연결
-     */
-    @Transactional(readOnly = false)
-    public PhotoResponse.FindByIdDTO create_new(Photo new_photo, MultipartFile image) throws Exception {
-        Pose pose = poseService.create_new();
-
-        String imgurl = s3Uploader.upload(image, "photo_images");
-
-        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(requestDTO.getImage()).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).album(album).build();
+        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(requestDTO.getImage()).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).user(user).album(album).build();
         Photo photo = photoJPARepository.save(newPhoto);
 
         Pose newPose = Pose.builder().photo(photo).build();
@@ -94,5 +58,15 @@ public class PhotoService {
         photoRepository.deleteById(id);
         // 해당 사진과 연결된 포즈 삭제
         poseService.delete(delete_pose_id);
+    }
+
+    @Transactional
+    public void deletePhoto(int photoId, User user) {
+        Photo photo = photoJPARepository.findById(photoId)
+                .orElseThrow(() -> new Exception404("사진이 존재하지 않습니다."));
+
+        if (photo.getUser().getId() == user.getId()) {
+            photoJPARepository.delete(photo);
+        }
     }
 }

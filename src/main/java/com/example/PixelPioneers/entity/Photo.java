@@ -34,7 +34,11 @@ public class Photo {
     private boolean open;
 
     @ManyToOne
-    @JoinColumn(name ="album_id")
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "album_id")
     private Album album;
 
     //포즈와 1대 1 연결.
@@ -42,14 +46,15 @@ public class Photo {
     @JoinColumn(name = "pose_id")
     private Pose pose;
 
-    @Builder(toBuilder = true)
-    public Photo(int id, String name, String image, int peopleCount, LocalDate created_at, boolean open, Album album, Pose pose) {
+    @Builder
+    public Photo(int id, String name, String image, int peopleCount, LocalDate created_at, boolean open, User user, Album album) {
         this.id = id;
         this.name = name;
         this.image = image;
         this.peopleCount = peopleCount;
         this.created_at = created_at;
         this.open = open;
+        this.user = user;
         this.album = album;
         this.pose = pose;
     }
