@@ -27,14 +27,24 @@ public class PhotoService {
     private final AlbumJPARepository albumJPARepository;
     private final PoseJPARepository poseJPARepository;
 
-    public void addPhoto(int id, PhotoRequest.PhotoAddDTO requestDTO) {
+    public void addPhoto(int id, PhotoRequest.PhotoAddDTO requestDTO, User user) {
         Album album = albumJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("사진첩이 존재하지 않습니다."));
 
-        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(requestDTO.getImage()).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).album(album).build();
+        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(requestDTO.getImage()).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).user(user).album(album).build();
         Photo photo = photoJPARepository.save(newPhoto);
 
         Pose newPose = Pose.builder().photo(photo).build();
         poseJPARepository.save(newPose);
+    }
+
+    @Transactional
+    public void deletePhoto(int photoId, User user) {
+        Photo photo = photoJPARepository.findById(photoId)
+                .orElseThrow(() -> new Exception404("사진이 존재하지 않습니다."));
+
+        if (photo.getUser().getId() == user.getId()) {
+            photoJPARepository.delete(photo);
+        }
     }
 }
