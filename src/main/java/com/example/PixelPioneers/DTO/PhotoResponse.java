@@ -4,8 +4,9 @@ import com.example.PixelPioneers.entity.Photo;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class PhotoResponse {
     @Getter
@@ -27,16 +28,29 @@ public class PhotoResponse {
     @Getter
     @Setter
     public static class PhotoListDTO {
-        private int id;
-        private String name;
-        private String image;
-        private LocalDate created_at;
+        private List<PhotoResponse.PhotoListDTO.PhotoDTO> photoList;
 
-        public PhotoListDTO(Photo photo) {
-            this.id = photo.getId();
-            this.name = photo.getName();
-            this.image = photo.getImage();
-            this.created_at = photo.getCreated_at();
+        public PhotoListDTO(List<Photo> photoList) {
+            this.photoList = photoList.stream()
+                    .map(photo ->new PhotoResponse.PhotoListDTO.PhotoDTO(photo)).collect(Collectors.toList());
+        }
+
+        @Getter
+        @Setter
+        public static class PhotoDTO {
+            private int id;
+            private String name;
+            private String image;
+            private int peopleCount;
+            private int pose_id;
+
+            public PhotoDTO(Photo photo) {
+                this.id = photo.getId();
+                this.name = photo.getName();
+                this.peopleCount = photo.getPeopleCount();
+                this.image = photo.getImage();
+                this.pose_id = photo.getPose().getId();
+            }
         }
     }
 
@@ -62,6 +76,24 @@ public class PhotoResponse {
             this.album_id = photo.get().getAlbum().getId();
             this.album_name = photo.get().getAlbum().getName();
             this.pose_id = photo.get().getPose().getId();
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class PhotoDTO {
+        private int id;
+        private String name;
+        private String image;
+        private int peopleCount;
+        private int pose_id;
+
+        public PhotoDTO(Photo photo) {
+            this.id = photo.getId();
+            this.name = photo.getName();
+            this.peopleCount = photo.getPeopleCount();
+            this.image = photo.getImage();
+            this.pose_id = photo.getPose().getId();
         }
     }
 }

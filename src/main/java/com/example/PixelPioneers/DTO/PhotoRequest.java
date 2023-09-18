@@ -1,7 +1,6 @@
 package com.example.PixelPioneers.DTO;
 
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -15,6 +14,4 @@ public class PhotoRequest {
     private LocalDate created_at;
 
     private boolean open;
-
-    private MultipartFile file;
 }

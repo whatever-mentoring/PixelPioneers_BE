@@ -1,5 +1,6 @@
 package com.example.PixelPioneers.controller;
 
+import com.example.PixelPioneers.DTO.PhotoResponse;
 import com.example.PixelPioneers.DTO.PoseResponse;
 import com.example.PixelPioneers.Service.PoseService;
 import com.example.PixelPioneers.config.utils.ApiUtils;
@@ -24,7 +25,7 @@ public class PoseRestController {
     @ApiImplicitParam(name = "peopleCount",value = "인원수")
     @ApiOperation(value="유저포즈 조회", notes = "사용자가 전체공개로 등록한 사진 중, 입력한 인원수에 해당하는 포즈 목록을 반환합니다. (0명: 전체 반환)")
     public ResponseEntity<?> userPoseListByPeopleCount(@RequestParam(value = "peopleCount", defaultValue = "0") int peopleCount) {
-        PoseResponse.PoseListDTO user_poses = poseService.userPoseListByPeopleCount(peopleCount);
+        PhotoResponse.PhotoListDTO user_poses = poseService.userPoseListByPeopleCount(peopleCount);
         return ResponseEntity.ok(ApiUtils.success(user_poses));
     }
 
@@ -32,7 +33,7 @@ public class PoseRestController {
     @ApiImplicitParam(name = "peopleCount",value = "인원수")
     @ApiOperation(value="관리자포즈 조회", notes = "관리자가 등록한 사진 중, 입력한 인원수에 해당하는 포즈 목록을 반환합니다. (0명: 전체 반환)")
     public ResponseEntity<?> adminPoseListByPeopleCount(@RequestParam(value = "peopleCount", defaultValue = "0") int peopleCount) {
-        PoseResponse.PoseListDTO admin_poses = poseService.adminPoseListByPeopleCount(peopleCount);
+        PhotoResponse.PhotoListDTO admin_poses = poseService.adminPoseListByPeopleCount(peopleCount);
         return ResponseEntity.ok(ApiUtils.success(admin_poses));
     }
 
@@ -40,7 +41,7 @@ public class PoseRestController {
     @ApiImplicitParam(name = "peopleCount",value = "인원수")
     @ApiOperation(value="포즈 랜덤 조회", notes = "{peopleCount}명에 해당하는 포즈 중 랜덤한 하나의 포즈를 반환합니다.")
     public ResponseEntity<?> randomPoseByPeopleCount(@RequestParam(value = "peopleCount") int peopleCount) {
-        PoseResponse.PoseDTO responseDTO = poseService.randomPoseByPeopleCount(peopleCount);
+        PhotoResponse.PhotoDTO responseDTO = poseService.randomPoseByPeopleCount(peopleCount);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 

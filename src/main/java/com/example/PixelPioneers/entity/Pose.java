@@ -23,7 +23,9 @@ public class Pose {
     @Column(length = 500)
     private String imgURL;
 
-    @OneToOne(mappedBy = "pose")
+    //포즈와 1대 1 연결.
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "photo_id")
     private Photo photo;
 
     @Builder(toBuilder = true)

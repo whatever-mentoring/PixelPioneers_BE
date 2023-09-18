@@ -1,8 +1,10 @@
 package com.example.PixelPioneers.Service;
 
+import com.example.PixelPioneers.DTO.PhotoRequest;
 import com.example.PixelPioneers.DTO.PhotoResponse;
 import com.example.PixelPioneers.entity.Pose;
 import com.example.PixelPioneers.entity.Photo;
+import com.example.PixelPioneers.repository.AlbumJPARepository;
 import com.example.PixelPioneers.repository.PhotoJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ public class PhotoService {
     @Autowired
     private S3Uploader s3Uploader;
     private final PoseService poseService;
+    private final AlbumJPARepository albumJPARepository;
 
     /**
      * 아카이브
@@ -53,19 +56,20 @@ public class PhotoService {
      * 포즈 함께 생성 후 연결
      */
     @Transactional(readOnly = false)
-    public PhotoResponse.FindByIdDTO create_new(Photo new_photo, MultipartFile image) throws Exception {
-        Pose pose = poseService.create_new();
+    public PhotoResponse.FindByIdDTO create_new(PhotoRequest photoRequest, int album_id) throws Exception {
+        String imgurl = s3Uploader.upload(photoRequest.getFile(), "photo_images");
 
-        String imgurl = s3Uploader.upload(image, "photo_images");
-
-        new_photo = new_photo.toBuilder()
-                .pose(pose)
+        Photo new_photo = Photo.builder().name(photoRequest.getName())
+                .peopleCount(photoRequest.getPeopleCount())
+                .created_at(photoRequest.getCreated_at())
+                .open(photoRequest.isOpen())
                 .image(imgurl)
+                .album(albumJPARepository.findById(album_id).get())
                 .build();
 
         photoRepository.save(new_photo);
 
-        pose.update(new_photo.getPeopleCount(), new_photo.getImage());
+        Pose pose = poseService.create_new(new_photo);
 
         Optional<Photo> photo = photoRepository.findById(new_photo.getId());
 
@@ -76,7 +80,7 @@ public class PhotoService {
     public PhotoResponse.FindByIdDTO updateById(int id){
         Photo photo = photoRepository.findById(id).get();
 
-        photo.update((photo.isOpen() == true) ? false : true);
+        photo.updateopen((photo.isOpen() == true) ? false : true);
 
         return new PhotoResponse.FindByIdDTO(Optional.of(photo));
     }
@@ -89,10 +93,11 @@ public class PhotoService {
     @Transactional(readOnly = false)
     public void deleteById(int id){
         int delete_pose_id = photoRepository.findById(id).get().getPose().getId();
-        // 사진 삭제
-        photoRepository.deleteById(id);
         // 해당 사진과 연결된 포즈 삭제
         poseService.delete(delete_pose_id);
+        // 사진 삭제
+        photoRepository.deleteById(id);
+
     }
 
 }

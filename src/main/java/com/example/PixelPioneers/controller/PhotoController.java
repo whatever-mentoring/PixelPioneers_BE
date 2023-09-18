@@ -46,15 +46,7 @@ public class PhotoController {
     @ApiOperation(value="사진첩에 사진 등록", notes = "{album_id}에 해당하는 사진첩에 사진을 등록합니다.")
     @ApiImplicitParam(name = "album_id",value = "사진첩 아이디")
     public ResponseEntity<?> album_insert_photo(@ModelAttribute PhotoRequest photoRequest, @PathVariable int album_id) throws Exception {
-
-        Photo new_photo = Photo.builder().name(photoRequest.getName())
-                .peopleCount(photoRequest.getPeopleCount())
-                .created_at(photoRequest.getCreated_at())
-                .open(photoRequest.isOpen())
-                .album(albumJPARepository.findById(album_id).get())
-                .build();
-
-        PhotoResponse.FindByIdDTO responseDTO = photoService.create_new(new_photo, photoRequest.getFile());
+        PhotoResponse.FindByIdDTO responseDTO = photoService.create_new(photoRequest, album_id);
 
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
 
