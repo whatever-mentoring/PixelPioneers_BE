@@ -1,5 +1,6 @@
 package com.example.PixelPioneers.Service;
 
+import com.amazonaws.SdkClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,8 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+
+import java.io.IOException;
 
 @Component
 @Slf4j
@@ -39,5 +42,13 @@ public class S3Uploader {
 
 
         return imagePath;
+    }
+
+    public void deleteFile(String fileName) throws IOException {
+        try{
+            amazonS3Client.deleteObject(S3Bucket, fileName);
+        } catch (SdkClientException e) {
+            throw  new IOException("Error deleting file from S3", e);
+        }
     }
 }
