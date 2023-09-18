@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface User_AlbumJPARepository extends JpaRepository<User_Album, Integer> {
     @Query("select ua.album from User_Album ua where ua.user.id = :userId")
@@ -24,4 +25,7 @@ public interface User_AlbumJPARepository extends JpaRepository<User_Album, Integ
     @Transactional
     @Query("delete from User_Album ua where ua.album.id = :albumId and ua.user.id = :userId")
     void deleteByUserIdAndAlbumId(@Param("albumId") int albumId, @Param("userId") int userId);
+
+    @Query("select ua.album.id from User_Album ua where ua.user.role = :role")
+    List<Integer> findAlbumByRole(String role);
 }

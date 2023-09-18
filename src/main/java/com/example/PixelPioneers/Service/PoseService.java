@@ -1,8 +1,14 @@
 package com.example.PixelPioneers.Service;
 
 import com.example.PixelPioneers.DTO.PoseResponse;
+import com.example.PixelPioneers.DTO.UserResponse;
+import com.example.PixelPioneers.config.errors.exception.Exception404;
+import com.example.PixelPioneers.entity.Album;
+import com.example.PixelPioneers.entity.Photo;
 import com.example.PixelPioneers.entity.Pose;
+import com.example.PixelPioneers.repository.PhotoJPARepository;
 import com.example.PixelPioneers.repository.PoseJPARepository;
+import com.example.PixelPioneers.repository.User_AlbumJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,11 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
 @Service
 public class PoseService {
+
+    private final User_AlbumJPARepository user_albumJPARepository;
     private final PoseJPARepository poseJPARepository;
 
     /**
@@ -88,46 +97,39 @@ public class PoseService {
      * 랜덤 포즈 조회
      * 인원 수에 따른 랜덤 포즈 개별 조회
      */
-    public PoseResponse.PoseDTO randomPoseByPeopleCount(int peopleCount) {
-        List<Pose> responseDTOs = new ArrayList<>();
-
-        List<Pose> poses = poseJPARepository.findAll(); // List<Pose> poses = {관리자가 올린 사진을 가져오는 코드} 로 수정하기
-
-        for(Pose pose : poses){
-            if(pose.getPeopleCount() == peopleCount){
-                responseDTOs.add(pose);
-            }
-        }
+    public PoseResponse.PoseDTO randomPoseDetailByPeopleCount(int peopleCount) {
+        List<Integer> albumIdList = user_albumJPARepository.findAlbumByRole("ROLE_ADMIN");
+        List<Pose> poseList = poseJPARepository.findByAlbumIdAndPeopleCount(albumIdList, peopleCount);
 
         Random random = new Random();
         random.setSeed(System.currentTimeMillis());
-        int randomIndex = random.nextInt(poses.size());
-        Pose randomPose = responseDTOs.get(randomIndex);
+
+        int randomIndex = random.nextInt(poseList.size());
+        Pose randomPose = poseList.get(randomIndex);
 
         return new PoseResponse.PoseDTO(randomPose);
     }
 
     /**
      * 포즈 모아보기
-     * 포즈 등록
-     * - 사진이 최초 등록된 경우 동시에 수행
+     * 카테고리와 인원 수를 선택했을 경우, 카테고리와 인원 수에 따른 포즈 전체 조회
      */
-    @Transactional(readOnly = false)
-    public Pose create_new() {
-        Pose pose = Pose.builder()
-                .build();
+    public List<PoseResponse.PoseDTO> poseListByCategoryAndPeopleCount(String category, int peopleCount) {
+        List<Integer> albumIdList = user_albumJPARepository.findAlbumByRole(category);
+        List<Pose> poseList = poseJPARepository.findByAlbumIdAndPeopleCount(albumIdList, peopleCount);
 
-        poseJPARepository.save(pose);
+        List<Pose> openPoseList = new ArrayList<>();
+        for (Pose pose : poseList) {
+            if (pose.getPhoto().isOpen()) {
+                openPoseList.add(pose);
+            }
+        }
 
-        return pose;
+        List<PoseResponse.PoseDTO> responseDTOs = openPoseList.stream()
+                .map(pose -> new PoseResponse.PoseDTO(pose))
+                .collect(Collectors.toList());
+
+        return responseDTOs;
     }
 
-    /**
-     * 포즈 모아보기
-     * 포즈 삭제
-     * - 연결된 사진이 삭제된 경우 동시에 수행
-     */
-    public void delete(int id){
-        poseJPARepository.deleteById(id);
-    }
 }

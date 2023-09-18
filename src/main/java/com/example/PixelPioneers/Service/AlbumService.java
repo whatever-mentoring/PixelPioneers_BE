@@ -112,17 +112,4 @@ public class AlbumService {
     public void deleteAlbumMember(int id, User sessionUser) {
         user_albumJPARepository.deleteByUserIdAndAlbumId(id, sessionUser.getId());
     }
-
-
-//    public List<Photo_AlbumResponse.FindAllDTO> Photo_FindBy_Fk(int album_id){
-////        List<Photo> photoList = albumRepository.findById(album_id).get().getPhotos();
-//        List<Photo_AlbumResponse.FindAllDTO> responseDTOs = new ArrayList<>();
-//
-////        for(Photo item : photoList){
-////            responseDTOs.add(new Photo_AlbumResponse.FindAllDTO(item));
-////        }
-//
-//        return responseDTOs;
-//    }
-
 }

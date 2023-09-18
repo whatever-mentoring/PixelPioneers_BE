@@ -1,9 +1,16 @@
 package com.example.PixelPioneers.Service;
 
 import com.example.PixelPioneers.DTO.PhotoResponse;
+<<<<<<< HEAD
 import com.example.PixelPioneers.entity.Pose;
 import com.example.PixelPioneers.entity.Photo;
+=======
+import com.example.PixelPioneers.config.errors.exception.Exception404;
+import com.example.PixelPioneers.entity.*;
+import com.example.PixelPioneers.repository.AlbumJPARepository;
+>>>>>>> cosmos-1885
 import com.example.PixelPioneers.repository.PhotoJPARepository;
+import com.example.PixelPioneers.repository.PoseJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +25,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class PhotoService {
-    private final PhotoJPARepository photoRepository;
-    @Autowired
-    private S3Uploader s3Uploader;
-    private final PoseService poseService;
+    private final PhotoJPARepository photoJPARepository;
+    private final AlbumJPARepository albumJPARepository;
+    private final PoseJPARepository poseJPARepository;
 
     /**
      * 아카이브
@@ -58,16 +64,11 @@ public class PhotoService {
 
         String imgurl = s3Uploader.upload(image, "photo_images");
 
-        new_photo = new_photo.toBuilder()
-                .pose(pose)
-                .image(imgurl)
-                .build();
+        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(requestDTO.getImage()).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).album(album).build();
+        Photo photo = photoJPARepository.save(newPhoto);
 
-        photoRepository.save(new_photo);
-
-        pose.update(new_photo.getPeopleCount(), new_photo.getImage());
-
-        Optional<Photo> photo = photoRepository.findById(new_photo.getId());
+        Pose newPose = Pose.builder().photo(photo).build();
+        poseJPARepository.save(newPose);
 
         return new PhotoResponse.FindByIdDTO(photo);
     }
@@ -94,5 +95,4 @@ public class PhotoService {
         // 해당 사진과 연결된 포즈 삭제
         poseService.delete(delete_pose_id);
     }
-
 }
