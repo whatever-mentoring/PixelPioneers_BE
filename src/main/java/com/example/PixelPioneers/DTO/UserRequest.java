@@ -41,7 +41,7 @@ public class UserRequest {
                     .password(password)
                     .nickname(nickname)
                     .image(imgURL)
-                    .role(nickname.equals("ADMIN") ? "ROLE_ADMIN" : "ROLE_USER")
+                    .role("ROLE_USER")
                     .build();
         }
     }
@@ -68,7 +68,6 @@ public class UserRequest {
     @Getter
     @Setter
     public static class UserUpdateDTO {
-        @NotNull
         private String nickname;
     }
 }
