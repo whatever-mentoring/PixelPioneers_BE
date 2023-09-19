@@ -46,4 +46,14 @@ public class PhotoRestController {
         photoService.deletePhoto(photoId, userDetails.getUser());
         return ResponseEntity.ok(ApiUtils.success(null));
     }
+
+    @PostMapping("/photos/{id}")
+    @ApiOperation(value="사진 공개범위 변경", notes = "{id}에 해당하는 사진이 현재 전체공개라면 비공개로, 비공개라면 전체공개로 변경")
+    @ApiImplicitParam(name = "id",value = "사진 아이디")
+    public ResponseEntity<?> updateById(@PathVariable int id){
+        PhotoResponse.FindByIdDTO photo = photoService.updateById(id);
+
+        return ResponseEntity.ok().body(ApiUtils.success(photo));
+
+    }
 }

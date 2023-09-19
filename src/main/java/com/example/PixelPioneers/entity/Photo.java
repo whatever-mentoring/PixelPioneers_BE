@@ -67,4 +67,8 @@ public class Photo {
         this.album = photo.getAlbum();
         this.pose = photo.getPose();
     }
+
+    public void updateopen(boolean open){
+        this.open = open;
+    }
 }

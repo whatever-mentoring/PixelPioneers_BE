@@ -61,4 +61,17 @@ public class PhotoService {
             photoJPARepository.delete(photo);
         }
     }
+
+    /**
+     * 아카이브
+     * 사진 공개범위 변경
+     */
+    @Transactional(readOnly = false)
+    public PhotoResponse.FindByIdDTO updateById(int id){
+        Photo photo = photoJPARepository.findById(id).get();
+
+        photo.updateopen((photo.isOpen() == true) ? false : true);
+
+        return new PhotoResponse.FindByIdDTO(Optional.of(photo));
+    }
 }

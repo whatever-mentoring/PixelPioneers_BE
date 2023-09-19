@@ -56,28 +56,28 @@ public class PhotoResponse {
 //        }
 //    }
 //
-//    @Getter
-//    @Setter
-//    public static class FindByIdDTO {
-//        private int id;
-//        private String name;
-//        private String image;
-//        private int peopleCount;
-//        private String created_at;
-//        private boolean open;
-//        private int album_id;
-//        private String album_name;
-//        private int pose_id;
-//
-//        public FindByIdDTO(Optional<Photo> photo) {
-//            this.id = photo.get().getId();
-//            this.name = photo.get().getName();
-//            this.image = photo.get().getImage();
-//            this.peopleCount = photo.get().getPeopleCount();
-//            this.open = photo.get().isOpen();
-//            this.album_id = photo.get().getAlbum().getId();
-//            this.album_name = photo.get().getAlbum().getName();
-//            this.pose_id = photo.get().getPose().getId();
-//        }
-//    }
+    @Getter
+    @Setter
+    public static class FindByIdDTO {
+        private int id;
+        private String name;
+        private String image;
+        private int peopleCount;
+        private String created_at;
+        private boolean open;
+        private int album_id;
+        private String album_name;
+        private int pose_id;
+
+        public FindByIdDTO(Optional<Photo> photo) {
+            this.id = photo.get().getId();
+            this.name = photo.get().getName();
+            this.image = photo.get().getImage();
+            this.peopleCount = photo.get().getPeopleCount();
+            this.open = photo.get().isOpen();
+            this.album_id = photo.get().getAlbum().getId();
+            this.album_name = photo.get().getAlbum().getName();
+            this.pose_id = photo.get().getPose().getId();
+        }
+    }
 }
