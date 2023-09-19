@@ -26,23 +26,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class AlbumService {
+    // S3 이미지 업로드 부분
+    @Autowired
+    private S3Uploader s3Uploader;
     private final UserJPARepository userJPARepository;
     private final User_AlbumJPARepository user_albumJPARepository;
     private final AlbumJPARepository albumJPARepository;
     private final PhotoJPARepository photoJPARepository;
-
-    // S3 이미지 업로드 부분
-    @Autowired
-    private S3Uploader s3Uploader;
-
-//    public AlbumResponse.FindByIdDTO findById(int album_id) {
-//        Optional<Album> album = albumRepository.findById(album_id);
-//        return new AlbumResponse.FindByIdDTO(album);
-//    }
 
     public void addAlbum(AlbumRequest.AlbumAddDTO requestDTO, MultipartFile file, User sessionUser) throws Exception {
         String imgurl = s3Uploader.upload(file, "album_cover");
@@ -72,17 +66,17 @@ public class AlbumService {
 
         return responseDTOs;
     }
-    public PhotoResponse.PhotoListDTO findPhotoList(int id, int page) {
+
+    public List<PhotoResponse.PhotoListDTO> findPhotoList(int id, int page) {
         Pageable pageable = PageRequest.of(page, 10);
         Page<Photo> pageContent = photoJPARepository.findByAlbumId(id, pageable);
 
-        List<Photo> photos = new ArrayList<>();
 
-        photos = pageContent.getContent().stream()
-                .map(photo -> new Photo(photo))
+        List<PhotoResponse.PhotoListDTO> responseDTOs = pageContent.getContent().stream()
+                .map(photo -> new PhotoResponse.PhotoListDTO(photo))
                 .collect(Collectors.toList());
 
-        return new PhotoResponse.PhotoListDTO(photos);
+        return responseDTOs;
     }
 
     @Transactional
@@ -91,7 +85,7 @@ public class AlbumService {
                 .orElseThrow(() -> new Exception404("사진첩이 존재하지 않습니다."));
 
         // 기존 사진첩 대표사진 S3에서 삭제
-        String imgURL = albumJPARepository.findById(id).get().getImage();
+        String imgURL = album.getImage();
         String key = imgURL.substring(61);
         s3Uploader.deleteFile(key);
         // 사진첩 대표사진 변경

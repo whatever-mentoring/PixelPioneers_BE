@@ -27,12 +27,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-    private final PasswordEncoder passwordEncoder;
-    private final UserJPARepository userJPARepository;
-
     // S3 이미지 업로드 부분
     @Autowired
     private S3Uploader s3Uploader;
+    private final PasswordEncoder passwordEncoder;
+    private final UserJPARepository userJPARepository;
 
     public void emailCheck(String email) {
         Optional<User> optionalUser = userJPARepository.findByEmail(email);
@@ -45,10 +44,10 @@ public class UserService {
     public void join(UserRequest.JoinDTO requestDTO, MultipartFile file) throws Exception {
         emailCheck(requestDTO.getEmail());
 
-        String imgurl = s3Uploader.upload(file, "user_profile");
+        String imgURL = s3Uploader.upload(file, "user_profile");
 
         requestDTO.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
-        User user = userJPARepository.save(requestDTO.toEntity(imgurl));
+        User user = userJPARepository.save(requestDTO.toEntity(imgURL));
     }
 
     public String login(UserRequest.LoginDTO requestDTO) {
@@ -110,22 +109,6 @@ public class UserService {
         return access_token;
     }
 
-    @Transactional
-    public UserResponse.UserListDTO updateUser(int id, UserRequest.UserUpdateDTO updateDTO, MultipartFile file) throws Exception {
-        User user = userJPARepository.findById(id)
-                .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
-
-        // 기존 사용자 프로필사진 S3에서 삭제
-        String imgURL = userJPARepository.findById(id).get().getImage();
-        String key = imgURL.substring(61);
-        s3Uploader.deleteFile(key);
-        // 사용자 프로필사진 변경
-        String new_imgurl = s3Uploader.upload(file, "user_profile");
-
-        user.update(updateDTO.getNickname(), new_imgurl);
-        return new UserResponse.UserListDTO(user);
-    }
-
     public void kakaoLogin(String access_token) throws Exception {
         String requestURL = "https://kapi.kakao.com/v2/user/me";
 
@@ -171,5 +154,23 @@ public class UserService {
                 .map(user -> new UserResponse.UserListDTO(user))
                 .collect(Collectors.toList());
         return responseDTOs;
+    }
+
+    @Transactional
+    public UserResponse.UserListDTO updateUser(int id, UserRequest.UserUpdateDTO updateDTO, MultipartFile file, User sessionUser) throws Exception {
+        User user = userJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
+
+        if (user.getId() == sessionUser.getId()) {
+            // 기존 사용자 프로필사진 S3에서 삭제
+            String imgURL = user.getImage();
+            String key = imgURL.substring(61);
+            s3Uploader.deleteFile(key);
+            // 사용자 프로필사진 변경
+            String new_imgURL = s3Uploader.upload(file, "user_profile");
+
+            user.update(updateDTO.getNickname(), new_imgURL);
+        }
+        return new UserResponse.UserListDTO(user);
     }
 }
