@@ -55,10 +55,10 @@ public class UserService {
         String imgURL = s3Uploader.upload(file, "user_profile");
 
         requestDTO.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
-        User user = userJPARepository.save(requestDTO.toEntity(imgURL));
+        userJPARepository.save(requestDTO.toEntity(imgURL));
     }
 
-    public String login(UserRequest.LoginDTO requestDTO) {
+    public UserResponse.LoginDTO login(UserRequest.LoginDTO requestDTO) {
         User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
                 () -> new Exception400("잘못된 이메일입니다.")
         );
@@ -66,7 +66,7 @@ public class UserService {
         if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())){
             throw new Exception400("잘못된 비밀번호입니다.");
         }
-        return JWTTokenProvider.create(user);
+        return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
     }
 
     public String getKakaoAccessToken(String code) {
