@@ -18,6 +18,13 @@ public class UserRequest {
         private String email;
     }
 
+    @Getter
+    @Setter
+    public static class NicknameCheckDTO {
+        @NotEmpty
+        @Size(min = 1, max = 8, message = "8자 이내로 입력해주세요.")
+        private String nickname;
+    }
 
     @Getter
     @Setter

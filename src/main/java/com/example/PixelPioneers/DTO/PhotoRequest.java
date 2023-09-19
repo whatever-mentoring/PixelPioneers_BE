@@ -24,4 +24,11 @@ public class PhotoRequest {
         @NotNull
         private boolean open;
     }
+
+    @Getter
+    @Setter
+    public static class PhotoIsOpenUpdateDTO {
+        @NotNull
+        private boolean open;
+    }
 }
