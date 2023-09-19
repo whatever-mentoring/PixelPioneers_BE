@@ -41,6 +41,16 @@ public class UserRestController {
     }
 
     /**
+     * 닉네임 중복 확ㅇ니
+     */
+    @ApiOperation(value="닉네임 중복 확인", notes = "중복된 닉네임이 있는지 확인합니다. 입력 해야하는 값: nicknameCheckDTO")
+    @PostMapping("/email/check")
+    public ResponseEntity<?> nicknameCheck(@RequestBody @Valid UserRequest.NicknameCheckDTO nicknameCheckDTO, Errors errors) {
+        userService.nicknameCheck(nicknameCheckDTO.getNickname());
+        return ResponseEntity.ok(ApiUtils.success(true));
+    }
+
+    /**
      * 회원가입
      */
     @ApiOperation(value="회원가입", notes = "swagger에서 테스트 불가")
