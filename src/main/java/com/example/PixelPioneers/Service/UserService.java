@@ -57,7 +57,7 @@ public class UserService {
     public String getKakaoAccessToken(String code) {
         String access_token = "";
         String refresh_token = "";
-        String requestURL = "https://kauth.kakao.com/login/kakao";
+        String requestURL = "https://kauth.kakao.com/oauth/token";
 
         try {
             URL url = new URL(requestURL);
@@ -70,13 +70,12 @@ public class UserService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=b59aee3993ebe9ad7fbb5727b2539f35");
-            sb.append("&redirect_uri=http://localhost:8080/login/kakao");
+            sb.append("&redirect_uri=http://localhost:3000/login/kakao");
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
 
-            int responseCode = connection.getResponseCode();
-
+//            int responseCode = connection.getResponseCode();
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = "";
             String result = "";
