@@ -68,7 +68,7 @@ public class Photo {
         this.pose = photo.getPose();
     }
 
-    public void updateopen(boolean open){
+    public void updateIsOpen(boolean open){
         this.open = open;
     }
 }
