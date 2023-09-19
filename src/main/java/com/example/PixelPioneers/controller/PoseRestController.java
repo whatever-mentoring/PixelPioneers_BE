@@ -39,7 +39,7 @@ public class PoseRestController {
      * 에 따라 포즈 전체 조회
      */
     @GetMapping("/poses")
-    @ApiOperation(value="포즈 전체 조회", notes = "category에 해당하는 포즈를 전체 조회합니다.(현재는 ROLE_USER만 가능) 입력 해야하는 값: category, peopleCount")
+    @ApiOperation(value="포즈 전체 조회", notes = "category에 해당하는 포즈를 전체 조회합니다. 입력 해야하는 값: category, peopleCount")
     @ApiImplicitParam(name = "category",value = "ROLE_USER or ROLE_ADMIN")
     public ResponseEntity<?> PoseListByPeopleCount(@RequestParam(value = "category") String category, @RequestParam(value = "peopleCount") int peopleCount) {
         List<PoseResponse.PoseDTO> responseDTOs = poseService.poseListByCategoryAndPeopleCount(category, peopleCount);
@@ -47,8 +47,8 @@ public class PoseRestController {
     }
 
     @GetMapping("/poses/{id}")
-    @ApiOperation(value="포즈 1개 조회", notes = "category에 해당하는 포즈를 1개를 조회합니다.(현재는 ROLE_USER만 가능) 입력 해야하는 값: category, peopleCount")
-    @ApiImplicitParam(name = "category",value = "ROLE_USER or ROLE_ADMIN")
+    @ApiOperation(value="포즈 1개 조회", notes = "{id}에 해당하는 포즈를 조회합니다. 입력 해야하는 값: id")
+    @ApiImplicitParam(name = "id",value = "포즈 아이디")
     public ResponseEntity<?> PoseDetail(@PathVariable int id) {
         PoseResponse.PoseDTO responseDTO = poseService.findPoseDetail(id);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
