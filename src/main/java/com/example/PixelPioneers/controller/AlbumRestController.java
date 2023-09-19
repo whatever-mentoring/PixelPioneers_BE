@@ -52,7 +52,7 @@ public class AlbumRestController {
     @ApiOperation(value="로그인 한 사용자의 사진첩 1개의 사진 전체 조회")
     @ApiImplicitParam(name = "id",value = "사진첩 아이디")
     public ResponseEntity<?> photoList(@PathVariable int id, @RequestParam(value = "page", defaultValue = "0") Integer page) {
-        PhotoResponse.PhotoListDTO responseDTOs = albumService.findPhotoList(id, page);
+        List<PhotoResponse.PhotoListDTO> responseDTOs = albumService.findPhotoList(id, page);
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 

@@ -5,6 +5,7 @@ import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.UserRequest;
 import com.example.PixelPioneers.DTO.UserResponse;
 import com.example.PixelPioneers.Service.UserService;
+import com.example.PixelPioneers.config.auth.CustomUserDetails;
 import com.example.PixelPioneers.config.jwt.JWTTokenProvider;
 import com.example.PixelPioneers.config.utils.ApiUtils;
 import io.swagger.annotations.Api;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,7 +45,7 @@ public class UserRestController {
      */
     @ApiOperation(value="회원가입", notes = "swagger에서 테스트 불가")
     @PostMapping(value = "/join", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> join(@RequestPart @Valid UserRequest.JoinDTO requestDTO, @RequestPart MultipartFile file, Errors errors) throws Exception { //S3 업로드 위한 Exception
+    public ResponseEntity<?> join(@RequestPart @Valid UserRequest.JoinDTO requestDTO, Errors errors, @RequestPart MultipartFile file) throws Exception { //S3 업로드 위한 Exception
         userService.join(requestDTO, file);
         return ResponseEntity.ok().body(ApiUtils.success(true));
     }
@@ -59,17 +61,6 @@ public class UserRestController {
     }
 
     /**
-     * 1명의 유저 수정
-     */
-    @ApiOperation(value="1명의 유저 수정", notes = "입력 해야하는 값: id, nickname, file")
-    @ApiImplicitParam(name = "id",value = "사용자 아이디")
-    @PutMapping(value = "/user/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> userUpdate(@PathVariable int id, @RequestPart @Valid UserRequest.UserUpdateDTO updateDTO, @RequestPart MultipartFile file, Errors errors) throws Exception {
-        UserResponse.UserListDTO responseDTO = userService.updateUser(id, updateDTO, file);
-        return ResponseEntity.ok(ApiUtils.success(responseDTO));
-    }
-
-    /**
      * 카카오 로그인
      */
     @ApiOperation(value="카카오 로그인", notes = "카카오로 로그인합니다.")
@@ -78,11 +69,23 @@ public class UserRestController {
         String access_token = userService.getKakaoAccessToken(code);
     }
 
-
+    /**
+     * 자동 완성 기능 사용 시, 사용자 전체 조회
+     */
     @PostMapping("/users")
     public ResponseEntity<?> userList(@RequestBody @Valid UserRequest.UserListDTO requestDTO, Errors errors) {
         List<UserResponse.UserListDTO> responseDTOs = userService.findUserList(requestDTO);
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 
+    /**
+     * 사용자 1명 수정
+     */
+    @ApiOperation(value="1명의 유저 수정", notes = "입력 해야하는 값: id, nickname, file")
+    @ApiImplicitParam(name = "id",value = "사용자 아이디")
+    @PutMapping(value = "/users/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> userUpdate(@PathVariable int id, @RequestPart @Valid UserRequest.UserUpdateDTO updateDTO, Errors errors, @RequestPart MultipartFile file, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        UserResponse.UserListDTO responseDTO = userService.updateUser(id, updateDTO, file, userDetails.getUser());
+        return ResponseEntity.ok(ApiUtils.success(responseDTO));
+    }
 }

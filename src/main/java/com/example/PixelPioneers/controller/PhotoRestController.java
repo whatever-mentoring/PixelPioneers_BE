@@ -27,16 +27,6 @@ public class PhotoRestController {
     private final PhotoService photoService;
 
     /**
-     * 사진을 올린 사용자만 사진 삭제
-     */
-    @DeleteMapping("/albums/{albumId}/photos/{photoId}")
-    @ApiOperation(value="사진을 올린 사용자만 사진 삭제", notes = "입력 해야하는 값: albumId, photoId")
-    public ResponseEntity<?> deletePhoto(@PathVariable int albumId, @PathVariable int photoId, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        photoService.deletePhoto(photoId, userDetails.getUser());
-        return ResponseEntity.ok(ApiUtils.success(null));
-    }
-
-    /**
      * 사진 생성
      */
     @PostMapping(value = "/albums/{id}/photos", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -47,13 +37,13 @@ public class PhotoRestController {
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-    @PostMapping("/photos/{id}")
-    @ApiOperation(value="사진 공개범위 변경", notes = "{id}에 해당하는 사진이 현재 전체공개라면 비공개로, 비공개라면 전체공개로 변경")
-    @ApiImplicitParam(name = "id",value = "사진 아이디")
-    public ResponseEntity<?> updateById(@PathVariable int id){
-        PhotoResponse.FindByIdDTO photo = photoService.updateById(id);
-
-        return ResponseEntity.ok().body(ApiUtils.success(photo));
-
+    /**
+     * 사진을 올린 사용자만 사진 삭제
+     */
+    @DeleteMapping("/albums/{albumId}/photos/{photoId}")
+    @ApiOperation(value="사진을 올린 사용자만 사진 삭제", notes = "입력 해야하는 값: albumId, photoId")
+    public ResponseEntity<?> deletePhoto(@PathVariable int albumId, @PathVariable int photoId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        photoService.deletePhoto(photoId, userDetails.getUser());
+        return ResponseEntity.ok(ApiUtils.success(null));
     }
 }
