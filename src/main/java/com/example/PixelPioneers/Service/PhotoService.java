@@ -49,6 +49,17 @@ public class PhotoService {
 
     /**
      * 아카이브
+     * 사진 조회
+     */
+    public PhotoResponse.PhotoDetailDTO findPhotoDetail(int photoId) {
+        Photo photo = photoJPARepository.findById(photoId)
+                .orElseThrow(() -> new Exception404("사진이 존재하지 않습니다."));
+
+        return new PhotoResponse.PhotoDetailDTO(photo);
+    }
+
+    /**
+     * 아카이브
      * 사진 삭제
      * 연결된 포즈 함께 삭제
      */
@@ -66,12 +77,15 @@ public class PhotoService {
      * 아카이브
      * 사진 공개범위 변경
      */
-    @Transactional(readOnly = false)
-    public PhotoResponse.FindByIdDTO updateById(int id){
-        Photo photo = photoJPARepository.findById(id).get();
+    @Transactional
+    public PhotoResponse.PhotoDetailDTO updatePhotoIsOpen(int photoId, PhotoRequest.PhotoIsOpenUpdateDTO requestDTO, User user){
+        Photo photo = photoJPARepository.findById(photoId)
+                        .orElseThrow(() -> new Exception404("사진이 존재하지 않습니다."));
 
-        photo.updateopen((photo.isOpen() == true) ? false : true);
+        if (user.getId() == photo.getUser().getId()) {
+            photo.updateIsOpen(requestDTO.isOpen());
+        }
 
-        return new PhotoResponse.FindByIdDTO(Optional.of(photo));
+        return new PhotoResponse.PhotoDetailDTO(photo);
     }
 }

@@ -40,9 +40,17 @@ public class UserService {
         }
     }
 
+    public void nicknameCheck(String nickname) {
+        Optional<User> optionalUser = userJPARepository.findByNickname(nickname);
+        if (optionalUser.isPresent()) {
+            throw new Exception400("동일한 닉네임이 존재합니다.");
+        }
+    }
+
     @Transactional
     public void join(UserRequest.JoinDTO requestDTO, MultipartFile file) throws Exception {
         emailCheck(requestDTO.getEmail());
+        nicknameCheck(requestDTO.getNickname());
 
         String imgURL = s3Uploader.upload(file, "user_profile");
 
