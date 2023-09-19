@@ -92,7 +92,7 @@ public class UserRestController {
     /**
      * 사용자 1명 수정
      */
-    @ApiOperation(value="1명의 유저 수정", notes = "입력 해야하는 값: id, nickname, file")
+    @ApiOperation(value="1명의 유저 수정", notes = "입력 해야하는 값: id, nickname, file.")
     @ApiImplicitParam(name = "id",value = "사용자 아이디")
     @PutMapping(value = "/users/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> userUpdate(@PathVariable int id, @RequestPart @Valid UserRequest.UserUpdateDTO updateDTO, Errors errors, @RequestPart MultipartFile file, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
