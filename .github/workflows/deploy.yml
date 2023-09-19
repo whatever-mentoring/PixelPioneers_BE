@@ -12,7 +12,6 @@ env:
   S3_BUCKET_NAME: pixelpioneers-bucket
   CODE_DEPLOY_APPLICATION_NAME: Pixelpioneers
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: Pixelpioneers-deployment-group
-  APPLICATION: ${{ secrets.APPLICATION }}
 
 permissions:
   contents: read
@@ -29,9 +28,11 @@ jobs:
       uses: actions/checkout@v3
 
     - uses : actions/checkout@v3
-    - run : touch ./src/main/resources/application.properties
-    - run : echo "${{ env.APPLICATION }}" > ./src/main/resources/application.properties
-    - run : cat ./src/main/resources/application.properties
+    - run: |
+          cd ./src/main/resources
+          touch ./application.properties
+    - run : echo "${{ secrets.APPLICATION }}" > ./application.properties
+    - run : cat ./application.properties
 
     # gradlew 권한 추가
     - name: Run chmod to make gradlew executable
