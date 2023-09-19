@@ -33,12 +33,6 @@ public class Album {
     @Column
     private LocalDate created_at;
 
-//    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
-//    private List<User_Album> user_albumList = new ArrayList<>();
-
-//    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
-//    private List<Photo> photos = new ArrayList<>();
-
     @Builder
     public Album(int id, String name, String image){
         this.id = id;
