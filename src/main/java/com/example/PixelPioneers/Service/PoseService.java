@@ -1,11 +1,16 @@
 package com.example.PixelPioneers.Service;
 
+import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.PoseResponse;
 import com.example.PixelPioneers.config.errors.exception.Exception404;
+import com.example.PixelPioneers.entity.Album;
 import com.example.PixelPioneers.entity.Pose;
 import com.example.PixelPioneers.repository.PoseJPARepository;
 import com.example.PixelPioneers.repository.User_AlbumJPARepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,9 +48,12 @@ public class PoseService {
      * 포즈 모아보기
      * 카테고리와 인원 수를 선택했을 경우, 카테고리와 인원 수에 따른 포즈 전체 조회
      */
-    public List<PoseResponse.PoseDTO> poseListByCategoryAndPeopleCount(String category, int peopleCount) {
+    public List<PoseResponse.PoseDTO> poseListByCategoryAndPeopleCount(String category, int peopleCount, int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+
         List<Integer> albumIdList = user_albumJPARepository.findAlbumByRole(category);
-        List<Pose> poseList = poseJPARepository.findByAlbumIdAndPeopleCount(albumIdList, peopleCount);
+        Page<Pose> pageContent = poseJPARepository.findByAlbumIdAndPeopleCount(albumIdList, peopleCount, pageable);
+        List<Pose> poseList = pageContent.toList();
 
         List<Pose> openPoseList = new ArrayList<>();
         for (Pose pose : poseList) {
