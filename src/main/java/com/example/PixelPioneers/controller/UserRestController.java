@@ -83,9 +83,9 @@ public class UserRestController {
      * 자동 완성 기능 사용 시, 사용자 전체 조회
      */
     @ApiOperation(value="사용자 전체 조회", notes = "자동 완성 기능에 사용하세요.")
-    @PostMapping("/users")
-    public ResponseEntity<?> userList(@RequestBody @Valid UserRequest.UserListDTO requestDTO, Errors errors) {
-        List<UserResponse.UserListDTO> responseDTOs = userService.findUserList(requestDTO);
+    @GetMapping("/users")
+    public ResponseEntity<?> userList(@RequestParam(value = "nickname") String nickname) {
+        List<UserResponse.UserListDTO> responseDTOs = userService.findUserList(nickname);
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 
