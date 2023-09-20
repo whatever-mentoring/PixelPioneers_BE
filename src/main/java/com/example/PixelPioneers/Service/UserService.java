@@ -155,8 +155,8 @@ public class UserService {
         }
     }
 
-    public List<UserResponse.UserListDTO> findUserList(UserRequest.UserListDTO requestDTO) {
-        List<User> userList = userJPARepository.findByNicknameStartingWith(requestDTO.getNickname());
+    public List<UserResponse.UserListDTO> findUserList(String nickname) {
+        List<User> userList = userJPARepository.findByNicknameStartingWith(nickname);
 
         List<UserResponse.UserListDTO> responseDTOs = userList.stream()
                 .map(user -> new UserResponse.UserListDTO(user))
