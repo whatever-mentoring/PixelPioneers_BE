@@ -41,7 +41,7 @@ public class UserRestController {
     }
 
     /**
-     * 닉네임 중복 확ㅇ니
+     * 닉네임 중복 확인
      */
     @ApiOperation(value="닉네임 중복 확인", notes = "중복된 닉네임이 있는지 확인합니다. 입력 해야하는 값: nicknameCheckDTO")
     @PostMapping("/nickname/check")
@@ -82,6 +82,7 @@ public class UserRestController {
     /**
      * 자동 완성 기능 사용 시, 사용자 전체 조회
      */
+    @ApiOperation(value="사용자 전체 조회", notes = "자동 완성 기능에 사용하세요.")
     @PostMapping("/users")
     public ResponseEntity<?> userList(@RequestBody @Valid UserRequest.UserListDTO requestDTO, Errors errors) {
         List<UserResponse.UserListDTO> responseDTOs = userService.findUserList(requestDTO);
