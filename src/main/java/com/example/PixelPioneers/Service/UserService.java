@@ -8,6 +8,7 @@ import com.example.PixelPioneers.config.jwt.JWTTokenProvider;
 import com.example.PixelPioneers.entity.User;
 import com.example.PixelPioneers.repository.UserJPARepository;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,7 +45,7 @@ public class UserService {
         User user = userJPARepository.save(requestDTO.toEntity());
     }
 
-    public String login(UserRequest.LoginDTO requestDTO) {
+    public UserResponse.LoginDTO login(UserRequest.LoginDTO requestDTO) {
         User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
                 () -> new Exception400("잘못된 이메일입니다.")
         );
@@ -51,7 +53,7 @@ public class UserService {
         if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())){
             throw new Exception400("잘못된 비밀번호입니다.");
         }
-        return JWTTokenProvider.create(user);
+        return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
     }
 
     public String getKakaoAccessToken(String code) {
@@ -101,16 +103,17 @@ public class UserService {
         return access_token;
     }
 
-    public void kakaoLogin(String access_token) throws Exception {
+    public HashMap<String, Object> getKakaoUser(String access_token) throws Exception {
         String requestURL = "https://kapi.kakao.com/v2/user/me";
+        HashMap<String, Object> user = new HashMap<>();
 
         try {
             URL url = new URL(requestURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod("GET");
             connection.setDoOutput(true);
-            connection.setRequestProperty("Authorizatioin",  "Bearer " + access_token);
+            connection.setRequestProperty("Authorization",  "Bearer " + access_token);
 
             int responseCode = connection.getResponseCode();
 
@@ -126,17 +129,27 @@ public class UserService {
             JsonElement element = parser.parse(result);
 
             int id = element.getAsJsonObject().get("id").getAsInt();
-            boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
+            JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+            JsonObject profile = kakao_account.get("profile").getAsJsonObject();
+//            JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
 
-            if (hasEmail)  {
-                String email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
-            }
+
+            String email = kakao_account.get("email").getAsString();
+            String nickname = profile.get("nickname").getAsString();
+            String image = profile.get("profile_image_url").getAsString();
+
+            user.put("id", id);
+            user.put("email", email);
+            user.put("nickname", nickname);
+            user.put("image", image);
 
 
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return user;
     }
 
     public List<UserResponse.UserListDTO> findUserList(UserRequest.UserListDTO requestDTO) {
@@ -147,4 +160,15 @@ public class UserService {
                 .collect(Collectors.toList());
         return responseDTOs;
     }
+
+//    public void kakoLogin(String access_token) {
+//        User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
+//                () -> new Exception400("잘못된 이메일입니다.")
+//        );
+//
+//        if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())){
+//            throw new Exception400("잘못된 비밀번호입니다.");
+//        }
+//        return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
+//    }
 }
