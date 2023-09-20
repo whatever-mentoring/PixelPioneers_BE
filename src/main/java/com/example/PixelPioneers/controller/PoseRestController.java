@@ -41,8 +41,8 @@ public class PoseRestController {
     @GetMapping("/poses")
     @ApiOperation(value="포즈 전체 조회", notes = "category에 해당하는 포즈를 전체 조회합니다.(현재는 ROLE_USER만 가능) 입력 해야하는 값: category, peopleCount")
     @ApiImplicitParam(name = "category",value = "ROLE_USER or ROLE_ADMIN")
-    public ResponseEntity<?> PoseListByPeopleCount(@RequestParam(value = "category") String category, @RequestParam(value = "peopleCount") int peopleCount) {
-        List<PoseResponse.PoseDTO> responseDTOs = poseService.poseListByCategoryAndPeopleCount(category, peopleCount);
+    public ResponseEntity<?> PoseListByPeopleCount(@RequestParam(value = "category") String category, @RequestParam(value = "peopleCount") int peopleCount, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+        List<PoseResponse.PoseDTO> responseDTOs = poseService.poseListByCategoryAndPeopleCount(category, peopleCount, page);
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 
