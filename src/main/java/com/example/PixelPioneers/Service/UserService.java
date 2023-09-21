@@ -165,7 +165,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse.UserListDTO updateUser(int id, UserRequest.UserUpdateDTO updateDTO, MultipartFile file, User sessionUser) throws Exception {
+    public UserResponse.UserListDTO updateUser(int id, UserRequest.UserProfileUpdateDTO updateDTO, MultipartFile file, User sessionUser) throws Exception {
         User user = userJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
 
@@ -177,8 +177,35 @@ public class UserService {
             // 사용자 프로필사진 변경
             String new_imgURL = s3Uploader.upload(file, "user_profile");
 
-            user.update(updateDTO.getNickname(), new_imgURL);
+            user.updateProfile(updateDTO.getNickname(), new_imgURL);
         }
+        return new UserResponse.UserListDTO(user);
+    }
+
+    @Transactional
+    public UserResponse.UserListDTO updateUserPassword(int id, UserRequest.UserPasswordUpdateDTO updateDTO, User sessionUser) {
+        User user = userJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
+
+        if(user.getId() == sessionUser.getId()){
+            if(!passwordEncoder.matches(updateDTO.getCurrentPw(), user.getPassword())){
+                throw new Exception400("현재 비밀번호가 틀렸습니다.");
+            }
+
+            if(passwordEncoder.matches(updateDTO.getNewPw(), user.getPassword())){
+                throw new Exception400("새로운 비밀번호는 기존의 비밀번호와 동일하게 설정할 수 없습니다.");
+            }
+//
+            if(!updateDTO.getNewPw().equals(updateDTO.getNewPwConfirm())){
+                throw new Exception400("새로운 비밀번호가 확인과 다릅니다.");
+            }
+
+            user.updatePassword(passwordEncoder.encode(updateDTO.getNewPw()));
+        }
+        else {
+            throw new Exception400("id에 해당하는 사용자와 로그인한 사용자가 다릅니다.");
+        }
+
         return new UserResponse.UserListDTO(user);
     }
 }

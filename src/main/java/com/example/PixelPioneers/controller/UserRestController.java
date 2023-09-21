@@ -1,7 +1,5 @@
 package com.example.PixelPioneers.controller;
 
-import com.example.PixelPioneers.DTO.AlbumRequest;
-import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.UserRequest;
 import com.example.PixelPioneers.DTO.UserResponse;
 import com.example.PixelPioneers.Service.UserService;
@@ -90,13 +88,24 @@ public class UserRestController {
     }
 
     /**
-     * 사용자 1명 수정
+     * 사용자 1명 프로필 수정
      */
-    @ApiOperation(value="1명의 유저 수정", notes = "입력 해야하는 값: id, nickname, file")
+    @ApiOperation(value="1명의 유저 프로필 수정", notes = "입력 해야하는 값: id, updateDTO{ nickname, file }")
     @ApiImplicitParam(name = "id",value = "사용자 아이디")
     @PutMapping(value = "/users/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> userUpdate(@PathVariable int id, @RequestPart @Valid UserRequest.UserUpdateDTO updateDTO, Errors errors, @RequestPart MultipartFile file, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+    public ResponseEntity<?> userUpdate(@PathVariable int id, @RequestPart @Valid UserRequest.UserProfileUpdateDTO updateDTO, Errors errors, @RequestPart MultipartFile file, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         UserResponse.UserListDTO responseDTO = userService.updateUser(id, updateDTO, file, userDetails.getUser());
+        return ResponseEntity.ok(ApiUtils.success(responseDTO));
+    }
+
+    /**
+     * 사용자 1명 비밀번호 수정
+     */
+    @ApiOperation(value="1명의 유저 비밀번호 수정", notes = "입력 해야하는 값: id, updateDTO{ currentPw, newPw, newPwConfirm }")
+    @ApiImplicitParam(name = "id",value = "사용자 아이디")
+    @PutMapping(value = "/users/pwd/{id}")
+    public ResponseEntity<?> userPasswordUpdate(@PathVariable int id, @RequestBody @Valid UserRequest.UserPasswordUpdateDTO updateDTO, Errors errors, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        UserResponse.UserListDTO responseDTO = userService.updateUserPassword(id, updateDTO, userDetails.getUser());
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 }

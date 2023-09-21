@@ -44,8 +44,12 @@ public class User {
         this.role = role;
     }
 
-    public void update(String nickname, String image) {
+    public void updateProfile(String nickname, String image) {
         this.nickname = nickname;
         this.image = image;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 }
