@@ -46,6 +46,9 @@ public class AlbumService {
         Album newAlbum = Album.builder().name(name).image(image).build();
         Album album = albumJPARepository.save(newAlbum);
 
+        User_Album sessionUser_Album = User_Album.builder().user(sessionUser).album(album).build();
+        user_albumJPARepository.save(sessionUser_Album);
+
         List<Integer> userIdList = requestDTO.getUserIdList();
         for (Integer userId: userIdList) {
             User user = userJPARepository.findById(userId)
