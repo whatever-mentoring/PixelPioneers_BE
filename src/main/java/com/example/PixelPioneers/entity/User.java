@@ -4,8 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -36,9 +34,6 @@ public class User {
     @Column
     private String role;
 
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-//    private List<User_Album> user_albumList = new ArrayList<>();
-
     @Builder
     public User(int id, String email, String password, String nickname, String image, String role){
         this.id = id;
@@ -47,5 +42,14 @@ public class User {
         this.nickname = nickname;
         this.image = image;
         this.role = role;
+    }
+
+    public void updateUserProfile(String nickname, String image) {
+        this.nickname = nickname;
+        this.image = image;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 }

@@ -1,9 +1,9 @@
 package com.example.PixelPioneers.Service;
 
-import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.UserRequest;
 import com.example.PixelPioneers.DTO.UserResponse;
 import com.example.PixelPioneers.config.errors.exception.Exception400;
+import com.example.PixelPioneers.config.errors.exception.Exception404;
 import com.example.PixelPioneers.config.jwt.JWTTokenProvider;
 import com.example.PixelPioneers.entity.User;
 import com.example.PixelPioneers.repository.UserJPARepository;
@@ -11,9 +11,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -27,6 +29,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class UserService {
+    // S3 이미지 업로드 부분
+    @Autowired
+    private S3Uploader s3Uploader;
     private final PasswordEncoder passwordEncoder;
     private final UserJPARepository userJPARepository;
 
@@ -37,12 +42,22 @@ public class UserService {
         }
     }
 
+    public void nicknameCheck(String nickname) {
+        Optional<User> optionalUser = userJPARepository.findByNickname(nickname);
+        if (optionalUser.isPresent()) {
+            throw new Exception400("동일한 닉네임이 존재합니다.");
+        }
+    }
+
     @Transactional
-    public void join(UserRequest.JoinDTO requestDTO) {
+    public void join(UserRequest.JoinDTO requestDTO, MultipartFile file) throws Exception {
         emailCheck(requestDTO.getEmail());
+        nicknameCheck(requestDTO.getNickname());
+
+        String imgURL = s3Uploader.upload(file, "user_profile");
 
         requestDTO.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
-        User user = userJPARepository.save(requestDTO.toEntity());
+        userJPARepository.save(requestDTO.toEntity(imgURL));
     }
 
     public UserResponse.LoginDTO login(UserRequest.LoginDTO requestDTO) {
@@ -169,12 +184,55 @@ public class UserService {
         return responseDTO;
     }
 
-    public List<UserResponse.UserListDTO> findUserList(UserRequest.UserListDTO requestDTO) {
-        List<User> userList = userJPARepository.findByNicknameStartingWith(requestDTO.getNickname());
+    public List<UserResponse.UserListDTO> findUserList(String nickname) {
+        List<User> userList = userJPARepository.findByNicknameStartingWith(nickname);
 
         List<UserResponse.UserListDTO> responseDTOs = userList.stream()
                 .map(user -> new UserResponse.UserListDTO(user))
                 .collect(Collectors.toList());
         return responseDTOs;
+    }
+
+    @Transactional
+    public UserResponse.UserListDTO updateUserProfile(int id, UserRequest.UserProfileUpdateDTO updateDTO, MultipartFile file, User sessionUser) throws Exception {
+        User user = userJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
+
+        if (user.getId() == sessionUser.getId()) {
+            // 기존 사용자 프로필사진 S3에서 삭제
+            String imgURL = user.getImage();
+            String key = imgURL.substring(61);
+            s3Uploader.deleteFile(key);
+            // 사용자 프로필사진 변경
+            String new_imgURL = s3Uploader.upload(file, "user_profile");
+
+            user.updateUserProfile(updateDTO.getNickname(), new_imgURL);
+        }
+        return new UserResponse.UserListDTO(user);
+    }
+
+    @Transactional
+    public void updateUserPassword(int id, UserRequest.UserPasswordUpdateDTO updateDTO, User sessionUser) throws Exception {
+        User user = userJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
+
+        if (user.getId() == sessionUser.getId()) {
+            if (passwordEncoder.matches(updateDTO.getCurrentPassword(), user.getPassword()) && !passwordEncoder.matches(updateDTO.getNewPassword(), user.getPassword())) {
+                updateDTO.setNewPassword(passwordEncoder.encode(updateDTO.getNewPassword()));
+                user.updatePassword(updateDTO.getNewPassword());
+            }
+        }
+    }
+
+    @Transactional
+    public void deleteUser(int id, UserRequest.UserDeleteDTO requestDTO, User sessionUser) throws Exception {
+        User user = userJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
+
+        if (user.getId() == sessionUser.getId()) {
+            if (passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
+                userJPARepository.deleteById(id);
+            }
+        }
     }
 }
