@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
@@ -12,23 +13,23 @@ public class PhotoRequest {
     @Getter
     @Setter
     public static class PhotoAddDTO {
-        @NotNull
+        @NotBlank
         private String name;
 
-        @NotNull
+        @NotBlank
         private int peopleCount;
 
-        @NotNull
+        @NotBlank
         private LocalDate created_at;
 
-        @NotNull
+        @NotBlank
         private boolean open;
     }
 
     @Getter
     @Setter
     public static class PhotoIsOpenUpdateDTO {
-        @NotNull
+        @NotBlank
         private boolean open;
     }
 }

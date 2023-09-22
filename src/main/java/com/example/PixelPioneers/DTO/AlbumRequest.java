@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -13,24 +14,23 @@ public class AlbumRequest {
     @Getter
     @Setter
     public static class AlbumAddDTO {
-        @NotNull
+        @NotBlank
         private String name;
 
-        @NotNull
         private List<Integer> userIdList;
     }
 
     @Getter
     @Setter
     public static class AlbumUpdateDTO {
-        @NotNull
+        @NotBlank
         private String name;
     }
 
     @Getter
     @Setter
     public static class AlbumMemberUpdateDTO {
-        @NotNull
+        @NotBlank
         private List<Integer> userIdList;
     }
 }

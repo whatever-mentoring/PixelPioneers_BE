@@ -4,16 +4,13 @@ import com.example.PixelPioneers.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 public class UserRequest {
     @Getter
     @Setter
     public static class EmailCheckDTO {
-        @NotEmpty
+        @NotBlank
         @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일을 올바르게 입력해주세요.")
         private String email;
     }
@@ -21,7 +18,7 @@ public class UserRequest {
     @Getter
     @Setter
     public static class NicknameCheckDTO {
-        @NotEmpty
+        @NotBlank
         @Size(min = 1, max = 8, message = "8자 이내로 입력해주세요.")
         private String nickname;
     }
@@ -29,16 +26,16 @@ public class UserRequest {
     @Getter
     @Setter
     public static class JoinDTO {
-        @NotEmpty
+        @NotBlank
         @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일을 올바르게 입력해주세요.")
         private String email;
 
-        @NotEmpty
+        @NotBlank
         @Size(min = 8, max = 16, message = "8~16자 이내로 입력해주세요.")
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!~`<>,./?;:'\"\\[\\]{}\\\\()|_-])\\S*$", message = "영문 대/소문자, 숫자, 특수문자를 포함해주세요.")
         private String password;
 
-        @NotEmpty
+        @NotBlank
         @Size(min = 1, max = 8, message = "8자 이내로 입력해주세요.")
         private String nickname;
 
@@ -56,11 +53,11 @@ public class UserRequest {
     @Getter
     @Setter
     public static class LoginDTO {
-        @NotEmpty
+        @NotBlank
         @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일을 올바르게 입력해주세요.")
         private String email;
 
-        @NotEmpty
+        @NotBlank
         @Size(min = 8, max = 16, message = "8~16자 이내로 입력해주세요.")
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!~`<>,./?;:'\"\\[\\]{}\\\\()|_-])\\S*$", message = "영문 대/소문자, 숫자, 특수문자를 포함해주세요.")
         private String password;
@@ -68,13 +65,26 @@ public class UserRequest {
 
     @Getter
     @Setter
-    public static class UserListDTO {
+    public static class UserProfileUpdateDTO {
+        @NotBlank
         private String nickname;
     }
 
     @Getter
     @Setter
-    public static class UserUpdateDTO {
-        private String nickname;
+    public static class UserPasswordUpdateDTO {
+        @NotBlank
+        @Size(min = 8, max = 16, message = "8~16자 이내로 입력해주세요.")
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!~`<>,./?;:'\"\\[\\]{}\\\\()|_-])\\S*$", message = "영문 대/소문자, 숫자, 특수문자를 포함해주세요.")
+        private String password;
+    }
+
+    @Getter
+    @Setter
+    public static class UserDeleteDTO {
+        @NotBlank
+        @Size(min = 8, max = 16, message = "8~16자 이내로 입력해주세요.")
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!~`<>,./?;:'\"\\[\\]{}\\\\()|_-])\\S*$", message = "영문 대/소문자, 숫자, 특수문자를 포함해주세요.")
+        private String password;
     }
 }
