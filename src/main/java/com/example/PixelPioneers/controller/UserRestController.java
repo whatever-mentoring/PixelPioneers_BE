@@ -101,6 +101,8 @@ public class UserRestController {
     /**
      * 사용자 1명 비밀번호 수정
      */
+    @ApiOperation(value="사용자 1명 비밀번호 수정", notes = "입력 해야하는 값: id, updateDTO{ currentPassword, newPassword }")
+    @ApiImplicitParam(name = "id",value = "사용자 아이디")
     @PutMapping(value = "/users/{id}/password")
     public ResponseEntity<?> userPasswordUpdate(@PathVariable int id, @RequestBody @Valid UserRequest.UserPasswordUpdateDTO updateDTO, Errors errors, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         userService.updateUserPassword(id, updateDTO, userDetails.getUser());
