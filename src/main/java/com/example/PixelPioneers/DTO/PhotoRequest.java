@@ -20,7 +20,7 @@ public class PhotoRequest {
         @NotNull
         private int peopleCount;
 
-        @NotEmpty
+        @NotNull
         private LocalDate created_at;
 
         @NotNull
