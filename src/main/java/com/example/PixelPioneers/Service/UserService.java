@@ -195,11 +195,15 @@ public class UserService {
         }
     }
 
-//    @Transactional
-//    public void deleteUser(int id, UserRequest.UserDeleteDTO requestDTO, User sessionUser) throws Exception {
-//        User user = userJPARepository.findById(id)
-//                .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
-//
-//        if (user.getId() == sessionUser.getId() && sessionUser.getPassword())
-//    }
+    @Transactional
+    public void deleteUser(int id, UserRequest.UserDeleteDTO requestDTO, User sessionUser) throws Exception {
+        User user = userJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
+
+        if (user.getId() == sessionUser.getId()) {
+            if (passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
+                userJPARepository.deleteById(id);
+            }
+        }
+    }
 }
