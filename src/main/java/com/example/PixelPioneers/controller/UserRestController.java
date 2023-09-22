@@ -51,10 +51,9 @@ public class UserRestController {
      * 카카오 로그인
      */
     @GetMapping("/login/kakao")
-    public void kakaoLogin(@RequestParam String code) throws Exception {
-        String access_token = userService.getKakaoAccessToken(code);
-
-        HashMap<String, Object> kakaoUser = userService.getKakaoUser(access_token);
+    public ResponseEntity<?> kakaoLogin(@RequestParam String code) throws Exception {
+        UserResponse.LoginDTO responseDTO = userService.kakaoLogin(code);
+        return ResponseEntity.ok().header(JWTTokenProvider.HEADER, responseDTO.getJWTToken()).body(ApiUtils.success(responseDTO.getUserDetailDTO()));
     }
 
     @PostMapping("/users")

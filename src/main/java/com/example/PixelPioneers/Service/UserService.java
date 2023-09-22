@@ -106,7 +106,7 @@ public class UserService {
         return access_token;
     }
 
-    public HashMap<String, Object> getKakaoUser(String access_token) throws Exception {
+    public HashMap<String, Object> getKakaoUser(String access_token) {
         String requestURL = "https://kapi.kakao.com/v2/user/me";
         HashMap<String, Object> user = new HashMap<>();
 
@@ -114,7 +114,7 @@ public class UserService {
             URL url = new URL(requestURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod("GET");
             connection.setDoOutput(true);
             connection.setRequestProperty("Authorization",  "Bearer " + access_token);
 
@@ -135,19 +135,14 @@ public class UserService {
 
             int id = element.getAsJsonObject().get("id").getAsInt();
             JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
-            JsonObject profile = kakao_account.get("profile").getAsJsonObject();
-//            JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
-
-
             String email = kakao_account.get("email").getAsString();
-            String nickname = profile.get("nickname").getAsString();
-            String image = profile.get("profile_image_url").getAsString();
+            String nickname = kakao_account.get("profile").getAsJsonObject().get("nickname").getAsString();
+            String image = kakao_account.get("profile").getAsJsonObject().get("profile_image_url").getAsString();
 
             user.put("id", id);
             user.put("email", email);
             user.put("nickname", nickname);
             user.put("image", image);
-
 
             br.close();
         } catch (IOException e) {
@@ -155,6 +150,23 @@ public class UserService {
         }
 
         return user;
+    }
+
+    public UserResponse.LoginDTO kakaoLogin(String code) {
+        String access_token = getKakaoAccessToken(code);
+        HashMap<String, Object> kakaoUser = getKakaoUser(access_token);
+        System.out.println(kakaoUser);
+
+        Optional<User> user = userJPARepository.findByEmail(kakaoUser.get("email").toString());
+        System.out.println(user);
+        if (user.isEmpty()) {
+            UserRequest.JoinDTO joinRequestDTO = new UserRequest.JoinDTO(kakaoUser);
+            join(joinRequestDTO);
+        }
+        UserRequest.LoginDTO loginRequestDTO = new UserRequest.LoginDTO(kakaoUser);
+        UserResponse.LoginDTO responseDTO = login(loginRequestDTO);
+
+        return responseDTO;
     }
 
     public List<UserResponse.UserListDTO> findUserList(UserRequest.UserListDTO requestDTO) {
@@ -165,15 +177,4 @@ public class UserService {
                 .collect(Collectors.toList());
         return responseDTOs;
     }
-
-//    public void kakoLogin(String access_token) {
-//        User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
-//                () -> new Exception400("잘못된 이메일입니다.")
-//        );
-//
-//        if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())){
-//            throw new Exception400("잘못된 비밀번호입니다.");
-//        }
-//        return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
-//    }
 }
