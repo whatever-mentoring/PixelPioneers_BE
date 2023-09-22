@@ -165,7 +165,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse.UserListDTO updateUser(int id, UserRequest.UserUpdateDTO updateDTO, MultipartFile file, User sessionUser) throws Exception {
+    public UserResponse.UserListDTO updateUserProfile(int id, UserRequest.UserProfileUpdateDTO updateDTO, MultipartFile file, User sessionUser) throws Exception {
         User user = userJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
 
@@ -177,8 +177,26 @@ public class UserService {
             // 사용자 프로필사진 변경
             String new_imgURL = s3Uploader.upload(file, "user_profile");
 
-            user.update(updateDTO.getNickname(), new_imgURL);
+            user.updateUserProfile(updateDTO.getNickname(), new_imgURL);
         }
         return new UserResponse.UserListDTO(user);
     }
+
+    @Transactional
+    public void updateUserPassword(int id, UserRequest.UserPasswordUpdateDTO updateDTO, User sessionUser) throws Exception {
+        User user = userJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
+
+        if (user.getId() == sessionUser.getId()) {
+            user.updatePassword(updateDTO.getPassword());
+        }
+    }
+
+//    @Transactional
+//    public void deleteUser(int id, UserRequest.UserDeleteDTO requestDTO, User sessionUser) throws Exception {
+//        User user = userJPARepository.findById(id)
+//                .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
+//
+//        if (user.getId() == sessionUser.getId() && sessionUser.getPassword())
+//    }
 }

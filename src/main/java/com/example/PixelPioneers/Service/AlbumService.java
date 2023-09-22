@@ -46,16 +46,18 @@ public class AlbumService {
         Album newAlbum = Album.builder().name(name).image(image).build();
         Album album = albumJPARepository.save(newAlbum);
 
+        List<User_Album> user_albumList = new ArrayList<>();
         User_Album sessionUser_Album = User_Album.builder().user(sessionUser).album(album).build();
-        user_albumJPARepository.save(sessionUser_Album);
+        user_albumList.add(sessionUser_Album);
 
         List<Integer> userIdList = requestDTO.getUserIdList();
         for (Integer userId: userIdList) {
             User user = userJPARepository.findById(userId)
                     .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
             User_Album newUser_Album = User_Album.builder().user(user).album(album).build();
-            user_albumJPARepository.save(newUser_Album);
+            user_albumList.add(newUser_Album);
         }
+        user_albumJPARepository.saveAll(user_albumList);
     }
 
     public List<AlbumResponse.AlbumDTO> findAlbumListByUser(User user, int page) {
