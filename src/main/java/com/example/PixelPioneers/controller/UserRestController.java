@@ -11,7 +11,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @RestController
@@ -49,8 +51,10 @@ public class UserRestController {
      * 카카오 로그인
      */
     @GetMapping("/login/kakao")
-    public void kakaoLogin(@RequestParam String code) {
+    public void kakaoLogin(@RequestParam String code) throws Exception {
         String access_token = userService.getKakaoAccessToken(code);
+
+        HashMap<String, Object> kakaoUser = userService.getKakaoUser(access_token);
     }
 
     @PostMapping("/users")

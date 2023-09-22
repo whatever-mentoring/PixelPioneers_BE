@@ -77,7 +77,9 @@ public class UserService {
             bw.write(sb.toString());
             bw.flush();
 
-//            int responseCode = connection.getResponseCode();
+            int responseCode = connection.getResponseCode();
+            System.out.println("responseCode: " + responseCode);
+
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = "";
             String result = "";
@@ -85,6 +87,7 @@ public class UserService {
             while ((line = br.readLine()) != null) {
                 result += line;
             }
+            System.out.println("response body: " + result);
 
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
@@ -111,11 +114,12 @@ public class UserService {
             URL url = new URL(requestURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.setRequestProperty("Authorization",  "Bearer " + access_token);
 
             int responseCode = connection.getResponseCode();
+            System.out.println("responseCode: " + responseCode);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = "";
@@ -124,6 +128,7 @@ public class UserService {
             while ((line = br.readLine()) != null) {
                 result += line;
             }
+            System.out.println("response body: " + result);
 
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
