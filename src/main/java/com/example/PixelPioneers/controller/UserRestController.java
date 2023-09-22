@@ -90,13 +90,31 @@ public class UserRestController {
     }
 
     /**
-     * 사용자 1명 수정
+     * 사용자 1명 프로필 수정
      */
     @ApiOperation(value="1명의 유저 수정", notes = "입력 해야하는 값: id, nickname, file")
     @ApiImplicitParam(name = "id",value = "사용자 아이디")
-    @PutMapping(value = "/users/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> userUpdate(@PathVariable int id, @RequestPart @Valid UserRequest.UserUpdateDTO updateDTO, Errors errors, @RequestPart MultipartFile file, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
-        UserResponse.UserListDTO responseDTO = userService.updateUser(id, updateDTO, file, userDetails.getUser());
+    @PutMapping(value = "/users/{id}/profile", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> userProfileUpdate(@PathVariable int id, @RequestPart @Valid UserRequest.UserProfileUpdateDTO updateDTO, Errors errors, @RequestPart MultipartFile file, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        UserResponse.UserListDTO responseDTO = userService.updateUserProfile(id, updateDTO, file, userDetails.getUser());
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
+
+    /**
+     * 사용자 1명 비밀번호 수정
+     */
+    @PutMapping(value = "/users/{id}/password")
+    public ResponseEntity<?> userPasswordUpdate(@PathVariable int id, @RequestBody @Valid UserRequest.UserPasswordUpdateDTO updateDTO, Errors errors, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        userService.updateUserPassword(id, updateDTO, userDetails.getUser());
+        return ResponseEntity.ok(ApiUtils.success(true));
+    }
+
+    /**
+     * 사용자 탈퇴
+     */
+//    @DeleteMapping(value = "/users/{id}")
+//    public ResponseEntity<?> UserDelete(@PathVariable int id, @RequestBody @Valid UserRequest.UserDeleteDTO requestDTO, @AuthenticationPrincipal CustomUserDetails userDetails) {
+//        userService.deleteUser(id, requestDTO, userDetails.getUser());
+//        return ResponseEntity.ok(ApiUtils.success(true));
+//    }
 }
