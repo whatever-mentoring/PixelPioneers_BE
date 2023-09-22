@@ -188,7 +188,10 @@ public class UserService {
                 .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
 
         if (user.getId() == sessionUser.getId()) {
-            user.updatePassword(updateDTO.getPassword());
+            if (passwordEncoder.matches(updateDTO.getCurrentPassword(), user.getPassword()) && !passwordEncoder.matches(updateDTO.getNewPassword(), user.getPassword())) {
+                updateDTO.setNewPassword(passwordEncoder.encode(updateDTO.getNewPassword()));
+                user.updatePassword(updateDTO.getNewPassword());
+            }
         }
     }
 
