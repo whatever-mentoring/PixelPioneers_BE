@@ -8,6 +8,7 @@ import com.example.PixelPioneers.config.jwt.JWTTokenProvider;
 import com.example.PixelPioneers.entity.User;
 import com.example.PixelPioneers.repository.UserJPARepository;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,7 +74,7 @@ public class UserService {
     public String getKakaoAccessToken(String code) {
         String access_token = "";
         String refresh_token = "";
-        String requestURL = "https://kauth.kakao.com/login/kakao";
+        String requestURL = "https://kauth.kakao.com/oauth/token";
 
         try {
             URL url = new URL(requestURL);
@@ -85,12 +87,13 @@ public class UserService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=b59aee3993ebe9ad7fbb5727b2539f35");
-            sb.append("&redirect_uri=http://localhost:8080/login/kakao");
+            sb.append("&redirect_uri=http://localhost:3000/login/kakao");
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
 
             int responseCode = connection.getResponseCode();
+            System.out.println("responseCode: " + responseCode);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = "";
@@ -99,6 +102,7 @@ public class UserService {
             while ((line = br.readLine()) != null) {
                 result += line;
             }
+            System.out.println("response body: " + result);
 
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
@@ -117,18 +121,20 @@ public class UserService {
         return access_token;
     }
 
-    public void kakaoLogin(String access_token) throws Exception {
+    public HashMap<String, Object> getKakaoUser(String access_token) {
         String requestURL = "https://kapi.kakao.com/v2/user/me";
+        HashMap<String, Object> user = new HashMap<>();
 
         try {
             URL url = new URL(requestURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod("GET");
             connection.setDoOutput(true);
-            connection.setRequestProperty("Authorizatioin",  "Bearer " + access_token);
+            connection.setRequestProperty("Authorization",  "Bearer " + access_token);
 
             int responseCode = connection.getResponseCode();
+            System.out.println("responseCode: " + responseCode);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = "";
@@ -137,22 +143,45 @@ public class UserService {
             while ((line = br.readLine()) != null) {
                 result += line;
             }
+            System.out.println("response body: " + result);
 
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
 
             int id = element.getAsJsonObject().get("id").getAsInt();
-            boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
+            JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+            String email = kakao_account.get("email").getAsString();
+            String nickname = kakao_account.get("profile").getAsJsonObject().get("nickname").getAsString();
+            String image = kakao_account.get("profile").getAsJsonObject().get("profile_image_url").getAsString();
 
-            if (hasEmail)  {
-                String email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
-            }
-
+            user.put("id", id);
+            user.put("email", email);
+            user.put("nickname", nickname);
+            user.put("image", image);
 
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return user;
+    }
+
+    public UserResponse.LoginDTO kakaoLogin(String code) {
+        String access_token = getKakaoAccessToken(code);
+        HashMap<String, Object> kakaoUser = getKakaoUser(access_token);
+        System.out.println(kakaoUser);
+
+        Optional<User> user = userJPARepository.findByEmail(kakaoUser.get("email").toString());
+        System.out.println(user);
+        if (user.isEmpty()) {
+            UserRequest.JoinDTO joinRequestDTO = new UserRequest.JoinDTO(kakaoUser);
+            join(joinRequestDTO);
+        }
+        UserRequest.LoginDTO loginRequestDTO = new UserRequest.LoginDTO(kakaoUser);
+        UserResponse.LoginDTO responseDTO = login(loginRequestDTO);
+
+        return responseDTO;
     }
 
     public List<UserResponse.UserListDTO> findUserList(String nickname) {
