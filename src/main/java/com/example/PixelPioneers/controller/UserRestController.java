@@ -1,7 +1,5 @@
 package com.example.PixelPioneers.controller;
 
-import com.example.PixelPioneers.DTO.AlbumRequest;
-import com.example.PixelPioneers.DTO.AlbumResponse;
 import com.example.PixelPioneers.DTO.UserRequest;
 import com.example.PixelPioneers.DTO.UserResponse;
 import com.example.PixelPioneers.Service.UserService;
@@ -92,7 +90,7 @@ public class UserRestController {
     /**
      * 사용자 1명 프로필 수정
      */
-    @ApiOperation(value="1명의 유저 수정", notes = "입력 해야하는 값: id, nickname, file")
+    @ApiOperation(value="1명의 유저 프로필 수정", notes = "입력 해야하는 값: id, updateDTO{ nickname, file }")
     @ApiImplicitParam(name = "id",value = "사용자 아이디")
     @PutMapping(value = "/users/{id}/profile", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> userProfileUpdate(@PathVariable int id, @RequestPart @Valid UserRequest.UserProfileUpdateDTO updateDTO, Errors errors, @RequestPart MultipartFile file, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
