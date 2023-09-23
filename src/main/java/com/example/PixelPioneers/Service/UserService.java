@@ -12,11 +12,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -167,16 +172,22 @@ public class UserService {
         return user;
     }
 
-    public UserResponse.LoginDTO kakaoLogin(String code) {
+    public UserResponse.LoginDTO kakaoLogin(String code) throws Exception {
         String access_token = getKakaoAccessToken(code);
         HashMap<String, Object> kakaoUser = getKakaoUser(access_token);
-        System.out.println(kakaoUser);
+//        System.out.println(kakaoUser);
 
         Optional<User> user = userJPARepository.findByEmail(kakaoUser.get("email").toString());
-        System.out.println(user);
+//        System.out.println(user);
         if (user.isEmpty()) {
             UserRequest.JoinDTO joinRequestDTO = new UserRequest.JoinDTO(kakaoUser);
-            join(joinRequestDTO);
+            URL imgURL = new URL(kakaoUser.get("image").toString());
+            BufferedImage bufferedImage = ImageIO.read(imgURL);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "jpg", baos);
+            byte[] bytes = baos.toByteArray();
+
+//            join(joinRequestDTO);
         }
         UserRequest.LoginDTO loginRequestDTO = new UserRequest.LoginDTO(kakaoUser);
         UserResponse.LoginDTO responseDTO = login(loginRequestDTO);
