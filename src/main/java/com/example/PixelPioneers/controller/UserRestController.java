@@ -116,7 +116,7 @@ public class UserRestController {
      */
     @ApiOperation(value="사용자 탈퇴", notes = "입력 해야하는 값: id, requestDTO{ password }")
     @ApiImplicitParam(name = "id",value = "사용자 아이디")
-    @DeleteMapping(value = "/users/{id}")
+    @PostMapping(value = "/users/{id}/withdrawal")
     public ResponseEntity<?> UserDelete(@PathVariable int id, @RequestBody @Valid UserRequest.UserDeleteDTO requestDTO, Errors errors, @AuthenticationPrincipal CustomUserDetails userDetails) throws  Exception {
         userService.deleteUser(id, requestDTO, userDetails.getUser());
         return ResponseEntity.ok(ApiUtils.success(true));
