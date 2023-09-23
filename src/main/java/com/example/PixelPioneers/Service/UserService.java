@@ -172,7 +172,7 @@ public class UserService {
         return user;
     }
 
-    public UserResponse.LoginDTO kakaoLogin(String code) throws Exception {
+    public void kakaoLogin(String code) throws Exception {
         String access_token = getKakaoAccessToken(code);
         HashMap<String, Object> kakaoUser = getKakaoUser(access_token);
 //        System.out.println(kakaoUser);
@@ -180,7 +180,7 @@ public class UserService {
         Optional<User> user = userJPARepository.findByEmail(kakaoUser.get("email").toString());
 //        System.out.println(user);
         if (user.isEmpty()) {
-            UserRequest.JoinDTO joinRequestDTO = new UserRequest.JoinDTO(kakaoUser);
+            UserRequest.KaKaoJoinDTO joinRequestDTO = new UserRequest.KaKaoJoinDTO(kakaoUser);
             URL imgURL = new URL(kakaoUser.get("image").toString());
             BufferedImage bufferedImage = ImageIO.read(imgURL);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -189,10 +189,10 @@ public class UserService {
 
 //            join(joinRequestDTO);
         }
-        UserRequest.LoginDTO loginRequestDTO = new UserRequest.LoginDTO(kakaoUser);
-        UserResponse.LoginDTO responseDTO = login(loginRequestDTO);
+        UserRequest.KaKaoLoginDTO loginRequestDTO = new UserRequest.KaKaoLoginDTO(kakaoUser);
+//        UserResponse.LoginDTO responseDTO = login(loginRequestDTO);
 
-        return responseDTO;
+//        return responseDTO;
     }
 
     public List<UserResponse.UserListDTO> findUserList(String nickname) {
