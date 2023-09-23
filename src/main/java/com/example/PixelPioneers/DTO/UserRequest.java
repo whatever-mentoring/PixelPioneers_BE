@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
+import java.util.HashMap;
 
 public class UserRequest {
     @Getter
@@ -53,7 +54,6 @@ public class UserRequest {
             this.email = kakaoUser.get("email").toString();
             this.password = "-1";
             this.nickname = kakaoUser.get("nickname").toString();
-            this.image = kakaoUser.get("image").toString();
         }
     }
 
