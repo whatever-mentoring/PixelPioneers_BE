@@ -49,8 +49,35 @@ public class UserRequest {
                     .role("ROLE_USER")
                     .build();
         }
+    }
 
-        public JoinDTO(HashMap<String, Object> kakaoUser) {
+    @Getter
+    @Setter
+    public static class KaKaoJoinDTO {
+        @NotEmpty
+        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일을 올바르게 입력해주세요.")
+        private String email;
+
+        @NotEmpty
+        @Size(min = 8, max = 16, message = "8~16자 이내로 입력해주세요.")
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!~`<>,./?;:'\"\\[\\]{}\\\\()|_-])\\S*$", message = "영문 대/소문자, 숫자, 특수문자를 포함해주세요.")
+        private String password;
+
+        @NotEmpty
+        @Size(min = 1, max = 8, message = "8자 이내로 입력해주세요.")
+        private String nickname;
+
+        public User toEntity(String imgURL) {
+            return User.builder()
+                    .email(email)
+                    .password(password)
+                    .nickname(nickname)
+                    .image(imgURL)
+                    .role("ROLE_USER")
+                    .build();
+        }
+
+        public KaKaoJoinDTO(HashMap<String, Object> kakaoUser) {
             this.email = kakaoUser.get("email").toString();
             this.password = "-1";
             this.nickname = kakaoUser.get("nickname").toString();
@@ -68,8 +95,21 @@ public class UserRequest {
         @Size(min = 8, max = 16, message = "8~16자 이내로 입력해주세요.")
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!~`<>,./?;:'\"\\[\\]{}\\\\()|_-])\\S*$", message = "영문 대/소문자, 숫자, 특수문자를 포함해주세요.")
         private String password;
+    }
 
-        public LoginDTO(HashMap<String, Object> kakaoUser) {
+    @Getter
+    @Setter
+    public static class KaKaoLoginDTO {
+        @NotEmpty
+        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일을 올바르게 입력해주세요.")
+        private String email;
+
+        @NotEmpty
+        @Size(min = 8, max = 16, message = "8~16자 이내로 입력해주세요.")
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!~`<>,./?;:'\"\\[\\]{}\\\\()|_-])\\S*$", message = "영문 대/소문자, 숫자, 특수문자를 포함해주세요.")
+        private String password;
+
+        public KaKaoLoginDTO(HashMap<String, Object> kakaoUser) {
             this.email = kakaoUser.get("email").toString();
             this.password = "-1";
         }
