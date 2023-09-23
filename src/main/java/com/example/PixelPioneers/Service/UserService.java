@@ -212,7 +212,7 @@ public class UserService {
         List<User> userList = userJPARepository.findByNicknameStartingWith(nickname);
 
         List<UserResponse.UserListDTO> responseDTOs = userList.stream()
-                .filter(user -> user.getNickname() != sessionUser.getNickname())
+                .filter(user -> !user.getNickname().equals(sessionUser.getNickname()))
                 .map(user -> new UserResponse.UserListDTO(user))
                 .collect(Collectors.toList());
         return responseDTOs;
