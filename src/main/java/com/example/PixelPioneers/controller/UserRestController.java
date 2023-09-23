@@ -84,8 +84,8 @@ public class UserRestController {
      */
     @ApiOperation(value="사용자 전체 조회", notes = "자동 완성 기능에 사용하세요.")
     @GetMapping("/users")
-    public ResponseEntity<?> userList(@RequestParam(value = "nickname") String nickname) {
-        List<UserResponse.UserListDTO> responseDTOs = userService.findUserList(nickname);
+    public ResponseEntity<?> userList(@RequestParam(value = "nickname") String nickname, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<UserResponse.UserListDTO> responseDTOs = userService.findUserList(nickname, userDetails.getUser());
         return ResponseEntity.ok(ApiUtils.success(responseDTOs));
     }
 
