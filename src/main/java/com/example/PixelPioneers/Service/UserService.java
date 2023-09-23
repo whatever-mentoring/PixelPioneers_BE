@@ -90,7 +90,7 @@ public class UserService {
         );
 
         if(requestDTO.getPassword() != user.getPassword()) {
-            throw new Exception400("잘못된 비밀번호입니다.");
+            throw new Exception400("잘못된 비밀번호입니다." + requestDTO.getPassword() + "   " + user.getPassword());
         }
         return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
     }
@@ -208,10 +208,11 @@ public class UserService {
         return responseDTO;
     }
 
-    public List<UserResponse.UserListDTO> findUserList(String nickname) {
+    public List<UserResponse.UserListDTO> findUserList(String nickname, User sessionUser) {
         List<User> userList = userJPARepository.findByNicknameStartingWith(nickname);
 
         List<UserResponse.UserListDTO> responseDTOs = userList.stream()
+                .filter(user -> user.getNickname() != sessionUser.getNickname())
                 .map(user -> new UserResponse.UserListDTO(user))
                 .collect(Collectors.toList());
         return responseDTOs;
