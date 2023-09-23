@@ -65,12 +65,31 @@ public class UserService {
         userJPARepository.save(requestDTO.toEntity(imgURL));
     }
 
+    @Transactional
+    public void kakaoJoin(UserRequest.KaKaoJoinDTO requestDTO) throws Exception {
+        emailCheck(requestDTO.getEmail());
+        nicknameCheck(requestDTO.getNickname());
+
+        userJPARepository.save(requestDTO.toEntity());
+    }
+
     public UserResponse.LoginDTO login(UserRequest.LoginDTO requestDTO) {
         User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
                 () -> new Exception400("잘못된 이메일입니다.")
         );
 
         if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())){
+            throw new Exception400("잘못된 비밀번호입니다.");
+        }
+        return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
+    }
+
+    public UserResponse.LoginDTO kakaoLogin(UserRequest.KaKaoLoginDTO requestDTO) {
+        User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
+                () -> new Exception400("잘못된 이메일입니다.")
+        );
+
+        if(requestDTO.getPassword() != user.getPassword()) {
             throw new Exception400("잘못된 비밀번호입니다.");
         }
         return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
@@ -172,7 +191,7 @@ public class UserService {
         return user;
     }
 
-    public void kakaoLogin(String code) throws Exception {
+    public UserResponse.LoginDTO kakaoSimpleLogin(String code) throws Exception {
         String access_token = getKakaoAccessToken(code);
         HashMap<String, Object> kakaoUser = getKakaoUser(access_token);
 //        System.out.println(kakaoUser);
@@ -181,18 +200,12 @@ public class UserService {
 //        System.out.println(user);
         if (user.isEmpty()) {
             UserRequest.KaKaoJoinDTO joinRequestDTO = new UserRequest.KaKaoJoinDTO(kakaoUser);
-            URL imgURL = new URL(kakaoUser.get("image").toString());
-            BufferedImage bufferedImage = ImageIO.read(imgURL);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, "jpg", baos);
-            byte[] bytes = baos.toByteArray();
-
-//            join(joinRequestDTO);
+            kakaoJoin(joinRequestDTO);
         }
         UserRequest.KaKaoLoginDTO loginRequestDTO = new UserRequest.KaKaoLoginDTO(kakaoUser);
-//        UserResponse.LoginDTO responseDTO = login(loginRequestDTO);
+        UserResponse.LoginDTO responseDTO = kakaoLogin(loginRequestDTO);
 
-//        return responseDTO;
+        return responseDTO;
     }
 
     public List<UserResponse.UserListDTO> findUserList(String nickname) {

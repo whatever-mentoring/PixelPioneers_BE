@@ -74,9 +74,9 @@ public class UserRestController {
      */
     @ApiOperation(value="카카오 로그인", notes = "카카오로 로그인합니다.")
     @GetMapping("/login/kakao")
-    public void kakaoLogin(@RequestParam String code) throws Exception {
-//        UserResponse.LoginDTO responseDTO = userService.kakaoLogin(code);
-//        return ResponseEntity.ok().header(JWTTokenProvider.HEADER, responseDTO.getJWTToken()).body(ApiUtils.success(responseDTO.getUserDetailDTO()));
+    public ResponseEntity<?> kakaoLogin(@RequestParam String code) throws Exception {
+        UserResponse.LoginDTO responseDTO = userService.kakaoSimpleLogin(code);
+        return ResponseEntity.ok().header(JWTTokenProvider.HEADER, responseDTO.getJWTToken()).body(ApiUtils.success(responseDTO.getUserDetailDTO()));
     }
 
     /**

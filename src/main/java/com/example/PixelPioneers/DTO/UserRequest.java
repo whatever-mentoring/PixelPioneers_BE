@@ -1,7 +1,9 @@
 package com.example.PixelPioneers.DTO;
 
 import com.example.PixelPioneers.entity.User;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
@@ -67,20 +69,24 @@ public class UserRequest {
         @Size(min = 1, max = 8, message = "8자 이내로 입력해주세요.")
         private String nickname;
 
-        public User toEntity(String imgURL) {
-            return User.builder()
-                    .email(email)
-                    .password(password)
-                    .nickname(nickname)
-                    .image(imgURL)
-                    .role("ROLE_USER")
-                    .build();
-        }
+        @NotEmpty
+        private String image;
 
         public KaKaoJoinDTO(HashMap<String, Object> kakaoUser) {
             this.email = kakaoUser.get("email").toString();
             this.password = "-1";
             this.nickname = kakaoUser.get("nickname").toString();
+            this.image = kakaoUser.get("image").toString();
+        }
+
+        public User toEntity() {
+            return User.builder()
+                    .email(email)
+                    .password(password)
+                    .nickname(nickname)
+                    .image(image)
+                    .role("ROLE_USER")
+                    .build();
         }
     }
 
