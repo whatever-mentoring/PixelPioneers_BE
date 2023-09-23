@@ -89,7 +89,7 @@ public class UserService {
                 () -> new Exception400("잘못된 이메일입니다.")
         );
 
-        if(requestDTO.getPassword().equals(user.getPassword())) {
+        if(!requestDTO.getPassword().equals(user.getPassword())) {
             throw new Exception400("잘못된 비밀번호입니다.");
         }
         return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
