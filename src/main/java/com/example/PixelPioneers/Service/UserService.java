@@ -111,7 +111,7 @@ public class UserService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=b59aee3993ebe9ad7fbb5727b2539f35");
-            sb.append("&redirect_uri=http://localhost:3000/login/kakao");
+            sb.append("&redirect_uri=http://moamoareact.s3-website.ap-northeast-2.amazonaws.com/Oauth");
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
