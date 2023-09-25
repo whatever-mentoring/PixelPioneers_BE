@@ -52,7 +52,7 @@ public class PhotoRestController {
      */
     @DeleteMapping("/albums/{albumId}/photos/{photoId}")
     @ApiOperation(value="사진을 올린 사용자만 사진 삭제", notes = "입력 해야하는 값: albumId, photoId")
-    public ResponseEntity<?> photoDelete(@PathVariable int albumId, @PathVariable int photoId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> photoDelete(@PathVariable int albumId, @PathVariable int photoId, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         photoService.deletePhoto(photoId, userDetails.getUser());
         return ResponseEntity.ok(ApiUtils.success(null));
     }

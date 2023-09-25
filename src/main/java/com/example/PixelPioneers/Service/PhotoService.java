@@ -64,11 +64,16 @@ public class PhotoService {
      * 연결된 포즈 함께 삭제
      */
     @Transactional
-    public void deletePhoto(int photoId, User user) {
+    public void deletePhoto(int photoId, User user) throws Exception {
         Photo photo = photoJPARepository.findById(photoId)
                 .orElseThrow(() -> new Exception404("사진이 존재하지 않습니다."));
 
         if (photo.getUser().getId() == user.getId()) {
+            // S3에 저장되어 있는 사진 삭제
+            String imgURL = user.getImage();
+            String key = imgURL.substring(61);
+            s3Uploader.deleteFile(key);
+
             photoJPARepository.delete(photo);
         }
     }
