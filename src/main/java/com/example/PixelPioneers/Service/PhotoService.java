@@ -68,7 +68,7 @@ public class PhotoService {
 
         if (photo.getUser().getId() == user.getId()) {
             // S3에 저장되어 있는 사진 삭제
-            String imgURL = user.getImage();
+            String imgURL = photo.getImage();
             String key = imgURL.substring(61);
             s3Uploader.deleteFile(key);
 
