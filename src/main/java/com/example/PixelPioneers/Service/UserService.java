@@ -152,27 +152,34 @@ public class UserService {
         return user;
     }
 
-    public UserResponse.LoginDTO kakaoLogin(String code) {
-        String access_token = getKakaoAccessToken(code);
-        HashMap<String, Object> kakaoUser = getKakaoUser(access_token);
-        System.out.println(kakaoUser);
+//    public UserResponse.LoginDTO kakaoLogin(String code) {
+//        String access_token = getKakaoAccessToken(code);
+//        HashMap<String, Object> kakaoUser = getKakaoUser(access_token);
+//        System.out.println(kakaoUser);
+//
+//        Optional<User> user = userJPARepository.findByEmail(kakaoUser.get("email").toString());
+//        System.out.println(user);
+//        if (user.isEmpty()) {
+//            UserRequest.JoinDTO joinRequestDTO = new UserRequest.JoinDTO(kakaoUser);
+//            join(joinRequestDTO);
+//        }
+//        UserRequest.LoginDTO loginRequestDTO = new UserRequest.LoginDTO(kakaoUser);
+//        UserResponse.LoginDTO responseDTO = login(loginRequestDTO);
+//
+//        return responseDTO;
+//    }
 
-        Optional<User> user = userJPARepository.findByEmail(kakaoUser.get("email").toString());
-        System.out.println(user);
-        if (user.isEmpty()) {
-            UserRequest.JoinDTO joinRequestDTO = new UserRequest.JoinDTO(kakaoUser);
-            join(joinRequestDTO);
+    public List<UserResponse.UserListDTO> findUserList(String nickname, User sessionUser) {
+        List<User> userList = userJPARepository.findByNicknameStartingWith(nickname);
+
+        for (User user: userList) {
+            System.out.println(user.getNickname());
         }
-        UserRequest.LoginDTO loginRequestDTO = new UserRequest.LoginDTO(kakaoUser);
-        UserResponse.LoginDTO responseDTO = login(loginRequestDTO);
-
-        return responseDTO;
-    }
-
-    public List<UserResponse.UserListDTO> findUserList(UserRequest.UserListDTO requestDTO) {
-        List<User> userList = userJPARepository.findByNicknameStartingWith(requestDTO.getNickname());
+        System.out.println();
+        System.out.println(sessionUser.getId());
 
         List<UserResponse.UserListDTO> responseDTOs = userList.stream()
+                .filter(user -> !user.getNickname().equals(sessionUser.getNickname()))
                 .map(user -> new UserResponse.UserListDTO(user))
                 .collect(Collectors.toList());
         return responseDTOs;
