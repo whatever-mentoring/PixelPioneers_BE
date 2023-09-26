@@ -46,12 +46,12 @@ public class UserRequest {
                     .build();
         }
 
-        public JoinDTO(HashMap<String, Object> kakaoUser) {
-            this.email = kakaoUser.get("email").toString();
-            this.password = "-1";
-            this.nickname = kakaoUser.get("nickname").toString();
-            this.image = kakaoUser.get("image").toString();
-        }
+//        public JoinDTO(HashMap<String, Object> kakaoUser) {
+//            this.email = kakaoUser.get("email").toString();
+//            this.password = "-1";
+//            this.nickname = kakaoUser.get("nickname").toString();
+//            this.image = kakaoUser.get("image").toString();
+//        }
     }
 
     @Getter
@@ -66,10 +66,10 @@ public class UserRequest {
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!~`<>,./?;:'\"\\[\\]{}\\\\()|_-])\\S*$", message = "영문 대/소문자, 숫자, 특수문자를 포함해주세요.")
         private String password;
 
-        public LoginDTO(HashMap<String, Object> kakaoUser) {
-            this.email = kakaoUser.get("email").toString();
-            this.password = "-1";
-        }
+//        public LoginDTO(HashMap<String, Object> kakaoUser) {
+//            this.email = kakaoUser.get("email").toString();
+//            this.password = "-1";
+//        }
     }
 
     @Getter
