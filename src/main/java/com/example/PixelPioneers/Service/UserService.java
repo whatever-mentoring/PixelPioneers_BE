@@ -207,6 +207,7 @@ public class UserService {
         List<User> userList = userJPARepository.findByNicknameStartingWith(nickname);
 
         List<UserResponse.UserListDTO> responseDTOs = userList.stream()
+                .filter(user -> !user.getRole().equals("ROLE_ADMIN"))
                 .filter(user -> !user.getNickname().equals(sessionUser.getNickname()))
                 .map(user -> new UserResponse.UserListDTO(user))
                 .collect(Collectors.toList());
