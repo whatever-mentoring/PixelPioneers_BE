@@ -208,7 +208,7 @@ public class UserService {
 
         List<UserResponse.UserListDTO> responseDTOs = userList.stream()
                 .filter(user -> !user.getRole().equals("ROLE_ADMIN"))
-                .filter(user -> user.getNickname() != sessionUser.getNickname())
+                .filter(user -> user.getId() != sessionUser.getId())
                 .map(user -> new UserResponse.UserListDTO(user))
                 .collect(Collectors.toList());
         return responseDTOs;
