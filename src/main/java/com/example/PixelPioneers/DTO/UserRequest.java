@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
+import java.util.HashMap;
 
 public class UserRequest {
     @Getter
@@ -48,13 +49,40 @@ public class UserRequest {
                     .role("ROLE_USER")
                     .build();
         }
+    }
 
-//        public JoinDTO(HashMap<String, Object> kakaoUser) {
-//            this.email = kakaoUser.get("email").toString();
-//            this.password = "-1";
-//            this.nickname = kakaoUser.get("nickname").toString();
-//            this.image = kakaoUser.get("image").toString();
-//        }
+    @Getter
+    @Setter
+    public static class KaKaoJoinDTO {
+        @NotEmpty
+        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일을 올바르게 입력해주세요.")
+        private String email;
+
+        @NotEmpty
+        private String password;
+
+        @NotEmpty
+        private String nickname;
+
+        @NotEmpty
+        private String image;
+
+        public KaKaoJoinDTO(HashMap<String, Object> kakaoUser) {
+            this.email = kakaoUser.get("email").toString();
+            this.password = "-1";
+            this.nickname = kakaoUser.get("nickname").toString();
+            this.image = kakaoUser.get("image").toString();
+        }
+
+        public User toEntity() {
+            return User.builder()
+                    .email(email)
+                    .password(password)
+                    .nickname(nickname)
+                    .image(image)
+                    .role("ROLE_USER")
+                    .build();
+        }
     }
 
     @Getter
@@ -68,11 +96,22 @@ public class UserRequest {
         @Size(min = 8, max = 16, message = "8~16자 이내로 입력해주세요.")
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!~`<>,./?;:'\"\\[\\]{}\\\\()|_-])\\S*$", message = "영문 대/소문자, 숫자, 특수문자를 포함해주세요.")
         private String password;
+    }
 
-//        public LoginDTO(HashMap<String, Object> kakaoUser) {
-//            this.email = kakaoUser.get("email").toString();
-//            this.password = "-1";
-//        }
+    @Getter
+    @Setter
+    public static class KaKaoLoginDTO {
+        @NotEmpty
+        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일을 올바르게 입력해주세요.")
+        private String email;
+
+        @NotEmpty
+        private String password;
+
+        public KaKaoLoginDTO(HashMap<String, Object> kakaoUser) {
+            this.email = kakaoUser.get("email").toString();
+            this.password = "-1";
+        }
     }
 
     @Getter

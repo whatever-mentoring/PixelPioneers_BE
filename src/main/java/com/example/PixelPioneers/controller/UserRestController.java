@@ -69,25 +69,25 @@ public class UserRestController {
         return ResponseEntity.ok().header(JWTTokenProvider.HEADER, responseDTO.getJWTToken()).body(ApiUtils.success(responseDTO.getUserDetailDTO()));
     }
 
-//    /**
-//     * 카카오 로그인
-//     */
-//    @ApiOperation(value="카카오 로그인", notes = "카카오로 로그인합니다.")
-//    @GetMapping("/login/kakao")
-//    public ResponseEntity<?> kakaoLogin(@RequestParam String code) throws Exception {
-//        UserResponse.LoginDTO responseDTO = userService.kakaoLogin(code);
-//        return ResponseEntity.ok().header(JWTTokenProvider.HEADER, responseDTO.getJWTToken()).body(ApiUtils.success(responseDTO.getUserDetailDTO()));
-//    }
-//
-//    /**
-//     * 자동 완성 기능 사용 시, 사용자 전체 조회
-//     */
-//    @ApiOperation(value="사용자 전체 조회", notes = "자동 완성 기능에 사용하세요.")
-//    @GetMapping("/users")
-//    public ResponseEntity<?> userList(@RequestParam(value = "nickname") String nickname) {
-//        List<UserResponse.UserListDTO> responseDTOs = userService.findUserList(nickname);
-//        return ResponseEntity.ok(ApiUtils.success(responseDTOs));
-//    }
+    /**
+     * 카카오 로그인
+     */
+    @ApiOperation(value="카카오 로그인", notes = "카카오로 로그인합니다.")
+    @GetMapping("/login/kakao")
+    public ResponseEntity<?> kakaoLogin(@RequestParam String code) throws Exception {
+        UserResponse.LoginDTO responseDTO = userService.kakaoSimpleLogin(code);
+        return ResponseEntity.ok().header(JWTTokenProvider.HEADER, responseDTO.getJWTToken()).body(ApiUtils.success(responseDTO.getUserDetailDTO()));
+    }
+
+    /**
+     * 자동 완성 기능 사용 시, 사용자 전체 조회
+     */
+    @ApiOperation(value="사용자 전체 조회", notes = "자동 완성 기능에 사용하세요.")
+    @GetMapping("/users")
+    public ResponseEntity<?> userList(@RequestParam(value = "nickname") String nickname, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<UserResponse.UserListDTO> responseDTOs = userService.findUserList(nickname, userDetails.getUser());
+        return ResponseEntity.ok(ApiUtils.success(responseDTOs));
+    }
 
     /**
      * 사용자 1명 프로필 수정
@@ -116,7 +116,7 @@ public class UserRestController {
      */
     @ApiOperation(value="사용자 탈퇴", notes = "입력 해야하는 값: id, requestDTO{ password }")
     @ApiImplicitParam(name = "id",value = "사용자 아이디")
-    @DeleteMapping(value = "/users/{id}")
+    @PostMapping(value = "/users/{id}/withdrawal")
     public ResponseEntity<?> UserDelete(@PathVariable int id, @RequestBody @Valid UserRequest.UserDeleteDTO requestDTO, Errors errors, @AuthenticationPrincipal CustomUserDetails userDetails) throws  Exception {
         userService.deleteUser(id, requestDTO, userDetails.getUser());
         return ResponseEntity.ok(ApiUtils.success(true));

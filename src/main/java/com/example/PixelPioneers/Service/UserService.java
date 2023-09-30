@@ -60,12 +60,31 @@ public class UserService {
         userJPARepository.save(requestDTO.toEntity(imgURL));
     }
 
+    @Transactional
+    public void kakaoJoin(UserRequest.KaKaoJoinDTO requestDTO) throws Exception {
+        emailCheck(requestDTO.getEmail());
+        nicknameCheck(requestDTO.getNickname());
+
+        userJPARepository.save(requestDTO.toEntity());
+    }
+
     public UserResponse.LoginDTO login(UserRequest.LoginDTO requestDTO) {
         User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
                 () -> new Exception400("잘못된 이메일입니다.")
         );
 
         if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())){
+            throw new Exception400("잘못된 비밀번호입니다.");
+        }
+        return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
+    }
+
+    public UserResponse.LoginDTO kakaoLogin(UserRequest.KaKaoLoginDTO requestDTO) {
+        User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
+                () -> new Exception400("잘못된 이메일입니다.")
+        );
+
+        if(!requestDTO.getPassword().equals(user.getPassword())) {
             throw new Exception400("잘못된 비밀번호입니다.");
         }
         return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
@@ -87,7 +106,7 @@ public class UserService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=b59aee3993ebe9ad7fbb5727b2539f35");
-            sb.append("&redirect_uri=http://localhost:3000/login/kakao");
+            sb.append("&redirect_uri=http://moamoa4cut.net/Oauth");
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
@@ -167,46 +186,33 @@ public class UserService {
         return user;
     }
 
-//    public UserResponse.LoginDTO kakaoLogin(String code) {
-//        String access_token = getKakaoAccessToken(code);
-//        HashMap<String, Object> kakaoUser = getKakaoUser(access_token);
-//
-//        Optional<User> user = userJPARepository.findByEmail(kakaoUser.get("email").toString());
-//        if (user.isEmpty()) {
-//            UserRequest.JoinDTO joinRequestDTO = new UserRequest.JoinDTO(kakaoUser);
-//            join(joinRequestDTO);
-//        }
-//        UserRequest.LoginDTO loginRequestDTO = new UserRequest.LoginDTO(kakaoUser);
-//        UserResponse.LoginDTO responseDTO = login(loginRequestDTO);
-//
-//        return responseDTO;
-//    }
-//
-//    public List<UserResponse.UserListDTO> findUserList(String nickname, User sessionUser) {
-//        List<User> userList = userJPARepository.findByNicknameStartingWith(nickname);
-//
-//        for (User user: userList) {
-//            System.out.println(user.getNickname());
-//        }
-//
-//        System.out.println();
-//        System.out.println(sessionUser.getId());
-//
-//        UserRequest.LoginDTO loginRequestDTO = new UserRequest.LoginDTO(kakaoUser);
-//        UserResponse.LoginDTO responseDTO = login(loginRequestDTO);
-//
-//        return responseDTO;
-//    }
+    public UserResponse.LoginDTO kakaoSimpleLogin(String code) throws Exception {
+        String access_token = getKakaoAccessToken(code);
+        HashMap<String, Object> kakaoUser = getKakaoUser(access_token);
+//        System.out.println(kakaoUser);
 
-//    public List<UserResponse.UserListDTO> findUserList(String nickname) {
-//        List<User> userList = userJPARepository.findByNicknameStartingWith(nickname);
-//
-//        List<UserResponse.UserListDTO> responseDTOs = userList.stream()
-//                .filter(user -> !user.getNickname().equals(sessionUser.getNickname()))
-//                .map(user -> new UserResponse.UserListDTO(user))
-//                .collect(Collectors.toList());
-//        return responseDTOs;
-//    }
+        Optional<User> user = userJPARepository.findByEmail(kakaoUser.get("email").toString());
+//        System.out.println(user);
+        if (user.isEmpty()) {
+            UserRequest.KaKaoJoinDTO joinRequestDTO = new UserRequest.KaKaoJoinDTO(kakaoUser);
+            kakaoJoin(joinRequestDTO);
+        }
+        UserRequest.KaKaoLoginDTO loginRequestDTO = new UserRequest.KaKaoLoginDTO(kakaoUser);
+        UserResponse.LoginDTO responseDTO = kakaoLogin(loginRequestDTO);
+
+        return responseDTO;
+    }
+
+    public List<UserResponse.UserListDTO> findUserList(String nickname, User sessionUser) {
+        List<User> userList = userJPARepository.findByNicknameStartingWith(nickname);
+
+        List<UserResponse.UserListDTO> responseDTOs = userList.stream()
+                .filter(user -> !user.getRole().equals("ROLE_ADMIN"))
+                .filter(user -> user.getId() != sessionUser.getId())
+                .map(user -> new UserResponse.UserListDTO(user))
+                .collect(Collectors.toList());
+        return responseDTOs;
+    }
 
     @Transactional
     public UserResponse.UserListDTO updateUserProfile(int id, UserRequest.UserProfileUpdateDTO updateDTO, MultipartFile file, User sessionUser) throws Exception {
