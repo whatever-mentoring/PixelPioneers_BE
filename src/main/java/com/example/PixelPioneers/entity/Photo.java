@@ -1,6 +1,8 @@
 package com.example.PixelPioneers.entity;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -27,6 +29,7 @@ public class Photo {
     private int peopleCount;
 
     @Column(length = 255, nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate created_at;
 
     @Column(nullable = false)
@@ -34,11 +37,15 @@ public class Photo {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "album_id")
     private Album album;
+
+    @OneToOne(mappedBy = "photo")
+    private Pose pose;
 
     @Builder
     public Photo(int id, String name, String image, int peopleCount, LocalDate created_at, boolean open, User user, Album album) {
@@ -50,5 +57,21 @@ public class Photo {
         this.open = open;
         this.user = user;
         this.album = album;
+        this.pose = pose;
+    }
+
+    public Photo(Photo photo){
+        this.id = photo.getId();
+        this.name = photo.getName();
+        this.image = photo.getImage();
+        this.peopleCount = photo.getPeopleCount();
+        this.created_at = photo.getCreated_at();
+        this.open = photo.isOpen();
+        this.album = photo.getAlbum();
+        this.pose = photo.getPose();
+    }
+
+    public void updateIsOpen(boolean open){
+        this.open = open;
     }
 }

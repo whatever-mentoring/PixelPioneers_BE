@@ -4,7 +4,10 @@ import com.example.PixelPioneers.entity.Album;
 import com.example.PixelPioneers.entity.User;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -12,23 +15,17 @@ public class AlbumRequest {
     @Getter
     @Setter
     public static class AlbumAddDTO {
-        @NotNull
+        @NotEmpty
         private String name;
 
-        private String image;
-
-        @NotNull
         private List<Integer> userIdList;
     }
 
     @Getter
     @Setter
     public static class AlbumUpdateDTO {
-        @NotNull
+        @NotEmpty
         private String name;
-
-        @NotNull
-        private String image;
     }
 
     @Getter

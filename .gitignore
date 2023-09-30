@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Database 정보 ##
+application.properties

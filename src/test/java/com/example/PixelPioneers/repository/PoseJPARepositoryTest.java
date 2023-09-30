@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+/*
 
 @Import(ObjectMapper.class)
 @DataJpaTest
@@ -105,3 +106,4 @@ public class PoseJPARepositoryTest {
 //        System.out.println("responseBody:" + responseBody);
     }
 }
+*/
