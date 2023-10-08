@@ -19,7 +19,7 @@ import java.util.List;
 @Configuration
 public class SwaggerConfig {
 
-    private static final String API_NAME = "모아모아 프로젝트 API";
+    private static final String API_NAME = "모아모아 프로젝트 API 테스트트트";
     private static final String API_VERSION = "0.0.1";
     private static final String API_DESCRIPTION = "PixelPioneers팀의 모아모아 프로젝트 API 명세서입니다.";
 
