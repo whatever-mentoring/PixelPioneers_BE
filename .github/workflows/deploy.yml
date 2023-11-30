@@ -8,10 +8,10 @@ on:
 # 본인이 설정한 값을 여기서 채워넣습니다.
 # 리전, 버킷 이름, CodeDeploy 앱 이름, CodeDeploy 배포 그룹 이름
 env:
-  AWS_REGION: us-east-1
-  S3_BUCKET_NAME: pixelpioneers-bucket
-  CODE_DEPLOY_APPLICATION_NAME: Pixelpioneers
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: Pixelpioneers-deployment-group
+  AWS_REGION: ap-northeast-2
+  S3_BUCKET_NAME: moamoa-bucket
+  CODE_DEPLOY_APPLICATION_NAME: moamoa
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: pixel-deploy-group
 
 permissions:
   contents: read
