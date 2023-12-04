@@ -89,14 +89,21 @@ public class AlbumService {
         Album album = albumJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("사진첩이 존재하지 않습니다."));
 
-        // 기존 사진첩 대표사진 S3에서 삭제
-        String imgURL = album.getImage();
-        String key = imgURL.substring(61);
-        s3Uploader.deleteFile(key);
-        // 사진첩 대표사진 변경
-        String new_imgurl = s3Uploader.upload(file, "album_cover");
+        String new_name = album.getName();
+        if (!updateDTO.getName().isBlank()) {
+            new_name = updateDTO.getName();
+        }
 
-        album.update(updateDTO.getName(), new_imgurl);
+        String new_imgURL = album.getImage();
+        if (!file.isEmpty()) {
+            // 기존 사진첩 대표사진 S3에서 삭제
+            String key = new_imgURL.substring(61);
+            s3Uploader.deleteFile(key);
+            // 사진첩 대표사진 변경
+            new_imgURL = s3Uploader.upload(file, "album_cover");
+        }
+
+        album.update(new_name, new_imgURL);
         return new AlbumResponse.AlbumDTO(album);
     }
 
