@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,9 @@ public class UserService {
     private S3Uploader s3Uploader;
     private final PasswordEncoder passwordEncoder;
     private final UserJPARepository userJPARepository;
+
+    @Value("${kakao.restApiKey}")
+    private String kakaoRestApiKey;
 
     public void emailCheck(String email) {
         Optional<User> optionalUser = userJPARepository.findByEmail(email);
@@ -62,9 +66,6 @@ public class UserService {
 
     @Transactional
     public void kakaoJoin(UserRequest.KaKaoJoinDTO requestDTO) throws Exception {
-        emailCheck(requestDTO.getEmail());
-        nicknameCheck(requestDTO.getNickname());
-
         userJPARepository.save(requestDTO.toEntity());
     }
 
@@ -105,7 +106,7 @@ public class UserService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=b59aee3993ebe9ad7fbb5727b2539f35");
+            sb.append("&client_id=" + kakaoRestApiKey);
             sb.append("&redirect_uri=http://moamoa4cut.net/Oauth");
             sb.append("&code=" + code);
             bw.write(sb.toString());
@@ -220,14 +221,22 @@ public class UserService {
                 .orElseThrow(() -> new Exception404("사용자가 존재하지 않습니다."));
 
         if (user.getId() == sessionUser.getId()) {
-            // 기존 사용자 프로필사진 S3에서 삭제
-            String imgURL = user.getImage();
-            String key = imgURL.substring(61);
-            s3Uploader.deleteFile(key);
-            // 사용자 프로필사진 변경
-            String new_imgURL = s3Uploader.upload(file, "user_profile");
 
-            user.updateUserProfile(updateDTO.getNickname(), new_imgURL);
+            String new_nickName = user.getNickname();
+            if (!updateDTO.getNickname().isBlank()) {
+                new_nickName = updateDTO.getNickname();
+            }
+
+            String new_imgURL = user.getImage();
+            if (!file.isEmpty()) {
+                // 기존 사용자 프로필사진 S3에서 삭제
+                String key = new_imgURL.substring(61);
+                s3Uploader.deleteFile(key);
+                // 사용자 프로필사진 변경
+                new_imgURL = s3Uploader.upload(file, "user_profile");
+            }
+
+            user.updateUserProfile(new_nickName, new_imgURL);
         }
         return new UserResponse.UserListDTO(user);
     }

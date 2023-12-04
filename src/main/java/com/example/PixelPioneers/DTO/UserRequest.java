@@ -119,7 +119,6 @@ public class UserRequest {
     @Getter
     @Setter
     public static class UserProfileUpdateDTO {
-        @NotEmpty
         private String nickname;
     }
 
