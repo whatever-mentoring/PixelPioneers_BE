@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -27,6 +28,8 @@ public class PoseService {
     private final User_AlbumJPARepository user_albumJPARepository;
     private final PoseJPARepository poseJPARepository;
 
+    private List<Integer> randomIndexList = new ArrayList<>();
+
     /**
      * 랜덤 포즈 조회
      * 인원 수에 따른 랜덤 포즈 개별 조회
@@ -35,10 +38,21 @@ public class PoseService {
         List<Integer> albumIdList = user_albumJPARepository.findAlbumByRole("ROLE_ADMIN");
         List<Pose> poseList = poseJPARepository.findByAlbumIdAndPeopleCount(albumIdList, peopleCount);
 
+        if (randomIndexList.size() == 10) {
+            randomIndexList.clear();
+        }
+
         Random random = new Random();
         random.setSeed(System.currentTimeMillis());
 
-        int randomIndex = random.nextInt(poseList.size());
+        int randomIndex;
+        while (true) {
+            randomIndex = random.nextInt(poseList.size());
+            if (!randomIndexList.contains(randomIndex)) {
+                randomIndexList.add(randomIndex);
+                break;
+            }
+        }
         Pose randomPose = poseList.get(randomIndex);
 
         return new PoseResponse.PoseDTO(randomPose);

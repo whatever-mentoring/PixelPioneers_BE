@@ -24,7 +24,6 @@ public class AlbumRequest {
     @Getter
     @Setter
     public static class AlbumUpdateDTO {
-        @NotEmpty
         private String name;
     }
 
