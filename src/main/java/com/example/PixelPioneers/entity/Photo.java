@@ -35,6 +35,9 @@ public class Photo {
     @Column(nullable = false)
     private boolean open;
 
+    @Column(nullable = false)
+    private String pass;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -48,30 +51,36 @@ public class Photo {
     private Pose pose;
 
     @Builder
-    public Photo(int id, String name, String image, int peopleCount, LocalDate created_at, boolean open, User user, Album album) {
+    public Photo(int id, String name, String image, int peopleCount, LocalDate created_at, boolean open, String pass, User user, Album album, Pose pose) {
         this.id = id;
         this.name = name;
         this.image = image;
         this.peopleCount = peopleCount;
         this.created_at = created_at;
         this.open = open;
+        this.pass = pass;
         this.user = user;
         this.album = album;
         this.pose = pose;
     }
 
-    public Photo(Photo photo){
-        this.id = photo.getId();
-        this.name = photo.getName();
-        this.image = photo.getImage();
-        this.peopleCount = photo.getPeopleCount();
-        this.created_at = photo.getCreated_at();
-        this.open = photo.isOpen();
-        this.album = photo.getAlbum();
-        this.pose = photo.getPose();
-    }
+//    public Photo(Photo photo){
+//        this.id = photo.getId();
+//        this.name = photo.getName();
+//        this.image = photo.getImage();
+//        this.peopleCount = photo.getPeopleCount();
+//        this.created_at = photo.getCreated_at();
+//        this.open = photo.isOpen();
+//        this.pass = photo.getPass();
+//        this.album = photo.getAlbum();
+//        this.pose = photo.getPose();
+//    }
 
     public void updateIsOpen(boolean open){
         this.open = open;
+    }
+
+    public void updateIsPass(String pass) {
+        this.pass = pass;
     }
 }
