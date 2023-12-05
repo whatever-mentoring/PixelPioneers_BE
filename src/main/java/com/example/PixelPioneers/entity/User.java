@@ -36,6 +36,7 @@ public class User {
 
     @Builder
     public User(String email, String password, String nickname, String image, String role) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.nickname = nickname;
