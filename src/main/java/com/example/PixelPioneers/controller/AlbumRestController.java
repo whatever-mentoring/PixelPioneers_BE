@@ -62,7 +62,7 @@ public class AlbumRestController {
     @PutMapping(value = "/albums/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation(value="1개의 사진첩 수정", notes = "입력 해야하는 값: name, file")
     @ApiImplicitParam(name = "id",value = "사진첩 아이디")
-    public ResponseEntity<?> albumUpdate(@PathVariable int id, @RequestPart @Valid AlbumRequest.AlbumUpdateDTO updateDTO, @RequestPart  MultipartFile file, Errors errors) throws Exception {
+    public ResponseEntity<?> albumUpdate(@PathVariable int id, @RequestPart @Valid AlbumRequest.AlbumUpdateDTO updateDTO, @RequestPart MultipartFile file, Errors errors) throws Exception {
         AlbumResponse.AlbumDTO responseDTO = albumService.updateAlbum(id, updateDTO, file);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
