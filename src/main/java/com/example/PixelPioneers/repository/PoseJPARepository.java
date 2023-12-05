@@ -20,7 +20,7 @@ public interface PoseJPARepository extends JpaRepository<Pose, Integer> {
     @Query("select p from Pose p where p.photo.album.id in :albumIdList and p.photo.peopleCount = :peopleCount")
     Page<Pose> findByAlbumIdAndPeopleCount(@Param("albumIdList") List<Integer> albumIdList, @Param("peopleCount") int peopleCount, Pageable pageable);
 
-    @Query("select p from Pose p where p.photo.album.id in :albumIdList and p.photo.peopleCount = :peopleCount and p.photo.open = :open and p.photo.pass =: pass")
+    @Query("select p from Pose p where p.photo.album.id in :albumIdList and p.photo.peopleCount = :peopleCount and p.photo.open = :open and p.photo.pass = :pass")
     Page<Pose> findByAlbumIdAndPeopleCountAndOpenAndPass(@Param("albumIdList") List<Integer> albumIdList, @Param("peopleCount") int peopleCount, @Param("open") boolean open, @Param("pass") String pass, Pageable pageable);
 
     @Query("select p from Pose p where p.photo.peopleCount = :peopleCount and p.photo.open = :open and p.photo.pass = :pass")
