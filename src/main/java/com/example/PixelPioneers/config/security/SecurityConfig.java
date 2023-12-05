@@ -69,7 +69,7 @@ public class SecurityConfig {
 
         // 11. 인증, 권한 필터 설정
         httpSecurity.authorizeRequests(
-                authorize -> authorize.antMatchers( "/users/**", "/albums/**", "/photos/**").authenticated()
+                authorize -> authorize.antMatchers( "/users/**", "/albums/**", "/photos/**", "/admin/**").authenticated()
                         .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                         .anyRequest().permitAll()
         );
