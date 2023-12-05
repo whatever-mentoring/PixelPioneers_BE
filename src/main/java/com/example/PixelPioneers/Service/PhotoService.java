@@ -38,7 +38,7 @@ public class PhotoService {
 
         String imgurl = s3Uploader.upload(file, "photo_images");
 
-        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(imgurl).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).album(album).user(user).build();
+        Photo newPhoto = Photo.builder().name(requestDTO.getName()).image(imgurl).peopleCount(requestDTO.getPeopleCount()).created_at(requestDTO.getCreated_at()).open(requestDTO.isOpen()).pass("PENDING").album(album).user(user).build();
         Photo photo = photoJPARepository.save(newPhoto);
 
         Pose newPose = Pose.builder().photo(photo).build();

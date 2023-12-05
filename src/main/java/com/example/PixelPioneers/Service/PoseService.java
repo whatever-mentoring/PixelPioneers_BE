@@ -5,6 +5,7 @@ import com.example.PixelPioneers.DTO.PoseResponse;
 import com.example.PixelPioneers.config.errors.exception.Exception404;
 import com.example.PixelPioneers.entity.Album;
 import com.example.PixelPioneers.entity.Pose;
+import com.example.PixelPioneers.repository.PhotoJPARepository;
 import com.example.PixelPioneers.repository.PoseJPARepository;
 import com.example.PixelPioneers.repository.User_AlbumJPARepository;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +36,7 @@ public class PoseService {
      * 인원 수에 따른 랜덤 포즈 개별 조회
      */
     public PoseResponse.PoseDTO randomPoseDetailByPeopleCount(int peopleCount) {
-        List<Integer> albumIdList = user_albumJPARepository.findAlbumByRole("ROLE_ADMIN");
-        List<Pose> poseList = poseJPARepository.findByAlbumIdAndPeopleCount(albumIdList, peopleCount);
+        List<Pose> poseList = poseJPARepository.findByPeopleCountAndOpenAndPass(peopleCount, true, "ACCEPT");
 
         if (randomIndexList.size() == 10) {
             randomIndexList.clear();
@@ -66,17 +66,9 @@ public class PoseService {
         Pageable pageable = PageRequest.of(page, 10);
 
         List<Integer> albumIdList = user_albumJPARepository.findAlbumByRole(category);
-        Page<Pose> pageContent = poseJPARepository.findByAlbumIdAndPeopleCount(albumIdList, peopleCount, pageable);
-        List<Pose> poseList = pageContent.toList();
+        Page<Pose> pageContent = poseJPARepository.findByAlbumIdAndPeopleCountAndOpenAndPass(albumIdList, peopleCount, true, "ACCEPT", pageable);
 
-        List<Pose> openPoseList = new ArrayList<>();
-        for (Pose pose : poseList) {
-            if (pose.getPhoto().isOpen()) {
-                openPoseList.add(pose);
-            }
-        }
-
-        List<PoseResponse.PoseDTO> responseDTOs = openPoseList.stream()
+        List<PoseResponse.PoseDTO> responseDTOs = pageContent.getContent().stream()
                 .map(pose -> new PoseResponse.PoseDTO(pose))
                 .collect(Collectors.toList());
 
@@ -89,5 +81,4 @@ public class PoseService {
 
         return new PoseResponse.PoseDTO(pose);
     }
-
 }

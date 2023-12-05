@@ -39,56 +39,46 @@ public class UserService {
     @Value("${kakao.restApiKey}")
     private String kakaoRestApiKey;
 
-    public void emailCheck(String email) {
-        Optional<User> optionalUser = userJPARepository.findByEmail(email);
-        if (optionalUser.isPresent()) {
-            throw new Exception400("동일한 이메일이 존재합니다.");
+//    public void emailCheck(String email) {
+//        Optional<User> optionalUser = userJPARepository.findByEmail(email);
+//        if (optionalUser.isPresent()) {
+//            throw new Exception400("동일한 이메일이 존재합니다.");
+//        }
+//    }
+
+//    public void nicknameCheck(String nickname) {
+//        Optional<User> optionalUser = userJPARepository.findByNickname(nickname);
+//        if (optionalUser.isPresent()) {
+//            throw new Exception400("동일한 닉네임이 존재합니다.");
+//        }
+//    }
+
+//    @Transactional
+//    public void join(UserRequest.JoinDTO requestDTO, MultipartFile file) throws Exception {
+//        emailCheck(requestDTO.getEmail());
+//        nicknameCheck(requestDTO.getNickname());
+//
+//        String imgURL = s3Uploader.upload(file, "user_profile");
+//
+//        requestDTO.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
+//        userJPARepository.save(requestDTO.toEntity(imgURL));
+//    }
+
+    public UserResponse.LoginDTO kakaoSimpleLogin(String code) throws Exception {
+        String access_token = getKakaoAccessToken(code);
+        HashMap<String, Object> kakaoUser = getKakaoUser(access_token);
+//        System.out.println(kakaoUser);
+
+        Optional<User> user = userJPARepository.findByEmail(kakaoUser.get("email").toString());
+//        System.out.println(user);
+        if (user.isEmpty()) {
+            UserRequest.KaKaoJoinDTO joinRequestDTO = new UserRequest.KaKaoJoinDTO(kakaoUser);
+            kakaoJoin(joinRequestDTO);
         }
-    }
+        UserRequest.KaKaoLoginDTO loginRequestDTO = new UserRequest.KaKaoLoginDTO(kakaoUser);
+        UserResponse.LoginDTO responseDTO = kakaoLogin(loginRequestDTO);
 
-    public void nicknameCheck(String nickname) {
-        Optional<User> optionalUser = userJPARepository.findByNickname(nickname);
-        if (optionalUser.isPresent()) {
-            throw new Exception400("동일한 닉네임이 존재합니다.");
-        }
-    }
-
-    @Transactional
-    public void join(UserRequest.JoinDTO requestDTO, MultipartFile file) throws Exception {
-        emailCheck(requestDTO.getEmail());
-        nicknameCheck(requestDTO.getNickname());
-
-        String imgURL = s3Uploader.upload(file, "user_profile");
-
-        requestDTO.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
-        userJPARepository.save(requestDTO.toEntity(imgURL));
-    }
-
-    @Transactional
-    public void kakaoJoin(UserRequest.KaKaoJoinDTO requestDTO) throws Exception {
-        userJPARepository.save(requestDTO.toEntity());
-    }
-
-    public UserResponse.LoginDTO login(UserRequest.LoginDTO requestDTO) {
-        User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
-                () -> new Exception400("잘못된 이메일입니다.")
-        );
-
-        if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())){
-            throw new Exception400("잘못된 비밀번호입니다.");
-        }
-        return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
-    }
-
-    public UserResponse.LoginDTO kakaoLogin(UserRequest.KaKaoLoginDTO requestDTO) {
-        User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
-                () -> new Exception400("잘못된 이메일입니다.")
-        );
-
-        if(!requestDTO.getPassword().equals(user.getPassword())) {
-            throw new Exception400("잘못된 비밀번호입니다.");
-        }
-        return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
+        return responseDTO;
     }
 
     public String getKakaoAccessToken(String code) {
@@ -187,21 +177,31 @@ public class UserService {
         return user;
     }
 
-    public UserResponse.LoginDTO kakaoSimpleLogin(String code) throws Exception {
-        String access_token = getKakaoAccessToken(code);
-        HashMap<String, Object> kakaoUser = getKakaoUser(access_token);
-//        System.out.println(kakaoUser);
+    @Transactional
+    public void kakaoJoin(UserRequest.KaKaoJoinDTO requestDTO) throws Exception {
+        userJPARepository.save(requestDTO.toEntity());
+    }
 
-        Optional<User> user = userJPARepository.findByEmail(kakaoUser.get("email").toString());
-//        System.out.println(user);
-        if (user.isEmpty()) {
-            UserRequest.KaKaoJoinDTO joinRequestDTO = new UserRequest.KaKaoJoinDTO(kakaoUser);
-            kakaoJoin(joinRequestDTO);
+//    public UserResponse.LoginDTO login(UserRequest.LoginDTO requestDTO) {
+//        User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
+//                () -> new Exception400("잘못된 이메일입니다.")
+//        );
+//
+//        if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())){
+//            throw new Exception400("잘못된 비밀번호입니다.");
+//        }
+//        return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
+//    }
+
+    public UserResponse.LoginDTO kakaoLogin(UserRequest.KaKaoLoginDTO requestDTO) {
+        User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
+                () -> new Exception400("잘못된 이메일입니다.")
+        );
+
+        if(!requestDTO.getPassword().equals(user.getPassword())) {
+            throw new Exception400("잘못된 비밀번호입니다.");
         }
-        UserRequest.KaKaoLoginDTO loginRequestDTO = new UserRequest.KaKaoLoginDTO(kakaoUser);
-        UserResponse.LoginDTO responseDTO = kakaoLogin(loginRequestDTO);
-
-        return responseDTO;
+        return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
     }
 
     public List<UserResponse.UserListDTO> findUserList(String nickname, User sessionUser) {
