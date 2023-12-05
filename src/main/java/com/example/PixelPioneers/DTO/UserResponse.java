@@ -24,12 +24,14 @@ public class UserResponse {
             private String email;
             private String nickname;
             private String image;
+            private String role;
 
             public UserDetailDTO(User user) {
                 this.id = user.getId();
                 this.email = user.getEmail();
                 this.nickname = user.getNickname();
                 this.image = user.getImage();
+                this.role = user.getRole();
             }
         }
     }
