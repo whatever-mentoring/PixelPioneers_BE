@@ -79,6 +79,8 @@ public class PoseService {
         Pose pose = poseJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("포즈가 존재하지 않습니다."));
 
+        pose.updateViewCount();
+
         return new PoseResponse.PoseDTO(pose);
     }
 }

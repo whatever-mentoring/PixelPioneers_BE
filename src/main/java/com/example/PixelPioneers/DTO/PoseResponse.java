@@ -11,11 +11,13 @@ public class PoseResponse {
         private int id;
         private String image;
         private int peopleCount;
+        private int viewCount;
 
         public PoseDTO(Pose pose) {
             this.id = pose.getId();
             this.image = pose.getPhoto().getImage();
             this.peopleCount = pose.getPhoto().getPeopleCount();
+            this.viewCount = pose.getViewCount();
         }
     }
 }

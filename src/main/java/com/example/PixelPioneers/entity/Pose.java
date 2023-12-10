@@ -23,9 +23,17 @@ public class Pose {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Photo photo;
 
+    @Column(nullable = false)
+    private int viewCount;
+
     @Builder
-    public Pose(int id, Photo photo) {
+    public Pose(int id, Photo photo, int viewCount) {
         this.id = id;
         this.photo = photo;
+        this.viewCount = viewCount;
+    }
+
+    public void updateViewCount() {
+        this.viewCount += 1;
     }
 }
