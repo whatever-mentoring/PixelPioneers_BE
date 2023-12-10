@@ -32,15 +32,23 @@ public class User {
     private String image;
 
     @Column
+    private String birthyear;
+
+    @Column
+    private String gender;
+
+    @Column
     private String role;
 
     @Builder
-    public User(int id, String email, String password, String nickname, String image, String role) {
+    public User(int id, String email, String password, String nickname, String image, String role, String birthyear, String gender) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.image = image;
+        this.birthyear = birthyear;
+        this.gender = gender;
         this.role = role;
     }
 

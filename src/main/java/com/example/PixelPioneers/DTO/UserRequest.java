@@ -69,11 +69,17 @@ public class UserRequest {
         @NotEmpty
         private String image;
 
+        private String birthyear;
+
+        private String gender;
+
         public KaKaoJoinDTO(HashMap<String, Object> kakaoUser) {
             this.email = kakaoUser.get("email").toString();
             this.password = "-1";
             this.nickname = kakaoUser.get("nickname").toString();
             this.image = kakaoUser.get("image").toString();
+            this.birthyear = kakaoUser.get("birthyear").toString();
+            this.gender = kakaoUser.get("gender").toString();
         }
 
         public User toEntity() {
@@ -82,6 +88,8 @@ public class UserRequest {
                     .password(password)
                     .nickname(nickname)
                     .image(image)
+                    .birthyear(birthyear)
+                    .gender(gender)
                     .role("ROLE_USER")
                     .build();
         }

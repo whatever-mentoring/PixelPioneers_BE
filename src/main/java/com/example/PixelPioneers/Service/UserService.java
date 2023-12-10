@@ -163,11 +163,15 @@ public class UserService {
             String email = kakao_account.get("email").getAsString();
             String nickname = kakao_account.get("profile").getAsJsonObject().get("nickname").getAsString();
             String image = kakao_account.get("profile").getAsJsonObject().get("profile_image_url").getAsString();
+            String birthyear = kakao_account.get("birthyear").getAsString();
+            String gender = kakao_account.get("gender").getAsString();
 
             user.put("id", id);
             user.put("email", email);
             user.put("nickname", nickname);
             user.put("image", image);
+            user.put("birthyear", birthyear);
+            user.put("gender", gender);
 
             br.close();
         } catch (IOException e) {
