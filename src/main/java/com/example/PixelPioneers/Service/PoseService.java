@@ -15,10 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -29,7 +26,8 @@ public class PoseService {
     private final User_AlbumJPARepository user_albumJPARepository;
     private final PoseJPARepository poseJPARepository;
 
-    private List<Integer> randomIndexList = new ArrayList<>();
+    private int index = 0;
+
 
     /**
      * 랜덤 포즈 조회
@@ -37,25 +35,37 @@ public class PoseService {
      */
     public PoseResponse.PoseDTO randomPoseDetailByPeopleCount(int peopleCount) {
         List<Pose> poseList = poseJPARepository.findByPeopleCountAndOpenAndPass(peopleCount, true, "ACCEPT");
+        List<Integer> randomIndexList = makeRandomIndexList(10, poseList.size());
 
-        if (randomIndexList.size() == 10) {
-            randomIndexList.clear();
+        if (index == 10 - 1) {
+            index = 0;
+            randomIndexList = makeRandomIndexList(10, poseList.size());
         }
 
-        Random random = new Random();
-        random.setSeed(System.currentTimeMillis());
-
-        int randomIndex;
-        while (true) {
-            randomIndex = random.nextInt(poseList.size());
-            if (!randomIndexList.contains(randomIndex)) {
-                randomIndexList.add(randomIndex);
-                break;
-            }
-        }
+        int randomIndex = randomIndexList.get(index++);
         Pose randomPose = poseList.get(randomIndex);
 
         return new PoseResponse.PoseDTO(randomPose);
+    }
+
+    private List<Integer> makeRandomIndexList(int size, int max) {
+        Random random = new Random();
+        random.setSeed(System.currentTimeMillis());
+
+        List<Integer> randomIndexList = new ArrayList<>(size);
+        Set<Integer> randomIndexSet = new HashSet<>(size);
+
+        while (true) {
+            int randomNum = random.nextInt(max);
+            if (randomIndexSet.contains(randomNum))
+                continue;
+            randomIndexList.add(randomNum);
+            randomIndexSet.add(randomNum);
+            if (randomIndexSet.size() == size)
+                break;
+        }
+
+        return randomIndexList;
     }
 
     /**
