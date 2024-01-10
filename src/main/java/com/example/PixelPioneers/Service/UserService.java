@@ -97,7 +97,8 @@ public class UserService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=" + kakaoRestApiKey);
-            sb.append("&redirect_uri=http://moamoa4cut.net/Oauth");
+            //sb.append("&redirect_uri=http://moamoa4cut.net/Oauth");
+            sb.append("&redirect_uri=http://localhost:3000/Oauth");
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
@@ -267,6 +268,26 @@ public class UserService {
             if (passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
                 userJPARepository.deleteById(id);
             }
+        }
+    }
+
+    private void getAllKakaoUserIdList() {
+        try {
+            URL url = new URL("https://kapi.kakao.com/v1/user/ids");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Authorization", "KakaoAK a55bbee69c1707a6896676b4bc19e65c");
+            connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+
+            while((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
