@@ -47,8 +47,8 @@ public class User {
         this.password = password;
         this.nickname = nickname;
         this.image = image;
-//        this.age_range = age_range;
-//        this.gender = gender;
+        this.age_range = age_range;
+        this.gender = gender;
         this.role = role;
     }
 
@@ -59,5 +59,13 @@ public class User {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void updateAgeRange(String ageRange) {
+        this.age_range = ageRange;
+    }
+
+    public void updateGender(String gender) {
+        this.gender = gender;
     }
 }

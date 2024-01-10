@@ -1,13 +1,10 @@
 package com.example.PixelPioneers.DTO;
 
 import com.example.PixelPioneers.entity.User;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
-import java.util.HashMap;
 
 public class UserRequest {
 //    @Getter
@@ -69,17 +66,18 @@ public class UserRequest {
         @NotEmpty
         private String image;
 
-//        private String age_range;
+        private String age_range;
+        private String gender;
 
-//        private String gender;
-
-        public KaKaoJoinDTO(HashMap<String, Object> kakaoUser) {
-            this.email = kakaoUser.get("email").toString();
+        public KaKaoJoinDTO(KakaoUserInfoResponse kakaoUser) {
+            this.email = kakaoUser.getEmail();
             this.password = "-1";
-            this.nickname = kakaoUser.get("nickname").toString();
-            this.image = kakaoUser.get("image").toString();
-//            this.age_range = kakaoUser.get("age_range").toString();
-//            this.gender = kakaoUser.get("gender").toString();
+            this.nickname = kakaoUser.getNickname();
+            this.image = kakaoUser.getImage();
+            if (kakaoUser.getAgeRange() != null)
+                this.age_range = kakaoUser.getAgeRange();
+            if (kakaoUser.getGender() != null)
+                this.gender = kakaoUser.getGender();
         }
 
         public User toEntity() {
@@ -88,8 +86,8 @@ public class UserRequest {
                     .password(password)
                     .nickname(nickname)
                     .image(image)
-//                    .birthyear(birthyear)
-//                    .gender(gender)
+                    .age_range(age_range)
+                    .gender(gender)
                     .role("ROLE_USER")
                     .build();
         }
@@ -118,8 +116,8 @@ public class UserRequest {
         @NotEmpty
         private String password;
 
-        public KaKaoLoginDTO(HashMap<String, Object> kakaoUser) {
-            this.email = kakaoUser.get("email").toString();
+        public KaKaoLoginDTO(KakaoUserInfoResponse kakaoUser) {
+            this.email = kakaoUser.getEmail();
             this.password = "-1";
         }
     }
