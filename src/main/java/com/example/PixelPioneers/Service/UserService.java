@@ -53,16 +53,16 @@ public class UserService {
 //        }
 //    }
 
-//    @Transactional
-//    public void join(UserRequest.JoinDTO requestDTO, MultipartFile file) throws Exception {
+    @Transactional
+    public void join(UserRequest.JoinDTO requestDTO, MultipartFile file) throws Exception {
 //        emailCheck(requestDTO.getEmail());
 //        nicknameCheck(requestDTO.getNickname());
-//
-//        String imgURL = s3Uploader.upload(file, "user_profile");
-//
-//        requestDTO.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
-//        userJPARepository.save(requestDTO.toEntity(imgURL));
-//    }
+
+        String imgURL = s3Uploader.upload(file, "user_profile");
+
+        requestDTO.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
+        userJPARepository.save(requestDTO.toEntity(imgURL));
+    }
 
     public UserResponse.LoginDTO kakaoSimpleLogin(String code) throws Exception {
         String access_token = getKakaoAccessToken(code);
@@ -164,15 +164,18 @@ public class UserService {
             String email = kakao_account.get("email").getAsString();
             String nickname = kakao_account.get("profile").getAsJsonObject().get("nickname").getAsString();
             String image = kakao_account.get("profile").getAsJsonObject().get("profile_image_url").getAsString();
-            String birthyear = kakao_account.get("birthyear").getAsString();
-            String gender = kakao_account.get("gender").getAsString();
+//            String age_range = kakao_account.get("age_range").getAsString();
+//            String gender = kakao_account.get("gender").getAsString();
 
             user.put("id", id);
             user.put("email", email);
             user.put("nickname", nickname);
             user.put("image", image);
-            user.put("birthyear", birthyear);
-            user.put("gender", gender);
+//            user.put("age_range", age_range);
+//            user.put("gender", gender);
+
+//            System.out.println(age_range);
+//            System.out.println(gender);
 
             br.close();
         } catch (IOException e) {
@@ -187,16 +190,16 @@ public class UserService {
         userJPARepository.save(requestDTO.toEntity());
     }
 
-//    public UserResponse.LoginDTO login(UserRequest.LoginDTO requestDTO) {
-//        User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
-//                () -> new Exception400("잘못된 이메일입니다.")
-//        );
-//
-//        if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())){
-//            throw new Exception400("잘못된 비밀번호입니다.");
-//        }
-//        return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
-//    }
+    public UserResponse.LoginDTO login(UserRequest.LoginDTO requestDTO) {
+        User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
+                () -> new Exception400("잘못된 이메일입니다.")
+        );
+
+        if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())){
+            throw new Exception400("잘못된 비밀번호입니다.");
+        }
+        return new UserResponse.LoginDTO(user, JWTTokenProvider.create(user));
+    }
 
     public UserResponse.LoginDTO kakaoLogin(UserRequest.KaKaoLoginDTO requestDTO) {
         User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
