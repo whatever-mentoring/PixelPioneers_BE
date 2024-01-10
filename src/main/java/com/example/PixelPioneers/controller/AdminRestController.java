@@ -31,14 +31,14 @@ public class AdminRestController {
         return ResponseEntity.ok().body(ApiUtils.success(responseDTOs));
     }
 
-    @GetMapping("/admin/review/photoes/{id}")
+    @GetMapping("/admin/review/photoes/{photoId}")
     @ApiOperation(value="사용자가 공개 요청한 사진 1개 조회", notes = "입력 해야하는 값: id")
     public ResponseEntity<?> requestPhotoDetail(@PathVariable int photoId) {
         PhotoResponse.PhotoDetailDTO responseDTO =  adminService.findRequestPhotoDetail(photoId);
         return ResponseEntity.ok().body(ApiUtils.success(true));
     }
 
-    @PostMapping("/admin/review/photoes/{id}")
+    @PostMapping("/admin/review/photoes/{photoId}")
     @ApiOperation(value="사용자가 공개 요청한 사진 1개 조회", notes = "입력 해야하는 값: id")
     public ResponseEntity<?> requestPhotoReview(@PathVariable int photoId, @RequestBody AdminRequest.requestPhotoReviewDTO requestDTO) {
         adminService.reviewRequestPhoto(photoId, requestDTO);

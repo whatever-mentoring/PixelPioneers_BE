@@ -49,25 +49,25 @@ public class UserRestController {
 //        return ResponseEntity.ok(ApiUtils.success(true));
 //    }
 
-//    /**
-//     * 회원가입
-//     */
-//    @ApiOperation(value="회원가입", notes = "swagger에서 테스트 불가")
-//    @PostMapping(value = "/join", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<?> join(@RequestPart @Valid UserRequest.JoinDTO requestDTO, Errors errors, @RequestPart MultipartFile file) throws Exception { //S3 업로드 위한 Exception
-//        userService.join(requestDTO, file);
-//        return ResponseEntity.ok().body(ApiUtils.success(true));
-//    }
+    /**
+     * 회원가입
+     */
+    @ApiOperation(value="회원가입", notes = "swagger에서 테스트 불가")
+    @PostMapping(value = "/join", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> join(@RequestPart @Valid UserRequest.JoinDTO requestDTO, Errors errors, @RequestPart MultipartFile file) throws Exception { //S3 업로드 위한 Exception
+        userService.join(requestDTO, file);
+        return ResponseEntity.ok().body(ApiUtils.success(true));
+    }
 
-//    /**
-//     * 로그인
-//     */
-//    @ApiOperation(value="로그인", notes = "입력 해야하는 값: email, password")
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO requestDTO, Errors errors) {
-//        UserResponse.LoginDTO responseDTO = userService.login(requestDTO);
-//        return ResponseEntity.ok().header(JWTTokenProvider.HEADER, responseDTO.getJWTToken()).body(ApiUtils.success(responseDTO.getUserDetailDTO()));
-//    }
+    /**
+     * 로그인
+     */
+    @ApiOperation(value="로그인", notes = "입력 해야하는 값: email, password")
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO requestDTO, Errors errors) {
+        UserResponse.LoginDTO responseDTO = userService.login(requestDTO);
+        return ResponseEntity.ok().header(JWTTokenProvider.HEADER, responseDTO.getJWTToken()).body(ApiUtils.success(responseDTO.getUserDetailDTO()));
+    }
 
     /**
      * 카카오 로그인
