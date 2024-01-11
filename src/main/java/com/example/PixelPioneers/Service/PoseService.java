@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +41,7 @@ public class PoseService {
         }
     }
 
-    private void initHelper(int peopleCount) {
+    public void initHelper(int peopleCount) {
         indexes[peopleCount - 1] = 0;
         poseLists[peopleCount - 1] = poseJPARepository.findByPeopleCountAndOpenAndPass(peopleCount, true, "ACCEPT");
         randomIndexLists[peopleCount - 1] = makeRandomIndexList(DUPLICATION_LIMIT, poseLists[peopleCount - 1].size());

@@ -44,4 +44,11 @@ public class AdminRestController {
         adminService.reviewRequestPhoto(photoId, requestDTO);
         return ResponseEntity.ok().body(ApiUtils.success(true));
     }
+
+    @GetMapping("/admin/update/user-info/all")
+    @ApiOperation(value="모든 사용자 중 성별과 연령대 정보가 없는 유저 정보 업데이트 (동의 안 한 사람 제외)")
+    public ResponseEntity<?> requestAllUserInfoUpdate() {
+        adminService.updateAllUserInfoByKakao();
+        return ResponseEntity.ok().body(ApiUtils.success(true));
+    }
 }
