@@ -1,6 +1,7 @@
 package com.example.PixelPioneers.Service;
 
 import com.example.PixelPioneers.DTO.AdminRequest;
+import com.example.PixelPioneers.DTO.AdminResponse;
 import com.example.PixelPioneers.DTO.KakaoUserInfoResponse;
 import com.example.PixelPioneers.DTO.PhotoResponse;
 import com.example.PixelPioneers.config.errors.exception.Exception404;
@@ -68,5 +69,13 @@ public class AdminService {
                     user.get().updateGender(kakaoUser.getGender());
             }
         }
+    }
+
+    public List<AdminResponse.UserInfoDTO> findRequestUserInfo() {
+        List<User> userList = userJPARepository.findAll();
+        List<AdminResponse.UserInfoDTO> responseDTOs = userList.stream()
+                .map(user -> new AdminResponse.UserInfoDTO(user))
+                .collect(Collectors.toList());
+        return responseDTOs;
     }
 }

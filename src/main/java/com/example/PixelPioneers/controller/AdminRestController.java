@@ -2,6 +2,7 @@ package com.example.PixelPioneers.controller;
 
 import com.amazonaws.Response;
 import com.example.PixelPioneers.DTO.AdminRequest;
+import com.example.PixelPioneers.DTO.AdminResponse;
 import com.example.PixelPioneers.DTO.PhotoResponse;
 import com.example.PixelPioneers.DTO.UserResponse;
 import com.example.PixelPioneers.Service.AdminService;
@@ -50,5 +51,12 @@ public class AdminRestController {
     public ResponseEntity<?> requestAllUserInfoUpdate() {
         adminService.updateAllUserInfoByKakao();
         return ResponseEntity.ok().body(ApiUtils.success(true));
+    }
+
+    @GetMapping("/admin/statistics")
+    @ApiOperation(value="사용자 통계")
+    public ResponseEntity<?> requestUserInfo() {
+        List<AdminResponse.UserInfoDTO> responseDTOs = adminService.findRequestUserInfo();
+        return ResponseEntity.ok().body(ApiUtils.success(responseDTOs));
     }
 }
