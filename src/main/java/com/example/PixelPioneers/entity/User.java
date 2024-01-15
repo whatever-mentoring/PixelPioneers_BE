@@ -4,8 +4,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,10 @@ public class User {
 
     @Column
     private String role;
+
+    @CreationTimestamp
+    @Column
+    private LocalDate created_at;
 
     @Builder
     public User(int id, String email, String password, String nickname, String image, String role, String age_range, String gender) {
