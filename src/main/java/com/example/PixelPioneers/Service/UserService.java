@@ -101,8 +101,8 @@ public class UserService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=" + kakaoRestApiKey);
-            //sb.append("&redirect_uri=http://moamoa4cut.net/Oauth");
-            sb.append("&redirect_uri=http://localhost:3000/Oauth");
+            sb.append("&redirect_uri=http://moamoa4cut.net/Oauth");
+//            sb.append("&redirect_uri=http://localhost:3000/Oauth");
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
